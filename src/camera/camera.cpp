@@ -4,3 +4,4 @@
 //
 
 #include "camera.hpp"
+#include "../geom/geom.hpp"

@@ -1,11 +1,11 @@
 ##################
-#     Thanda     #
+#     Korra     #
 ##################
 
 # credit - base CMake config : Yining Karl Li , edited CMake config: Akshay Shah & Debanshu Singh
 
 #name your project
-project(Thanda)
+project(Korra)
 cmake_minimum_required(VERSION 2.8)
 
 # set creates a variable
@@ -69,11 +69,11 @@ elseif(WIN32)
 endif()
 
 if(MSVC)
-    set(COMPILER_FLAGS 
+    set(COMPILER_FLAGS
             CMAKE_CXX_FLAGS
             CMAKE_CXX_FLAGS_DEBUG
             CMAKE_CXX_FLAGS_RELEASE
-            CMAKE_C_FLAGS 
+            CMAKE_C_FLAGS
             CMAKE_C_FLAGS_DEBUG
             CMAKE_C_FLAGS_RELEASE
         )
@@ -81,6 +81,9 @@ endif()
 
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
+        src/utility.cpp
+        src/shader.cpp
+        src/program.cpp
         src/main.cpp
         src/camera/camera.cpp
         src/viewer/viewer.cpp
@@ -89,5 +92,5 @@ set(CORE_SRC
         src/geom/geom.cpp
 )
 
-add_executable(Thanda ${CORE_SRC})
-target_link_libraries(Thanda ${CORE_LIBS})
+add_executable(Korra ${CORE_SRC})
+target_link_libraries(Korra ${CORE_LIBS})
