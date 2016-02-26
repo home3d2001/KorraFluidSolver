@@ -50,10 +50,14 @@ set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${OPENG
 
 # OSX-specific hacks/fixes
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    #Link IOKit because this is where we get GL stuff for OSX
-    set(COREVIDEO "-framework CoreVideo")
-    set(IOKIT "-framework IOKit")
-    set(CORELIBS ${CORELIBS} ${IOKIT} ${COREVIDEO})
+    find_library(COCOA Cocoa)
+    find_library(COREVIDEO CoreVideo)
+    find_library(IOKIT IOKit)
+    find_library(COREFOUNDATION CoreFoundation)
+    find_library(CARBON_FRAMEWORK Carbon)
+
+    set(CORE_LIBS ${CORE_LIBS} "-framework Cocoa -framework IOKit -framework CoreFoundation -framework CoreVideo -framework Carbon")
+
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # Linux specific hacks/fixes
@@ -82,8 +86,6 @@ endif()
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
         src/utility.cpp
-        src/shader.cpp
-        src/program.cpp
         src/main.cpp
         src/camera/camera.cpp
         src/viewer/viewer.cpp
