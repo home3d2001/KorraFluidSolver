@@ -85,13 +85,16 @@ endif()
 
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
+        src/loadShaders.cpp
         src/utility.cpp
         src/main.cpp
+        src/shaderProgram.cpp
+        src/viewer.cpp
         src/camera/camera.cpp
-        src/viewer/viewer.cpp
         src/fluidSolver/fluidSolver.cpp
         src/scene/scene.cpp
-        src/geom/geom.cpp
+        src/geometry/geometry.cpp
+        src/geometry/box.cpp
 )
 
 add_executable(Korra ${CORE_SRC})
