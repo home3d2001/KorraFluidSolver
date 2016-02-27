@@ -16,6 +16,11 @@ include_directories(
         ${NUPARU}/src
 )
 
+# include source directories
+include_directories(
+        src/
+)
+
 # Add path for pre-compiled libraries here (we will later link them with our compiled source)
 # Add Nuparu library to path for OSX, linux and windows
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -85,6 +90,7 @@ endif()
 
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
+        src/thirdparty/jsoncpp/dist/jsoncpp.cpp
         src/loadShaders.cpp
         src/utility.cpp
         src/main.cpp
