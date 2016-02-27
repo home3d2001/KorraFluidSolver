@@ -113,8 +113,8 @@ Box::Create()
     glBindBuffer(GL_ARRAY_BUFFER, m_posBuffer);
     glBufferData(
         GL_ARRAY_BUFFER,
-        sizeof(m_positions),
-        m_positions,
+        m_positions.size() * sizeof(glm::vec3),
+        &m_positions[0],
         GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
 
@@ -130,8 +130,8 @@ Box::Create()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_idxBuffer);
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER,
-        sizeof(m_indices),
-        m_indices,
+        m_indices.size() * sizeof(GLushort),
+        &m_indices[0],
         GL_STATIC_DRAW
         );
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);

@@ -45,7 +45,7 @@ protected:
     vector<glm::vec3> m_positions;
     vector<glm::vec3> m_normals;
     vector<glm::vec3> m_colors;
-    vector<unsigned int> m_indices;
+    vector<GLushort> m_indices;
 
     // Transformation
     glm::mat4 m_localTransform;

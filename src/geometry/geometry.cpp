@@ -15,7 +15,7 @@ Geometry::DrawMode() const
 GLsizei
 Geometry::ElementCount() const
 {
-    return 0;
+    return m_indices.size();
 }
 
 void
