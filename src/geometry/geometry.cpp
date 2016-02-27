@@ -1,12 +1,20 @@
 #include "geometry.h"
 
-GLenum
-Geometry::DrawMode() const
+void
+Geometry::SetDrawMode(
+    DrawMode drawMode
+    )
 {
-    switch (m_viewMode) {
-        case WireFrame:
+    m_drawMode = drawMode;
+}
+
+GLenum
+Geometry::GLDrawMode() const
+{
+    switch(m_drawMode) {
+        case DrawMode_Wireframe:
             return GL_LINES;
-        case Shaded:
+        case DrawMode_Shaded:
         default:
             return GL_TRIANGLES;
     }
@@ -22,10 +30,13 @@ void
 Geometry::EnableVertexAttributes() const
 {
     glBindVertexArray(m_vao);
+
+    // Enable vertex attributes
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, m_posBuffer);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
+    // Bind element buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_idxBuffer);
 }
 
@@ -41,18 +52,18 @@ Geometry::DisableVertexAttributes() const
 
 void
 Geometry::SetLocalTransformation(
-    const glm::mat4 localTrans
+    const glm::mat4& localTrans
     )
 {
-
+    m_localTransform = localTrans;
 }
 
 void
 Geometry::SetGlobalTransformation(
-    const glm::mat4
+    const glm::mat4& globalTrans
     )
 {
-
+    m_globalTransform = globalTrans;
 }
 
 glm::mat4

@@ -8,7 +8,7 @@ using namespace std;
 int main()
 {
     Viewer view(800, 600);
-    view.Render();
+    view.Update();
     view.CleanUp();
 
     return 0;

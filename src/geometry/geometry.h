@@ -6,26 +6,29 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 // C++
 
 #include <vector>
 
-using namespace std;
+#include "../mathConstants.h"
 
 typedef enum {
-    WireFrame,
-    Shaded
-} ViewMode;
+    DrawMode_Wireframe,
+    DrawMode_Shaded
+} DrawMode;
+
+using namespace std;
 
 class Geometry
 {
 public:
-    Geometry () { m_viewMode = Shaded; };
     virtual void Create() = 0;
 
     // -- OpenGL helpers
-    virtual GLenum DrawMode() const;
+    virtual void SetDrawMode(DrawMode);
+    virtual GLenum GLDrawMode() const;
     virtual GLsizei ElementCount() const;
 
     // Bind the vertex array object for this geometry
@@ -33,13 +36,13 @@ public:
     virtual void DisableVertexAttributes() const;
 
     // -- Transformations
-    virtual void SetLocalTransformation(const glm::mat4);
-    virtual void SetGlobalTransformation(const glm::mat4);
+    virtual void SetLocalTransformation(const glm::mat4&);
+    virtual void SetGlobalTransformation(const glm::mat4&);
     virtual glm::mat4 GetLocalTransformation() const;
     virtual glm::mat4 GetGlobalTransformation() const;
 
 protected:
-    ViewMode m_viewMode;
+    DrawMode m_drawMode = DrawMode_Shaded;
 
     // Data
     vector<glm::vec3> m_positions;

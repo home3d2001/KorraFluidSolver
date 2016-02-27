@@ -6,8 +6,6 @@
 class Box : public Geometry
 {
 public:
-    Box(ViewMode viewMode = Shaded);
-    virtual ~Box() {};
     virtual void Create();
 
 protected:
@@ -16,6 +14,5 @@ protected:
     virtual void InitColors();
     virtual void InitIndices();
 };
-
 
 #endif

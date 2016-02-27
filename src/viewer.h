@@ -13,28 +13,38 @@
 
 #include "shaderProgram.h"
 #include "scene/scene.h"
+#include "camera/camera.h"
 
 class Viewer
 {
 public:
-    glm::vec2 screenSize;
-
     Viewer();
     Viewer(
         int width = 800,
         int height = 600
         );
 
-    virtual void Render();
+    virtual void Update();
     virtual void CleanUp();
 
-private:
-    void
-    Init();
+    float Width() {
+        return m_width;
+    }
+
+    float Height() {
+        return m_height;
+    }
+
+protected:
+    void Init();
+
+    float m_width;
+    float m_height;
 
     GLFWwindow* m_window = NULL;
     ShaderProgram m_program;
     Scene m_scene;
+    Camera m_camera;
 
 };
 

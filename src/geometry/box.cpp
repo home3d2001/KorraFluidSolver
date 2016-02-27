@@ -1,17 +1,9 @@
 #include "box.h"
 
-Box::Box(
-    ViewMode viewMode
-    )
-{
-    m_viewMode = viewMode;
-    InitPositions();
-    InitIndices();
-}
-
 void
 Box::InitPositions()
 {
+    m_positions.clear();
     //Front face
     //UR
     m_positions.push_back(glm::vec3(0.5f, 0.5f, 0.5f));
@@ -88,20 +80,41 @@ Box::InitColors()
 void
 Box::InitIndices()
 {
-    // Two triangles for each faces
-    for(int i = 0; i < 6; i++){
-        m_indices.push_back(i * 4);
-        m_indices.push_back(i * 4 + 1);
-        m_indices.push_back(i * 4 + 2);
-        m_indices.push_back(i * 4);
-        m_indices.push_back(i * 4 + 2);
-        m_indices.push_back(i * 4 + 3);
+    m_indices.clear();
+    if (m_drawMode == DrawMode_Wireframe)
+    {
+        // Square for each face
+        for(int i = 0; i < 6; i++){
+            m_indices.push_back(i * 4);
+            m_indices.push_back(i * 4 + 1);
+            m_indices.push_back(i * 4 + 1);
+            m_indices.push_back(i * 4 + 2);
+            m_indices.push_back(i * 4 + 2);
+            m_indices.push_back(i * 4 + 3);
+            m_indices.push_back(i * 4 + 3);
+            m_indices.push_back(i * 4);
+        }
+    }
+    else if (m_drawMode == DrawMode_Shaded)
+    {
+        // Two triangles for each faces
+        for(int i = 0; i < 6; i++){
+            m_indices.push_back(i * 4);
+            m_indices.push_back(i * 4 + 1);
+            m_indices.push_back(i * 4 + 2);
+            m_indices.push_back(i * 4);
+            m_indices.push_back(i * 4 + 2);
+            m_indices.push_back(i * 4 + 3);
+        }
     }
 }
 
 void
 Box::Create()
 {
+    InitPositions();
+    InitIndices();
+
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
 

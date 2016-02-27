@@ -5,8 +5,8 @@
 
 Viewer::Viewer()
 {
-    screenSize.x = 800;
-    screenSize.y = 600;
+    m_width = 800;
+    m_height = 600;
 
     this->Init();
 
@@ -17,8 +17,8 @@ Viewer::Viewer(
     int height
     )
 {
-    screenSize.x = width;
-    screenSize.y = height;
+    m_width = width;
+    m_height = height;
 
     this->Init();
 }
@@ -41,7 +41,7 @@ Viewer::Init()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Make sure with don't use old profile
 
     // Open a window and create its OpenGL context
-    m_window = glfwCreateWindow( screenSize.x, screenSize.y, "Trung's Fluid Sim", NULL, NULL);
+    m_window = glfwCreateWindow( m_width, m_height, "Trung's Fluid Sim", NULL, NULL);
     if( m_window == NULL ){
         fprintf( stderr, "Failed to open GLFW window.\n" );
         getchar();
@@ -72,17 +72,21 @@ Viewer::Init()
     m_scene = Scene();
     m_scene.InitFromTestScene();
 
+    // Initialize camera
+    m_camera = Camera(m_width, m_height);
+
     // White background
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void
-Viewer::Render()
+Viewer::Update()
 {
     do {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        m_program.Render(&m_scene.RootGeometry());
+        m_scene.Update();
+        m_program.Render(m_camera, m_scene.RootGeometry());
 
         // Swap buffers
         glfwSwapBuffers(m_window);

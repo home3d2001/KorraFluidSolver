@@ -10,6 +10,8 @@ public:
     ~Scene();
     virtual void InitFromTestScene();
     virtual void InitFromJson();
+
+    virtual void Update();
     virtual const Geometry& RootGeometry() const;
 
 protected:
