@@ -26,10 +26,11 @@ public:
 
     // -- OpenGL helpers
     virtual GLenum DrawMode() const;
-    virtual int ElementCount() const;
+    virtual GLsizei ElementCount() const;
 
     // Bind the vertex array object for this geometry
-    virtual void Bind() const;
+    virtual void EnableVertexAttributes() const;
+    virtual void DisableVertexAttributes() const;
 
     // -- Transformations
     virtual void SetLocalTransformation(const glm::mat4);

@@ -23,7 +23,6 @@ Viewer::Viewer(
     this->Init();
 }
 
-
 void
 Viewer::Init()
 {
@@ -76,7 +75,6 @@ Viewer::Init()
     // White background
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
-
 
 void
 Viewer::Render()

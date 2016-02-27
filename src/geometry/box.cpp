@@ -107,33 +107,35 @@ Box::Create()
 
     // @todo: Is it faster to allocate all the buffers ahead of time?
 
-    // // -- Position
-    // glGenBuffers(1, &m_posBuffer);
-    // glBindBuffer(GL_ARRAY_BUFFER, m_posBuffer);
-    // glBufferData(GL_ARRAY_BUFFER, m_positions.size() * sizeof(glm::vec3), (void*)&(m_positions[0]), GL_STATIC_DRAW);
-    // glBindBuffer(GL_ARRAY_BUFFER, NULL);
+    // -- Position
 
-    // // @todo:
-    // // glGenBuffers(1, &m_norBuffer);
-
-    // // @todo:
-    // // glGenBuffers(1, &m_colBuffer);
-
-    // // -- Index
-    // glGenBuffers(1, &m_idxBuffer);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_idxBuffer);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), (void*)&(m_indices[0]), GL_STATIC_DRAW);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
-
-    // Draw a triangle
-    static const GLfloat g_vertex_buffer_data[] = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f
-    };
+    glGenBuffers(1, &m_posBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_posBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        sizeof(m_positions),
+        m_positions,
+        GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, NULL);
 
-    glBindVertexArray(0);
+    // @todo:
+    // glGenBuffers(1, &m_norBuffer);
+
+    // @todo:
+    // glGenBuffers(1, &m_colBuffer);
+
+    // -- Index
+
+    glGenBuffers(1, &m_idxBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_idxBuffer);
+    glBufferData(
+        GL_ELEMENT_ARRAY_BUFFER,
+        sizeof(m_indices),
+        m_indices,
+        GL_STATIC_DRAW
+        );
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
+
+    glBindVertexArray(NULL);
 
 }
