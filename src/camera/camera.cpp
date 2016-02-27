@@ -1,5 +1,5 @@
 #include "camera.h"
-#include "../mathConstants.h"
+#include <mathConstants.h>
 
 Camera::Camera():
     Camera(800, 600)

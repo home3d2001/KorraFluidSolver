@@ -70,7 +70,8 @@ Viewer::Init()
 
     // Initialize scene
     m_scene = Scene();
-    m_scene.InitFromTestScene();
+    // m_scene.InitFromTestScene();
+    m_scene.InitFromJson();
 
     // Initialize camera
     m_camera = Camera(m_width, m_height);

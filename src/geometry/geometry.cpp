@@ -51,6 +51,39 @@ Geometry::DisableVertexAttributes() const
 }
 
 void
+Geometry::Translate(
+    const float& x,
+    const float& y,
+    const float& z
+    )
+{
+    m_localTransform = glm::translate(m_localTransform, glm::vec3(x, y, z));
+}
+
+void
+Geometry::Rotate(
+    const float& radx,
+    const float& rady,
+    const float& radz
+    )
+{
+    m_localTransform = glm::rotate(m_localTransform, radx, glm::vec3(1.0f, 0.0f, 0.0f));
+    m_localTransform = glm::rotate(m_localTransform, rady, glm::vec3(0.0f, 1.0f, 0.0f));
+    m_localTransform = glm::rotate(m_localTransform, radz, glm::vec3(0.0f, 0.0f, 1.0f));
+}
+
+void
+Geometry::Scale(
+    const float& scalex,
+    const float& scaley,
+    const float& scalez
+    )
+{
+    m_localTransform = glm::scale(m_localTransform, glm::vec3(scalex, scaley, scalez));
+}
+
+
+void
 Geometry::SetLocalTransformation(
     const glm::mat4& localTrans
     )

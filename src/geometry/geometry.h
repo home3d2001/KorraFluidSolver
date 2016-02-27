@@ -12,7 +12,9 @@
 
 #include <vector>
 
-#include "../mathConstants.h"
+// Custom
+
+#include <mathConstants.h>
 
 typedef enum {
     DrawMode_Wireframe,
@@ -36,10 +38,13 @@ public:
     virtual void DisableVertexAttributes() const;
 
     // -- Transformations
-    virtual void SetLocalTransformation(const glm::mat4&);
-    virtual void SetGlobalTransformation(const glm::mat4&);
-    virtual glm::mat4 GetLocalTransformation() const;
-    virtual glm::mat4 GetGlobalTransformation() const;
+    void Translate(const float& x, const float& y, const float& z);
+    void Rotate(const float& radx, const float& rady, const float& radz);
+    void Scale(const float& scaleX, const float& scaleY, const float& scaleZ);
+    void SetLocalTransformation(const glm::mat4&);
+    void SetGlobalTransformation(const glm::mat4&);
+    glm::mat4 GetLocalTransformation() const;
+    glm::mat4 GetGlobalTransformation() const;
 
 protected:
     DrawMode m_drawMode = DrawMode_Shaded;

@@ -1,15 +1,15 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "../geometry/box.h"
+#include <geometry/box.h>
 
 class Scene
 {
 public:
     Scene();
     ~Scene();
-    virtual void InitFromTestScene();
-    virtual void InitFromJson();
+    void InitFromTestScene();
+    bool InitFromJson();
 
     virtual void Update();
     virtual const Geometry& RootGeometry() const;
