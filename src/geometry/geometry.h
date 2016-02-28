@@ -28,6 +28,7 @@ class Geometry
 {
 public:
     virtual void Create() = 0;
+    virtual void UpdateVAO();
 
     // -- OpenGL helpers
     virtual void SetDrawMode(DrawMode);

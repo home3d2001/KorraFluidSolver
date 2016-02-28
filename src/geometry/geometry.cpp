@@ -96,3 +96,33 @@ Geometry::GetGlobalTransformation() const
     return m_globalTransform;
 }
 
+void
+Geometry::UpdateVAO()
+{
+    glBindVertexArray(m_vao);
+
+    // @todo: Is it faster to allocate all the buffers ahead of time?
+
+    // -- Position
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_posBuffer);
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        m_positions.size() * sizeof(glm::vec3),
+        &m_positions[0],
+        GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, NULL);
+
+    // -- Index
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_idxBuffer);
+    glBufferData(
+        GL_ELEMENT_ARRAY_BUFFER,
+        m_indices.size() * sizeof(GLushort),
+        &m_indices[0],
+        GL_STATIC_DRAW
+        );
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
+
+    glBindVertexArray(NULL);
+}

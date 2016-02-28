@@ -5,6 +5,29 @@
 #include <mathConstants.h>
 #include <vector>
 
+// ---------------------------------------------------- //
+// FluidParticle
+// ---------------------------------------------------- //
+class FluidParticle
+{
+public:
+    FluidParticle();
+    FluidParticle(
+        const glm::vec3& pos,
+        const glm::vec3& vel
+        );
+
+    // Getters/setters
+    const glm::vec3& Position() const;
+
+protected:
+    glm::vec3 m_pos;
+    glm::vec3 m_vel;
+};
+
+// ---------------------------------------------------- //
+// FluidSolver
+// ---------------------------------------------------- //
 class FluidSolver
 {
 public:
@@ -14,18 +37,19 @@ public:
         const float& separation
         );
 
-    const std::vector<glm::vec3>& ParticlePositions() const;
+    ~FluidSolver();
+    const std::vector<glm::vec3> ParticlePositions() const;
 
-    // Called every frame
     virtual void Update();
 
 protected:
+
     // -- Particle info
     glm::vec3 m_containerDim;
     glm::vec3 m_particleDim;
     float m_separation;
 
-    std::vector<glm::vec3> m_particlePositions;
+    std::vector<FluidParticle*> m_particles;
 };
 
 #endif /* FLUIDSOLVER_H */

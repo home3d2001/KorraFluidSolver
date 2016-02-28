@@ -1,5 +1,30 @@
 #include "fluidSolver.h"
 
+// ---------------------------------------------------- //
+// FluidParticle
+// ---------------------------------------------------- //
+FluidParticle::FluidParticle()
+{
+
+}
+
+FluidParticle::FluidParticle(
+    const glm::vec3& pos,
+    const glm::vec3& vel
+    ) :m_pos(pos), m_vel(vel)
+{
+
+}
+
+const glm::vec3&
+FluidParticle::Position() const
+{
+    return m_pos;
+}
+
+// ---------------------------------------------------- //
+// FluidSolver
+// ---------------------------------------------------- //
 FluidSolver::FluidSolver(
     const glm::vec3& containerDim,
     const glm::vec3& particleDim,
@@ -18,18 +43,38 @@ FluidSolver::FluidSolver(
         {
             for (float z = -midZ; z < midX; z += m_separation)
             {
-                m_particlePositions.push_back(
-                    glm::vec3(x, y, z)
+                m_particles.push_back(
+                    new FluidParticle(
+                        glm::vec3(x, y, z),
+                        glm::vec3(0.f, 0.0001f, 0.0f)
+                        )
                     );
             }
         }
     }
 }
 
-const std::vector<glm::vec3>&
+FluidSolver::~FluidSolver()
+{
+    for (auto &particle : m_particles)
+    {
+        if (particle != nullptr)
+        {
+            delete particle;
+        }
+    }
+}
+
+const std::vector<glm::vec3>
 FluidSolver::ParticlePositions() const
 {
-    return m_particlePositions;
+    std::vector<glm::vec3> positions;
+    for (auto &particle : m_particles)
+    {
+        positions.push_back(particle->Position());
+    }
+
+    return positions;
 }
 
 void
