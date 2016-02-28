@@ -131,12 +131,6 @@ Box::Create()
         GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
 
-    // @todo:
-    // glGenBuffers(1, &m_norBuffer);
-
-    // @todo:
-    // glGenBuffers(1, &m_colBuffer);
-
     // -- Index
 
     glGenBuffers(1, &m_idxBuffer);

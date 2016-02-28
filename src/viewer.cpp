@@ -70,8 +70,11 @@ Viewer::Init()
 
     // Initialize scene
     m_scene = Scene();
-    // m_scene.InitFromTestScene();
-    m_scene.InitFromJson();
+#define TEST_SCENE
+#ifdef TEST_SCENE
+    m_scene.InitFromTestScene();
+#endif
+    m_scene.InitFromJson("../src/scene/scene.json");
 
     // Initialize camera
     m_camera = Camera(m_width, m_height);
@@ -87,7 +90,7 @@ Viewer::Update()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         m_scene.Update();
-        m_program.Render(m_camera, m_scene.RootGeometry());
+        m_program.Render(m_camera, *(m_scene.RootGeometry()));
 
         // Swap buffers
         glfwSwapBuffers(m_window);
