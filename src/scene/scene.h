@@ -2,6 +2,7 @@
 #define SCENE_H
 
 #include <geometry/box.h>
+#include <fluidSolver/fluidSolver.h>
 
 class Scene
 {
