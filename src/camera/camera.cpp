@@ -27,6 +27,7 @@ void
 Camera::RecomputeAttributes()
 {
     m_forward = m_target - m_eye;
+    m_right = glm::cross(m_forward, m_up);
 
     m_view = glm::lookAt(
         m_eye,
@@ -80,6 +81,28 @@ Camera::Zoom(
     )
 {
     glm::vec3 translation = m_forward * amount;
+    m_eye += translation;
+    m_target += translation;
+    RecomputeAttributes();
+}
+
+void
+Camera::TranslateAlongRight(
+    float amt
+    )
+{
+    glm::vec3 translation = m_right * amt;
+    m_eye += translation;
+    m_target += translation;
+    RecomputeAttributes();
+}
+
+void
+Camera::TranslateAlongUp(
+    float amt
+    )
+{
+    glm::vec3 translation = m_up * amt;
     m_eye += translation;
     m_target += translation;
     RecomputeAttributes();

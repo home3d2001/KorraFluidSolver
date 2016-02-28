@@ -46,7 +46,6 @@ void
 Geometry::DisableVertexAttributes() const
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
-
     glDisableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
     glBindVertexArray(NULL);

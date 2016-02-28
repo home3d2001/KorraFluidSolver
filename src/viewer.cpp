@@ -102,8 +102,7 @@ Viewer::Update()
 #ifdef TEST_SCENE
         m_scene->Draw(*m_program);
 #else
-        m_scene->Draw(*m_programEmit);
-        m_scene->Draw(*m_programDraw);
+        m_scene->DrawTransformFeedback(*m_programEmit, *m_programDraw);
 #endif
 
         // Swap buffers

@@ -39,6 +39,14 @@ public:
     virtual void EnableVertexAttributes() const;
     virtual void DisableVertexAttributes() const;
 
+    // -- Color
+    void SetColor(const glm::vec4& color) {
+        m_color = color;
+    };
+    const glm::vec4& GetColor() const {
+        return m_color;
+    };
+
     // -- Transformations
     void Translate(const float& x, const float& y, const float& z);
     void Rotate(const float& radx, const float& rady, const float& radz);
@@ -50,9 +58,9 @@ protected:
     DrawMode m_drawMode = DrawMode_Shaded;
 
     // Data
+    glm::vec4 m_color = glm::vec4(1.0);
+
     vector<glm::vec3> m_positions;
-    vector<glm::vec3> m_normals;
-    vector<glm::vec3> m_colors;
     vector<GLushort> m_indices;
 
     // Transformation

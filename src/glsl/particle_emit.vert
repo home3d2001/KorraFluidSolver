@@ -1,22 +1,19 @@
-#version 150 core
+#version 330 core
 
 precision highp float;
 precision highp int;
 layout(std140, column_major) uniform;
 
 uniform float u_time;
-uniform vec2 u_acceleration;
+uniform vec3 u_accel;
 
-in vec2 a_position;
-in vec2 a_velocity;
-in float a_spawntime;
-in float a_lifetime;
-in float a_ID;
+layout(location = 0) in vec3 a_position;
+layout(location = 1) in vec3 a_velocity;
+layout(location = 2) in float a_spawntime;
 
-out vec2 v_position;
-out vec2 v_velocity;
+out vec3 v_position;
+out vec3 v_velocity;
 out float v_spawntime;
-out float v_lifetime;
 
 float rand(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
@@ -24,16 +21,15 @@ float rand(vec2 co){
 
 void main()
 {
-    if (a_spawntime == 0.0 || (u_time - a_spawntime > a_lifetime) || a_position.y < -0.5) {
+    float life_time = 5000.0;
+    if (a_spawntime == 0.0 || (u_time - a_spawntime > life_time) || a_position.y < -0.5) {
         // Generate a new particle
-        v_position = vec2(0.0, 0.0);
-        v_velocity = vec2(rand(vec2(a_ID, 0.0)) - 0.5, rand(vec2(a_ID, a_ID)));
+        v_position = vec3(0.0, 0.0, 0.0);
+        v_velocity = a_velocity;
         v_spawntime = u_time;
-        v_lifetime = 5000.0;
     } else {
-        v_velocity = a_velocity + 0.01 * u_acceleration;
+        v_velocity = a_velocity + 0.01 * u_accel;
         v_position = a_position + 0.01 * v_velocity;
         v_spawntime = a_spawntime;
-        v_lifetime = a_lifetime;
     }
 }

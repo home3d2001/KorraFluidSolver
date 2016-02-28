@@ -9,12 +9,17 @@ public:
     ParticleDrawProgram(
         const char* vertFilePath,
         const char* fragFilePath
-        ) : ShaderProgram(vertFilePath, fragFilePath) {}
+        );
 
     virtual void Draw(
         const Camera&,
         const Geometry&
         ) const;
+
+protected:
+    // Uniform locations
+    int m_unifTime;
+    int m_unifColor;
 };
 
 #endif

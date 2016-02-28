@@ -3,18 +3,30 @@
 
 #include <shaderProgram/shaderProgram.h>
 
+class FluidGeo;
+
 class ParticleEmitProgram : public ShaderProgram
 {
 public:
     ParticleEmitProgram(
         const char* vertFilePath,
         const char* fragFilePath
-        ) : ShaderProgram(vertFilePath, fragFilePath) {}
+        );
 
     virtual void Draw(
-        const Camera&,
-        const Geometry&
+        const Camera*,
+        const FluidGeo*
         ) const;
+
+    virtual void ToggleVao();
+
+protected:
+    GLuint m_transformFeedback[2];
+    int m_curr = 0;
+
+    // Uniform locations
+    int m_unifTime;
+    int m_unifAccel;
 };
 
 #endif

@@ -33,7 +33,7 @@ ShaderProgram::Draw(
             );
     }
 
-    if (m_unifModel != -1) {
+    if (m_unifViewProj != -1) {
         glUniformMatrix4fv(
             m_unifViewProj,
             1,

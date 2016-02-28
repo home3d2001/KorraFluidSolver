@@ -52,6 +52,7 @@ Scene::InitFromJson(const char* filepath)
     m_fluidContainer = new Box();
     m_fluidContainer->Scale(containerDim.x, containerDim.y, containerDim.z);
     m_fluidContainer->SetDrawMode(DrawMode_Wireframe);
+    m_fluidContainer->SetColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
     m_fluidContainer->Create();
 
     // -- Get particle information
@@ -72,7 +73,11 @@ Scene::InitFromJson(const char* filepath)
         );
 
     // -- Initialize fluid geo
-    m_fluidGeo = new FluidGeo(m_fluidSolver->ParticlePositions());
+    m_fluidGeo = new FluidGeo(
+        m_fluidSolver->ParticlePositions(),
+        m_fluidSolver->ParticleVelocities(),
+        m_fluidSolver->ParticleSpawnTimes()
+        );
     m_fluidGeo->Create();
 }
 
@@ -105,8 +110,8 @@ Scene::Draw(
 
 void
 Scene::DrawTransformFeedback(
-    const ShaderProgram& progUpdate,
-    const ShaderProgram& progDraw
+    const ParticleEmitProgram& progUpdate,
+    const ParticleDrawProgram& progDraw
     ) const
 {
     DrawFluidSolver(progUpdate, progDraw);
@@ -145,18 +150,35 @@ Scene::UpdateCamera(
 {
     float rotateAmt = 20.0f;
     float zoomAmt = 0.01f;
-    if (kc->KeyPressed(Key_Down)) {
+    if (kc->KeyPressed(Key_Up)) {
         m_camera->RotateAboutUp(rotateAmt);
-    } else if (kc->KeyPressed(Key_Up)) {
+    }
+    if (kc->KeyPressed(Key_Down)) {
         m_camera->RotateAboutUp(-rotateAmt);
-    } else if (kc->KeyPressed(Key_Left)) {
+    }
+
+    if (kc->KeyPressed(Key_Left)) {
         m_camera->RotateAboutRight(rotateAmt);
-    } else if (kc->KeyPressed(Key_Right)) {
+    }
+
+    if (kc->KeyPressed(Key_Right)) {
         m_camera->RotateAboutRight(-rotateAmt);
-    } else if (kc->KeyPressed(Key_W)){
+    }
+
+    if (kc->KeyPressed(Key_W)){
         m_camera->Zoom(zoomAmt);
-    } else if (kc->KeyPressed(Key_S)){
+    }
+
+    if (kc->KeyPressed(Key_S)){
         m_camera->Zoom(-zoomAmt);
+    }
+
+    if (kc->KeyPressed(Key_D)){
+        m_camera->TranslateAlongRight(zoomAmt);
+    }
+
+    if (kc->KeyPressed(Key_A)){
+        m_camera->TranslateAlongRight(-zoomAmt);
     }
 }
 
@@ -164,13 +186,19 @@ void
 Scene::UpdateFluidSolver()
 {
     m_fluidSolver->Update();
+    m_fluidGeo->ToggleVao();
 }
 
 void
 Scene::DrawFluidSolver(
-    const ShaderProgram& progUpdate,
-    const ShaderProgram& progDraw
+    const ParticleEmitProgram& progUpdate,
+    const ParticleDrawProgram& progDraw
     ) const
 {
+    // -- Draw boundary
+    progDraw.Draw(*m_camera, *m_fluidContainer);
 
+    // -- Draw particles
+    progUpdate.Draw(m_camera, m_fluidGeo);
+    progDraw.Draw(*m_camera, *m_fluidGeo);
 }

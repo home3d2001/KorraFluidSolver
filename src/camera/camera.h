@@ -18,6 +18,8 @@ public:
     void RotateAboutRight(float deg);
     void RotateAboutUp(float deg);
     void Zoom(float amount);
+    void TranslateAlongRight(float amount);
+    void TranslateAlongUp(float amount);
 
 protected:
 

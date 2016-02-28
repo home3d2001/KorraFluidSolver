@@ -16,12 +16,6 @@ FluidParticle::FluidParticle(
 
 }
 
-const glm::vec3&
-FluidParticle::Position() const
-{
-    return m_pos;
-}
-
 // ---------------------------------------------------- //
 // FluidSolver
 // ---------------------------------------------------- //
@@ -75,6 +69,30 @@ FluidSolver::ParticlePositions() const
     }
 
     return positions;
+}
+
+const std::vector<glm::vec3>
+FluidSolver::ParticleVelocities() const
+{
+    std::vector<glm::vec3> velocities;
+    for (auto &particle : m_particles)
+    {
+        velocities.push_back(particle->Velocity());
+    }
+
+    return velocities;
+}
+
+const std::vector<float>
+FluidSolver::ParticleSpawnTimes() const
+{
+    std::vector<float> spawnTimes;
+    for (auto &particle : m_particles)
+    {
+        spawnTimes.push_back(particle->SpawnTime());
+    }
+
+    return spawnTimes;
 }
 
 void
