@@ -1,22 +1,17 @@
 #version 150 core
-#define POSITION_LOCATION 0
-#define VELOCITY_LOCATION 1
-#define SPAWNTIME_LOCATION 2
-#define LIFETIME_LOCATION 3
-#define ID_LOCATION 4
 
 precision highp float;
 precision highp int;
-precision highp sampler3D;
+layout(std140, column_major) uniform;
 
 uniform float u_time;
 uniform vec2 u_acceleration;
 
-layout(location = POSITION_LOCATION) in vec2 a_position;
-layout(location = VELOCITY_LOCATION) in vec2 a_velocity;
-layout(location = SPAWNTIME_LOCATION) in float a_spawntime;
-layout(location = LIFETIME_LOCATION) in float a_lifetime;
-layout(location = ID_LOCATION) in float a_ID;
+in vec2 a_position;
+in vec2 a_velocity;
+in float a_spawntime;
+in float a_lifetime;
+in float a_ID;
 
 out vec2 v_position;
 out vec2 v_velocity;

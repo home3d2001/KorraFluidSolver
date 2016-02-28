@@ -1,6 +1,8 @@
 #ifndef viewer_hpp
 #define viewer_hpp
 
+// #define TEST_SCENE
+
 // C++ libraries
 
 #include <iostream>
@@ -11,7 +13,13 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include <shaderProgram.h>
+#ifdef TEST_SCENE
+#include <shaderProgram/shaderProgram.h>
+#else
+#include <shaderProgram/particleEmitProgram.h>
+#include <shaderProgram/particleDrawProgram.h>
+#endif
+
 #include <input/keyboardControl.h>
 #include <scene/scene.h>
 #include <camera/camera.h>
@@ -44,7 +52,12 @@ protected:
 
     GLFWwindow* m_window;
     KeyboardControl* m_keyboard;
+#ifdef TEST_SCENE
     ShaderProgram* m_program;
+#else
+    ParticleEmitProgram* m_programEmit;
+    ParticleDrawProgram* m_programDraw;
+#endif
     Scene* m_scene;
 };
 

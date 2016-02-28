@@ -9,7 +9,6 @@ class ShaderProgram
 {
 
 public:
-    ShaderProgram() {}
     ShaderProgram(
         const char* vertFilePath,
         const char* fragFilePath

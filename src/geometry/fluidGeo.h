@@ -10,8 +10,11 @@ public:
     FluidGeo(const vector<glm::vec3>& positions);
 
     virtual void Create();
-    virtual void UpdateVAO();
     virtual GLenum GLDrawMode() const;
+
+    // Override to update transform feedback buffers
+    virtual void EnableVertexAttributes() const;
+    virtual void UpdateVAO();
 
     void UpdatePositions(const std::vector<glm::vec3>& positions);
 

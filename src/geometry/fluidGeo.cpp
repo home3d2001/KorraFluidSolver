@@ -22,13 +22,20 @@ FluidGeo::UpdatePositions(
 }
 
 void
-FluidGeo::InitIndices()
+FluidGeo::EnableVertexAttributes() const
 {
-    int len = m_positions.size();
-    for (int i = 0; i < len; ++i)
-    {
-        m_indices.push_back(i);
-    }
+    GLuint curvao = m_useVao2 ? m_vao2 : m_vao;
+    GLuint curposBuffer = m_useVao2 ? m_posBuffer2 : m_posBuffer;
+
+    glBindVertexArray(curvao);
+
+    // Enable vertex attributes
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, curposBuffer);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    // Bind element buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_idxBuffer);
 }
 
 void
@@ -69,7 +76,8 @@ FluidGeo::UpdateVAO()
     GLuint curvao = m_useVao2 ? m_vao2 : m_vao;
     GLuint curposBuffer = m_useVao2 ? m_posBuffer2 : m_posBuffer;
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_posBuffer);
+    glBindVertexArray(curvao);
+    glBindBuffer(GL_ARRAY_BUFFER, curposBuffer);
     glBufferData(
         GL_ARRAY_BUFFER,
         m_positions.size() * sizeof(glm::vec3),
@@ -78,4 +86,15 @@ FluidGeo::UpdateVAO()
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
 
     glBindVertexArray(NULL);
+}
+
+// ------ Private ------ //
+void
+FluidGeo::InitIndices()
+{
+    int len = m_positions.size();
+    for (int i = 0; i < len; ++i)
+    {
+        m_indices.push_back(i);
+    }
 }

@@ -1,5 +1,4 @@
 #include "shaderProgram.h"
-#include "loadShaders.h"
 
 ShaderProgram::ShaderProgram(
         const char* vertFilePath,

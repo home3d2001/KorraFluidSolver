@@ -1,6 +1,8 @@
 #include <scene/scene.h>
 #include <utility.h>
 
+// #define TEST_SCENE
+
 Scene::Scene() :
     Scene(800, 600)
 {}
@@ -99,8 +101,15 @@ Scene::Draw(
     prog.Draw(*m_camera, *m_testBox);
     return;
 #endif
+}
 
-    DrawFluidSolver(prog);
+void
+Scene::DrawTransformFeedback(
+    const ShaderProgram& progUpdate,
+    const ShaderProgram& progDraw
+    ) const
+{
+    DrawFluidSolver(progUpdate, progDraw);
 }
 
 void
@@ -159,10 +168,9 @@ Scene::UpdateFluidSolver()
 
 void
 Scene::DrawFluidSolver(
-    const ShaderProgram& prog
+    const ShaderProgram& progUpdate,
+    const ShaderProgram& progDraw
     ) const
 {
-    // @todo: do scene graph traversal here
-    prog.Draw(*m_camera, *m_fluidContainer);
-    prog.Draw(*m_camera, *m_fluidGeo);
+
 }

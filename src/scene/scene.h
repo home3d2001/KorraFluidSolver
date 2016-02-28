@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <shaderProgram.h>
+#include <shaderProgram/shaderProgram.h>
 #include <geometry/box.h>
 #include <geometry/fluidGeo.h>
 #include <fluidSolver/fluidSolver.h>
@@ -21,6 +21,10 @@ public:
 
     virtual void Update(const KeyboardControl*);
     virtual void Draw(const ShaderProgram&) const;
+    virtual void DrawTransformFeedback(
+        const ShaderProgram& progUpdate,
+        const ShaderProgram& progDraw
+        ) const;
     virtual void CleanUp();
 
 protected:
@@ -35,7 +39,10 @@ protected:
     void UpdateFluidSolver();
 
     // -- Draw helpers
-    void DrawFluidSolver(const ShaderProgram& prog) const;
+    void DrawFluidSolver(
+        const ShaderProgram& progUpdate,
+        const ShaderProgram& progDraw
+        ) const;
 
 };
 
