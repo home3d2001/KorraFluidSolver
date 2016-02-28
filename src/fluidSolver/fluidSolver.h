@@ -28,6 +28,8 @@ protected:
     glm::vec3 m_pos;
     glm::vec3 m_vel;
     glm::vec3 m_accel;
+
+    void Advect();
 };
 
 

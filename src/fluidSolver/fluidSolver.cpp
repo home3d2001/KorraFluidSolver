@@ -20,9 +20,7 @@ FluidParticle::FluidParticle(
 void
 FluidParticle::Update()
 {
-    // @todo: We're just doing Euler integration for now
-    m_vel = m_vel + m_accel;
-    m_pos = m_pos + m_vel;
+    Advect();
 }
 
 void
@@ -39,6 +37,17 @@ FluidParticle::Position() const
     return m_pos;
 }
 
+
+// -- Private -- //
+void
+FluidParticle::Advect()
+{
+    // @todo: We're just doing Euler integration for now
+    // RK2 soon
+    m_vel = m_vel + m_accel;
+    m_pos = m_pos + m_vel;
+
+}
 
 // ---------------------------------------------------- //
 // FluidSolver
@@ -84,5 +93,8 @@ FluidSolver::~FluidSolver()
 void
 FluidSolver::Update()
 {
-
+    for (auto &particle : m_particles)
+    {
+        particle->Update();
+    }
 }
