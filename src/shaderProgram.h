@@ -15,12 +15,14 @@ public:
         const char* fragFilePath
         );
 
-    void Render(
+    virtual void Draw(
     	const Camera&,
     	const Geometry&
-    	);
+    	) const;
 
-private:
+    virtual void CleanUp();
+
+protected:
     GLuint m_programID;
 
     // Uniform locations

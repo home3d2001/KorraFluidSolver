@@ -7,7 +7,7 @@
 class FluidGeo : public Geometry
 {
 public:
-	FluidGeo(const vector<glm::vec3>& positions);
+    FluidGeo(const vector<glm::vec3>& positions);
 
     virtual void Create();
     virtual GLenum GLDrawMode();

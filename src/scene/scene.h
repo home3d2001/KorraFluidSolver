@@ -1,6 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include <shaderProgram.h>
 #include <geometry/box.h>
 #include <geometry/fluidGeo.h>
 #include <fluidSolver/fluidSolver.h>
@@ -9,14 +10,20 @@ class Scene
 {
 public:
     Scene();
-    ~Scene();
+    Scene(
+        const float& screenWidth,
+        const float& screenHeight
+    );
+
     void InitFromTestScene();
     void InitFromJson(const char* filepath);
 
     virtual void Update();
-    virtual const Geometry* RootGeometry() const;
+    virtual void Draw(const ShaderProgram&) const;
+    virtual void CleanUp();
 
 protected:
+    Camera* m_camera;
     Box* m_testBox;
     Box* m_fluidContainer;
     FluidGeo* m_fluidGeo;

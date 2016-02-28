@@ -18,7 +18,8 @@
 
 typedef enum {
     DrawMode_Wireframe,
-    DrawMode_Shaded
+    DrawMode_Shaded,
+    DrawMode_Vertex
 } DrawMode;
 
 using namespace std;

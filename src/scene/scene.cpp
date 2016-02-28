@@ -2,30 +2,20 @@
 #include <utility.h>
 
 Scene::Scene() :
+    Scene(800, 600)
+{}
+
+Scene::Scene(
+    const float& screenWidth,
+    const float& screenHeight
+    ) :
     m_testBox(nullptr),
     m_fluidContainer(nullptr),
     m_fluidGeo(nullptr),
     m_fluidSolver(nullptr)
 {
-}
-
-Scene::~Scene()
-{
-    if (m_testBox != nullptr) {
-        delete m_testBox;
-    }
-
-    if (m_fluidContainer != nullptr) {
-        delete m_fluidContainer;
-    }
-
-    if (m_fluidGeo != nullptr) {
-        delete m_fluidGeo;
-    }
-
-    if (m_fluidSolver != nullptr) {
-        delete m_fluidSolver;
-    }
+    // Initialize camera
+    m_camera = new Camera(screenWidth, screenHeight);
 }
 
 void
@@ -48,31 +38,97 @@ Scene::InitFromJson(const char* filepath)
     }
 
     // -- Get container information
-    const Json::Value containerDim = root["containerDim"];
+    const Json::Value containerDimJson = root["containerDim"];
 
-    m_testBox = new Box();
-    m_testBox->Scale(
-        containerDim["scaleX"].asFloat(),
-        containerDim["scaleY"].asFloat(),
-        containerDim["scaleZ"].asFloat()
-    );
-    m_testBox->SetDrawMode(DrawMode_Wireframe);
-    m_testBox->Create();
+    glm::vec3 containerDim(
+        containerDimJson["scaleX"].asFloat(),
+        containerDimJson["scaleY"].asFloat(),
+        containerDimJson["scaleZ"].asFloat()
+        );
+
+    // Create geometry for the container
+    m_fluidContainer = new Box();
+    m_fluidContainer->Scale(containerDim.x, containerDim.y, containerDim.z);
+    m_fluidContainer->SetDrawMode(DrawMode_Wireframe);
+    m_fluidContainer->Create();
+
+    // -- Get particle information
+    const Json::Value particleDimJson = root["particleDim"];
+    glm::vec3 particleDim(
+        particleDimJson["boundX"].asFloat(),
+        particleDimJson["boundY"].asFloat(),
+        particleDimJson["boundZ"].asFloat()
+        );
+
+    const float separation = root["particleSeparation"].asFloat();
+
+    // -- Initialize fluid solvers
+    m_fluidSolver = new FluidSolver(
+        containerDim,
+        particleDim,
+        separation
+        );
+
+    // -- Initialize fluid geo
+    m_fluidGeo = new FluidGeo(
+        m_fluidSolver->ParticlePositions()
+        );
+    m_fluidGeo->Create();
 }
 
 void
 Scene::Update()
 {
-
-#ifdef ANIMATE
+#ifdef TEST_SCENE
     // Rotate bounding box
     m_testBox->Rotate(0.02f, 0.01f, 0.02);
+    return;
 #endif
 
+    // -- Update fluid solver
+    m_fluidSolver->Update();
+    m_fluidGeo->UpdatePositions(
+        m_fluidSolver->ParticlePositions()
+        );
+    m_fluidGeo->Create();
 }
 
-const Geometry*
-Scene::RootGeometry() const
+void
+Scene::Draw(
+    const ShaderProgram& prog
+    ) const
 {
-    return m_testBox;
+#ifdef TEST_SCENE
+    prog.Draw(*m_camera, *m_testBox);
+    return;
+#endif
+    glPointSize(5.0f);
+
+    // @todo: do scene graph traversal here
+    prog.Draw(*m_camera, *m_fluidContainer);
+    prog.Draw(*m_camera, *m_fluidGeo);
+}
+
+void
+Scene::CleanUp()
+{
+    if (m_camera != nullptr) {
+        delete m_camera;
+    }
+
+    if (m_testBox != nullptr) {
+        delete m_testBox;
+    }
+
+    if (m_fluidContainer != nullptr) {
+        delete m_fluidContainer;
+    }
+
+    if (m_fluidGeo != nullptr) {
+        delete m_fluidGeo;
+    }
+
+    if (m_fluidSolver != nullptr) {
+        delete m_fluidSolver;
+    }
 }

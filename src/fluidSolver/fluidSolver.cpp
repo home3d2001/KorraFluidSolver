@@ -61,17 +61,20 @@ FluidSolver::FluidSolver(
         m_separation(separation)
 {
     // -- Initialize all particles
-    for (float x = 0; x < m_particleDim.x; x += m_separation)
+    float midX = m_particleDim.x / 2.f;
+    float midY = m_particleDim.y / 2.f;
+    float midZ = m_particleDim.z / 2.f;
+    for (float x = -midX; x < midX; x += m_separation)
     {
-        for (float y = 0; y < m_particleDim.y; y += m_separation)
+        for (float y = -midY; y < midY; y += m_separation)
         {
-            for (float z = 0; z < m_particleDim.z; z += m_separation)
+            for (float z = -midZ; z < midX; z += m_separation)
             {
                 m_particles.push_back(
                     new FluidParticle(
                         glm::vec3(x, y, z),
-                        glm::vec3(0.f),
-                        glm::vec3(0.0f, GRAVITY, 0.0f)
+                        glm::vec3(0.f, 0.0001f, 0.0f),
+                        glm::vec3(0.0f, GRAVITY * 0.0001f, 0.0f)
                         )
                     );
             }
@@ -88,6 +91,18 @@ FluidSolver::~FluidSolver()
             delete particle;
         }
     }
+}
+
+const std::vector<glm::vec3>
+FluidSolver::ParticlePositions()
+{
+    std::vector<glm::vec3> positions;
+    for (auto &particle : m_particles)
+    {
+        positions.push_back(particle->Position());
+    }
+
+    return positions;
 }
 
 void

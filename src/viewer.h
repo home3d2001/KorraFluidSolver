@@ -41,11 +41,9 @@ protected:
     float m_width;
     float m_height;
 
-    GLFWwindow* m_window = NULL;
-    ShaderProgram m_program;
-    Scene m_scene;
-    Camera m_camera;
-
+    GLFWwindow* m_window;
+    ShaderProgram* m_program;
+    Scene* m_scene;
 };
 
 #endif /* viewer_hpp */

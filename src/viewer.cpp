@@ -4,18 +4,13 @@
 #include "viewer.h"
 
 Viewer::Viewer()
-{
-    m_width = 800;
-    m_height = 600;
-
-    this->Init();
-
-}
+    : Viewer(800, 600)
+{}
 
 Viewer::Viewer(
     int width,
     int height
-    )
+    ) : m_window(nullptr), m_program(nullptr), m_scene(nullptr)
 {
     m_width = width;
     m_height = height;
@@ -66,18 +61,14 @@ Viewer::Init()
     glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE);
 
     // Create and compile GLSL program from the shaders
-    m_program = ShaderProgram("../src/glsl/vert_bare.glsl", "../src/glsl/frag_bare.glsl");
+    m_program = new ShaderProgram("../src/glsl/vert_bare.glsl", "../src/glsl/frag_bare.glsl");
 
     // Initialize scene
-    m_scene = Scene();
-#define TEST_SCENE
+    m_scene = new Scene(m_width, m_height);
 #ifdef TEST_SCENE
-    m_scene.InitFromTestScene();
+    m_scene->InitFromTestScene();
 #endif
-    m_scene.InitFromJson("../src/scene/scene.json");
-
-    // Initialize camera
-    m_camera = Camera(m_width, m_height);
+    m_scene->InitFromJson("../src/scene/scene.json");
 
     // White background
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -89,8 +80,8 @@ Viewer::Update()
     do {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        m_scene.Update();
-        m_program.Render(m_camera, *(m_scene.RootGeometry()));
+        m_scene->Update();
+        m_scene->Draw(*m_program);
 
         // Swap buffers
         glfwSwapBuffers(m_window);
@@ -105,6 +96,9 @@ Viewer::Update()
 void
 Viewer::CleanUp()
 {
+    m_program->CleanUp();
+    m_scene->CleanUp();
+
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
 }

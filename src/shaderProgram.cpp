@@ -12,10 +12,11 @@ ShaderProgram::ShaderProgram(
     m_unifViewProj = glGetUniformLocation(m_programID, "u_viewProj");
 }
 
-void ShaderProgram::Render(
+void
+ShaderProgram::Draw(
     const Camera& camera,
     const Geometry& geo
-    )
+    ) const
 {
     glUseProgram(m_programID);
 
@@ -49,4 +50,10 @@ void ShaderProgram::Render(
         );
 
     geo.DisableVertexAttributes();
+}
+
+void
+ShaderProgram::CleanUp()
+{
+    glDeleteProgram(m_programID);
 }

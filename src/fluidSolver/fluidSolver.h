@@ -45,6 +45,9 @@ public:
         const float& separation
         );
     ~FluidSolver();
+    const std::vector<glm::vec3> ParticlePositions();
+
+    // Called every frame
     virtual void Update();
 
 protected:

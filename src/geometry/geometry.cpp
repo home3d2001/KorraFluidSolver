@@ -14,6 +14,8 @@ Geometry::GLDrawMode() const
     switch(m_drawMode) {
         case DrawMode_Wireframe:
             return GL_LINES;
+        case DrawMode_Vertex:
+            return GL_POINTS;
         case DrawMode_Shaded:
         default:
             return GL_TRIANGLES;
