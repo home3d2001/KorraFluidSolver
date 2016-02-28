@@ -1,7 +1,7 @@
 #ifndef BOX_H
 #define BOX_H
 
-#include "geometry.h"
+#include <geometry.h>
 
 class Box : public Geometry
 {

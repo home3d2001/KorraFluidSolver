@@ -16,27 +16,9 @@ Scene::~Scene()
 void
 Scene::InitFromTestScene()
 {
-    m_box = Box();
-
-    glm::mat4 rot = glm::rotate(
-        glm::mat4(1.0f),
-        0.02f,
-        glm::vec3(1.0f, 1.0f, 0.0f)
-        );
-
-    glm::mat4 scale = glm::scale(
-        glm::mat4(1.0f),
-        glm::vec3(2.5f, 2.5f, 2.5f)
-        );
-
-    glm::mat4 translate = glm::translate(
-        glm::mat4(1.0f),
-        glm::vec3(-1.0f, 0.0f, 0.0f)
-        );
-
-    m_box.SetLocalTransformation(translate * rot * scale);
-    m_box.SetDrawMode(DrawMode_Wireframe);
-    m_box.Create();
+    m_testBox = Box();
+    m_testBox.SetDrawMode(DrawMode_Wireframe);
+    m_testBox.Create();
 }
 
 bool
@@ -70,14 +52,14 @@ Scene::InitFromJson()
     // -- Get container information
     const Json::Value containerDim = root["containerDim"];
 
-    m_box = Box();
-    m_box.Scale(
+    m_testBox = Box();
+    m_testBox.Scale(
         containerDim["scaleX"].asFloat(),
         containerDim["scaleY"].asFloat(),
         containerDim["scaleZ"].asFloat()
     );
-    m_box.SetDrawMode(DrawMode_Wireframe);
-    m_box.Create();
+    m_testBox.SetDrawMode(DrawMode_Wireframe);
+    m_testBox.Create();
 
     return true;
 }
@@ -88,7 +70,7 @@ Scene::Update()
 
 #ifdef ANIMATE
     // Rotate bounding box
-    m_box.Rotate(0.02f, 0.01f, 0.02);
+    m_testBox.Rotate(0.02f, 0.01f, 0.02);
 #endif
 
 }
@@ -96,5 +78,5 @@ Scene::Update()
 const Geometry&
 Scene::RootGeometry() const
 {
-    return m_box;
+    return m_testBox;
 }

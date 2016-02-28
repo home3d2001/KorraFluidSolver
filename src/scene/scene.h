@@ -16,7 +16,7 @@ public:
     virtual const Geometry& RootGeometry() const;
 
 protected:
-    Box m_box;
+    Box m_testBox;
 };
 
 #endif

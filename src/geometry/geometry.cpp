@@ -82,23 +82,6 @@ Geometry::Scale(
     m_localTransform = glm::scale(m_localTransform, glm::vec3(scalex, scaley, scalez));
 }
 
-
-void
-Geometry::SetLocalTransformation(
-    const glm::mat4& localTrans
-    )
-{
-    m_localTransform = localTrans;
-}
-
-void
-Geometry::SetGlobalTransformation(
-    const glm::mat4& globalTrans
-    )
-{
-    m_globalTransform = globalTrans;
-}
-
 glm::mat4
 Geometry::GetLocalTransformation() const
 {
