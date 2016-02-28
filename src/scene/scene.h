@@ -5,6 +5,7 @@
 #include <geometry/box.h>
 #include <geometry/fluidGeo.h>
 #include <fluidSolver/fluidSolver.h>
+#include <input/keyboardControl.h>
 
 class Scene
 {
@@ -18,7 +19,7 @@ public:
     void InitFromTestScene();
     void InitFromJson(const char* filepath);
 
-    virtual void Update();
+    virtual void Update(const KeyboardControl*);
     virtual void Draw(const ShaderProgram&) const;
     virtual void CleanUp();
 
@@ -28,6 +29,14 @@ protected:
     Box* m_fluidContainer;
     FluidGeo* m_fluidGeo;
     FluidSolver* m_fluidSolver;
+
+    // -- Update helpers
+    void UpdateCamera(const KeyboardControl*);
+    void UpdateFluidSolver();
+
+    // -- Draw helpers
+    void DrawFluidSolver(const ShaderProgram& prog) const;
+
 };
 
 #endif

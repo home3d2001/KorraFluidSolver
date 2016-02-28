@@ -37,7 +37,6 @@ FluidParticle::Position() const
     return m_pos;
 }
 
-
 // -- Private -- //
 void
 FluidParticle::Advect()
@@ -74,7 +73,7 @@ FluidSolver::FluidSolver(
                     new FluidParticle(
                         glm::vec3(x, y, z),
                         glm::vec3(0.f, 0.0001f, 0.0f),
-                        glm::vec3(0.0f, GRAVITY * 0.0001f, 0.0f)
+                        glm::vec3(0.0f, GRAVITY * 0.0000f, 0.0f)
                         )
                     );
             }

@@ -70,27 +70,24 @@ Scene::InitFromJson(const char* filepath)
         );
 
     // -- Initialize fluid geo
-    m_fluidGeo = new FluidGeo(
-        m_fluidSolver->ParticlePositions()
-        );
+    m_fluidGeo = new FluidGeo(m_fluidSolver->ParticlePositions());
     m_fluidGeo->Create();
 }
 
 void
-Scene::Update()
+Scene::Update(
+    const KeyboardControl* kc
+    )
 {
+    UpdateCamera(kc);
+
 #ifdef TEST_SCENE
     // Rotate bounding box
     m_testBox->Rotate(0.02f, 0.01f, 0.02);
     return;
 #endif
 
-    // -- Update fluid solver
-    m_fluidSolver->Update();
-    m_fluidGeo->UpdatePositions(
-        m_fluidSolver->ParticlePositions()
-        );
-    m_fluidGeo->Create();
+    UpdateFluidSolver();
 }
 
 void
@@ -102,11 +99,8 @@ Scene::Draw(
     prog.Draw(*m_camera, *m_testBox);
     return;
 #endif
-    glPointSize(5.0f);
 
-    // @todo: do scene graph traversal here
-    prog.Draw(*m_camera, *m_fluidContainer);
-    prog.Draw(*m_camera, *m_fluidGeo);
+    DrawFluidSolver(prog);
 }
 
 void
@@ -131,4 +125,48 @@ Scene::CleanUp()
     if (m_fluidSolver != nullptr) {
         delete m_fluidSolver;
     }
+}
+
+// ----- Private ------ //
+
+void
+Scene::UpdateCamera(
+    const KeyboardControl* kc
+    )
+{
+    float rotateAmt = 10.0f;
+    float zoomAmt = 0.01f;
+    if (kc->KeyPressed(Key_Down)) {
+        m_camera->RotateAboutUp(rotateAmt);
+    } else if (kc->KeyPressed(Key_Up)) {
+        m_camera->RotateAboutUp(-rotateAmt);
+    } else if (kc->KeyPressed(Key_Left)) {
+        m_camera->RotateAboutRight(rotateAmt);
+    } else if (kc->KeyPressed(Key_Right)) {
+        m_camera->RotateAboutRight(-rotateAmt);
+    } else if (kc->KeyPressed(Key_W)){
+        m_camera->Zoom(zoomAmt);
+    } else if (kc->KeyPressed(Key_S)){
+        m_camera->Zoom(-zoomAmt);
+    }
+}
+
+void
+Scene::UpdateFluidSolver()
+{
+    m_fluidSolver->Update();
+    m_fluidGeo->UpdatePositions(m_fluidSolver->ParticlePositions());
+    m_fluidGeo->Create();
+}
+
+void
+Scene::DrawFluidSolver(
+    const ShaderProgram& prog
+    ) const
+{
+    glPointSize(5.0f);
+
+    // @todo: do scene graph traversal here
+    prog.Draw(*m_camera, *m_fluidContainer);
+    prog.Draw(*m_camera, *m_fluidGeo);
 }

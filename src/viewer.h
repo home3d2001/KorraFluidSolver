@@ -11,9 +11,10 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include "shaderProgram.h"
-#include "scene/scene.h"
-#include "camera/camera.h"
+#include <shaderProgram.h>
+#include <input/keyboardControl.h>
+#include <scene/scene.h>
+#include <camera/camera.h>
 
 class Viewer
 {
@@ -42,6 +43,7 @@ protected:
     float m_height;
 
     GLFWwindow* m_window;
+    KeyboardControl* m_keyboard;
     ShaderProgram* m_program;
     Scene* m_scene;
 };

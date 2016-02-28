@@ -95,12 +95,14 @@ set(CORE_SRC
         src/utility.cpp
         src/main.cpp
         src/shaderProgram.cpp
+        src/input/keyboardControl.cpp
         src/viewer.cpp
         src/camera/camera.cpp
-        src/fluidSolver/fluidSolver.cpp
-        src/scene/scene.cpp
         src/geometry/geometry.cpp
         src/geometry/box.cpp
+        src/geometry/fluidGeo.cpp
+        src/fluidSolver/fluidSolver.cpp
+        src/scene/scene.cpp
 )
 
 add_executable(Korra ${CORE_SRC})

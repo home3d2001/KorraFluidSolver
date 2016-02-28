@@ -51,8 +51,34 @@ Camera::RotateAboutRight(
     float deg
     )
 {
-
+    deg *= DEG2RAD;
+    glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), deg, m_up);
+    m_target = m_target - m_eye;
+    m_target = glm::vec3(rotation * glm::vec4(m_target, 1));
+    m_target = m_target + m_eye;
+    RecomputeAttributes();
 }
 
+void
+Camera::RotateAboutUp(
+    float deg
+    )
+{
+    deg *= DEG2RAD;
+    glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), deg, m_right);
+    m_target = m_target - m_eye;
+    m_target = glm::vec3(rotation * glm::vec4(m_target, 1));
+    m_target = m_target + m_eye;
+    RecomputeAttributes();
+}
 
-
+void
+Camera::Zoom(
+    float amount
+    )
+{
+    glm::vec3 translation = m_forward * amount;
+    m_eye += translation;
+    m_target += translation;
+    RecomputeAttributes();
+}
