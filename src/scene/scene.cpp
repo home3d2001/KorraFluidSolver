@@ -134,7 +134,7 @@ Scene::UpdateCamera(
     const KeyboardControl* kc
     )
 {
-    float rotateAmt = 10.0f;
+    float rotateAmt = 20.0f;
     float zoomAmt = 0.01f;
     if (kc->KeyPressed(Key_Down)) {
         m_camera->RotateAboutUp(rotateAmt);
@@ -155,8 +155,6 @@ void
 Scene::UpdateFluidSolver()
 {
     m_fluidSolver->Update();
-    m_fluidGeo->UpdatePositions(m_fluidSolver->ParticlePositions());
-    m_fluidGeo->Create();
 }
 
 void
@@ -164,8 +162,6 @@ Scene::DrawFluidSolver(
     const ShaderProgram& prog
     ) const
 {
-    glPointSize(5.0f);
-
     // @todo: do scene graph traversal here
     prog.Draw(*m_camera, *m_fluidContainer);
     prog.Draw(*m_camera, *m_fluidGeo);

@@ -26,6 +26,8 @@ Camera::Camera(
 void
 Camera::RecomputeAttributes()
 {
+    m_forward = m_target - m_eye;
+
     m_view = glm::lookAt(
         m_eye,
         m_target,
@@ -54,7 +56,7 @@ Camera::RotateAboutRight(
     deg *= DEG2RAD;
     glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), deg, m_up);
     m_target = m_target - m_eye;
-    m_target = glm::vec3(rotation * glm::vec4(m_target, 1));
+    m_target = glm::vec3(rotation * glm::vec4(m_target, 1.0f));
     m_target = m_target + m_eye;
     RecomputeAttributes();
 }
@@ -67,7 +69,7 @@ Camera::RotateAboutUp(
     deg *= DEG2RAD;
     glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), deg, m_right);
     m_target = m_target - m_eye;
-    m_target = glm::vec3(rotation * glm::vec4(m_target, 1));
+    m_target = glm::vec3(rotation * glm::vec4(m_target, 1.0f));
     m_target = m_target + m_eye;
     RecomputeAttributes();
 }

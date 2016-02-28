@@ -10,7 +10,7 @@ public:
     FluidGeo(const vector<glm::vec3>& positions);
 
     virtual void Create();
-    virtual GLenum GLDrawMode();
+    virtual GLenum GLDrawMode() const;
 
     void UpdatePositions(const std::vector<glm::vec3>& positions);
 

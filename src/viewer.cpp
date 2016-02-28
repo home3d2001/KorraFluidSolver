@@ -62,7 +62,7 @@ Viewer::Init()
     m_keyboard = new KeyboardControl(m_window);
 
     // -- Initialize shader program
-    m_program = new ShaderProgram("../src/glsl/vert_bare.glsl", "../src/glsl/frag_bare.glsl");
+    m_program = new ShaderProgram("../src/glsl/simple.vert", "../src/glsl/simple.frag");
 
     // -- Initialize scene
     m_scene = new Scene(m_width, m_height);

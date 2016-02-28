@@ -8,7 +8,7 @@ FluidGeo::FluidGeo(
 }
 
 GLenum
-FluidGeo::GLDrawMode()
+FluidGeo::GLDrawMode() const
 {
     return GL_POINTS;
 }
