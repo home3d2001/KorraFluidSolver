@@ -112,7 +112,7 @@ void
 Scene::DrawTransformFeedback(
     const ParticleEmitProgram& progUpdate,
     const ParticleDrawProgram& progDraw
-    ) const
+    )
 {
     DrawFluidSolver(progUpdate, progDraw);
 }
@@ -186,19 +186,19 @@ void
 Scene::UpdateFluidSolver()
 {
     m_fluidSolver->Update();
-    m_fluidGeo->ToggleVao();
 }
 
 void
 Scene::DrawFluidSolver(
     const ParticleEmitProgram& progUpdate,
     const ParticleDrawProgram& progDraw
-    ) const
+    )
 {
     // -- Draw boundary
     progDraw.Draw(*m_camera, *m_fluidContainer);
 
     // -- Draw particles
     progUpdate.Draw(m_camera, m_fluidGeo);
+    m_fluidGeo->ToggleVao();
     progDraw.Draw(*m_camera, *m_fluidGeo);
 }

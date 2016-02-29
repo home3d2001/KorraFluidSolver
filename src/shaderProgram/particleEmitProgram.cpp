@@ -25,13 +25,7 @@ ParticleEmitProgram::ParticleEmitProgram(
     m_unifTime = glGetUniformLocation(m_programID, "u_time");
     m_unifAccel = glGetUniformLocation(m_programID, "u_accel");
 
-    glGenTransformFeedbacks(2, &m_transformFeedback[0]);
-}
-
-void
-ParticleEmitProgram::ToggleVao()
-{
-    m_curr = (m_curr + 1) % 2;
+    glGenTransformFeedbacks(1, &m_transformFeedback);
 }
 
 void
@@ -40,20 +34,9 @@ ParticleEmitProgram::Draw(
     const FluidGeo* geo
     ) const
 {
-    glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_transformFeedback[m_curr]);
+    glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_transformFeedback);
 
     glUseProgram(m_programID);
-
-    // Enable attributes
-    geo->EnableVertexAttributes();
-
-    // Set transform feedback buffer
-    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, geo->PosBuffer());
-    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, geo->VelBuffer());
-    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, geo->SpawnTimeBuffer());
-
-    // Turn off rasterization - we are not drawing
-    glEnable(GL_RASTERIZER_DISCARD);
 
     // -- Set uniforms
     if (m_unifModel != -1) {
@@ -65,7 +48,7 @@ ParticleEmitProgram::Draw(
             );
     }
 
-    if (m_unifModel != -1) {
+    if (m_unifViewProj != -1) {
         glUniformMatrix4fv(
             m_unifViewProj,
             1,
@@ -91,11 +74,22 @@ ParticleEmitProgram::Draw(
             );
     }
 
+    // Enable attributes
+    geo->EnableVertexAttributes();
+
+    // Set transform feedback buffer
+    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, geo->PosBuffer());
+    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, geo->VelBuffer());
+    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, geo->SpawnTimeBuffer());
+
+    // Turn off rasterization - we are not drawing
+    glEnable(GL_RASTERIZER_DISCARD);
+
     // Render
     glBeginTransformFeedback(geo->GLDrawMode());
     glDrawTransformFeedback(
         geo->GLDrawMode(),
-        m_transformFeedback[m_curr]
+        m_transformFeedback
         );
     glEndTransformFeedback();
 

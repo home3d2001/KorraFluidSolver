@@ -18,11 +18,9 @@ public:
         const FluidGeo*
         ) const;
 
-    virtual void ToggleVao();
-
 protected:
-    GLuint m_transformFeedback[2];
-    int m_curr = 0;
+
+    GLuint m_transformFeedback;
 
     // Uniform locations
     int m_unifTime;

@@ -13,7 +13,7 @@ layout(location = 2) in float a_spawntime;
 
 void main()
 {
-	float life_time = 5000.0;
+	float life_time = 50000000.0;
     float deltaTime = u_time - a_spawntime;
     if (deltaTime < life_time) {
         gl_Position = u_viewProj * u_model * vec4(a_position, 1.0);

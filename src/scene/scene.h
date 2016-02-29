@@ -26,7 +26,7 @@ public:
     virtual void DrawTransformFeedback(
         const ParticleEmitProgram& progUpdate,
         const ParticleDrawProgram& progDraw
-        ) const;
+        );
     virtual void CleanUp();
 
 protected:
@@ -44,7 +44,7 @@ protected:
     void DrawFluidSolver(
         const ParticleEmitProgram& progUpdate,
         const ParticleDrawProgram& progDraw
-        ) const;
+        );
 
 };
 

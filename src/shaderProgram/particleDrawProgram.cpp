@@ -60,7 +60,7 @@ ParticleDrawProgram::Draw(
             );
     }
 
-    // Render
+    Render
     glDrawElements(
         geo.GLDrawMode(),
         geo.ElementCount(),
