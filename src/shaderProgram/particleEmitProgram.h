@@ -1,30 +1,52 @@
 #ifndef PARTICLE_EMIT_PROGRAM_H
 #define PARTICLE_EMIT_PROGRAM_H
 
-#include <shaderProgram/shaderProgram.h>
+#include <loadShaders.h>
+#include <camera/camera.h>
+#include <geometry/fluidGeo.h>
 
 class FluidGeo;
 
-class ParticleEmitProgram : public ShaderProgram
+class ParticleEmitProgram
 {
 public:
     ParticleEmitProgram(
-        const char* vertFilePath,
-        const char* fragFilePath
+        const char* vertEmitFilepath,
+        const char* fragEmitFilepath,
+        const char* vertDrawFilepath,
+        const char* fragDrawFilepath
         );
 
+    // First pass
+    virtual void Emit(
+        FluidGeo*
+        );
+
+    // Second pass
     virtual void Draw(
         const Camera*,
         const FluidGeo*
-        ) const;
+        );
+
+    virtual void CleanUp();
 
 protected:
+    GLuint m_programEmit;
+    GLuint m_programDraw;
 
-    GLuint m_transformFeedback;
+    // Transform feedback buffer
+    GLuint m_TFBuffers[2];
+    char m_curTFBuffer = 0;
 
-    // Uniform locations
-    int m_unifTime;
-    int m_unifAccel;
+    // Uniform locations for emit program
+    int m_unifEmitTime;
+    int m_unifEmitAccel;
+
+    // Uniform locations for draw program
+    int m_unifDrawTime;
+    int m_unifDrawColor;
+    int m_unifDrawModel;
+    int m_unifDrawViewProj;
 };
 
 #endif

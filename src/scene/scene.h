@@ -3,7 +3,6 @@
 
 #include <shaderProgram/shaderProgram.h>
 #include <shaderProgram/particleEmitProgram.h>
-#include <shaderProgram/particleDrawProgram.h>
 #include <geometry/box.h>
 #include <geometry/fluidGeo.h>
 #include <fluidSolver/fluidSolver.h>
@@ -21,11 +20,14 @@ public:
     void InitFromTestScene();
     void InitFromJson(const char* filepath);
 
-    virtual void Update(const KeyboardControl*);
+    virtual void Update(
+        const KeyboardControl*,
+        ParticleEmitProgram& prog
+        );
     virtual void Draw(const ShaderProgram&) const;
     virtual void DrawTransformFeedback(
-        const ParticleEmitProgram& progUpdate,
-        const ParticleDrawProgram& progDraw
+        const ShaderProgram& prog,
+        ParticleEmitProgram& progEmit
         );
     virtual void CleanUp();
 
@@ -38,14 +40,15 @@ protected:
 
     // -- Update helpers
     void UpdateCamera(const KeyboardControl*);
-    void UpdateFluidSolver();
+    void UpdateFluidSolver(
+        ParticleEmitProgram& prog
+        );
 
     // -- Draw helpers
     void DrawFluidSolver(
-        const ParticleEmitProgram& progUpdate,
-        const ParticleDrawProgram& progDraw
+        const ShaderProgram& prog,
+        ParticleEmitProgram& progEmit
         );
-
 };
 
 #endif

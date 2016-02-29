@@ -18,6 +18,6 @@ void main()
     if (deltaTime < life_time) {
         gl_Position = u_viewProj * u_model * vec4(a_position, 1.0);
     } else {
-        gl_Position = u_viewProj * u_model * vec4(-100.0, -100.0, 0.0, 1.0);
+        gl_Position = u_viewProj * u_model * vec4(0.0, 0.0, 0.0, 1.0);
     }
 }

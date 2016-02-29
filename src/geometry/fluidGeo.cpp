@@ -29,19 +29,19 @@ FluidGeo::ToggleVao()
 GLuint
 FluidGeo::PosBuffer() const
 {
-    return !m_useVao2 ? m_posBuffer2 : m_posBuffer;
+    return m_useVao2 ? m_posBuffer2 : m_posBuffer;
 }
 
 GLuint
 FluidGeo::VelBuffer() const
 {
-    return !m_useVao2 ? m_velBuffer2 : m_velBuffer;
+    return m_useVao2 ? m_velBuffer2 : m_velBuffer;
 }
 
 GLuint
 FluidGeo::SpawnTimeBuffer() const
 {
-    return !m_useVao2 ? m_spawnTimeBuffer2 : m_spawnTimeBuffer;
+    return m_useVao2 ? m_spawnTimeBuffer2 : m_spawnTimeBuffer;
 }
 
 void

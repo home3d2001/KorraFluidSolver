@@ -8,12 +8,8 @@ Viewer::Viewer(
     int width,
     int height
     ) : m_window(nullptr),
-#ifdef TEST_SCENE
         m_program(nullptr),
-#else
         m_programEmit(nullptr),
-        m_programDraw(nullptr),
-#endif
         m_scene(nullptr)
 {
     m_width = width;
@@ -69,12 +65,13 @@ Viewer::Init()
     m_keyboard = new KeyboardControl(m_window);
 
     // -- Initialize shader program
-#if TEST_SCENE
     m_program = new ShaderProgram("../src/glsl/simple.vert", "../src/glsl/simple.frag");
-#else
-    m_programEmit = new ParticleEmitProgram("../src/glsl/particle_emit.vert", "../src/glsl/particle_emit.frag");
-    m_programDraw = new ParticleDrawProgram("../src/glsl/particle_draw.vert", "../src/glsl/particle_draw.frag");
-#endif
+    m_programEmit = new ParticleEmitProgram(
+        "../src/glsl/particle_emit.vert",
+        "../src/glsl/particle_emit.frag",
+        "../src/glsl/particle_draw.vert",
+        "../src/glsl/particle_draw.frag"
+        );
 
     // -- Initialize scene
     m_scene = new Scene(m_width, m_height);
@@ -97,12 +94,12 @@ Viewer::Update()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        m_scene->Update(m_keyboard);
+        m_scene->Update(m_keyboard, *m_programEmit);
 
 #ifdef TEST_SCENE
         m_scene->Draw(*m_program);
 #else
-        m_scene->DrawTransformFeedback(*m_programEmit, *m_programDraw);
+        m_scene->DrawTransformFeedback(*m_program, *m_programEmit);
 #endif
 
         // Swap buffers
@@ -118,22 +115,14 @@ Viewer::Update()
 void
 Viewer::CleanUp()
 {
-#ifdef TEST_SCENE
     m_program->CleanUp();
-#else
     m_programEmit->CleanUp();
-    m_programDraw->CleanUp();
-#endif
     m_scene->CleanUp();
 
-    // *N.B*: Deleting resources in reverse order of creation
+    // *N.B*: Should delete resources in reverse order of creation
     delete m_scene;
-#ifdef TEST_SCENE
-    delete m_program;
-#else
     delete m_programEmit;
-    delete m_programDraw;
-#endif
+    delete m_program;
     delete m_keyboard;
 
     // Close OpenGL window and terminate GLFW

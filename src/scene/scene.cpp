@@ -29,7 +29,9 @@ Scene::InitFromTestScene()
 }
 
 void
-Scene::InitFromJson(const char* filepath)
+Scene::InitFromJson(
+    const char* filepath
+    )
 {
     // -- Parse JSON
     Json::Value root;
@@ -83,7 +85,8 @@ Scene::InitFromJson(const char* filepath)
 
 void
 Scene::Update(
-    const KeyboardControl* kc
+    const KeyboardControl* kc,
+    ParticleEmitProgram& progEmit
     )
 {
     UpdateCamera(kc);
@@ -94,7 +97,7 @@ Scene::Update(
     return;
 #endif
 
-    UpdateFluidSolver();
+    UpdateFluidSolver(progEmit);
 }
 
 void
@@ -110,11 +113,11 @@ Scene::Draw(
 
 void
 Scene::DrawTransformFeedback(
-    const ParticleEmitProgram& progUpdate,
-    const ParticleDrawProgram& progDraw
+    const ShaderProgram& prog,
+    ParticleEmitProgram& progEmit
     )
 {
-    DrawFluidSolver(progUpdate, progDraw);
+    DrawFluidSolver(prog, progEmit);
 }
 
 void
@@ -183,22 +186,25 @@ Scene::UpdateCamera(
 }
 
 void
-Scene::UpdateFluidSolver()
+Scene::UpdateFluidSolver(
+    ParticleEmitProgram& progEmit
+    )
 {
     m_fluidSolver->Update();
+
+    // Advect particle?
+    progEmit.Emit(m_fluidGeo);
 }
 
 void
 Scene::DrawFluidSolver(
-    const ParticleEmitProgram& progUpdate,
-    const ParticleDrawProgram& progDraw
+    const ShaderProgram& prog,
+    ParticleEmitProgram& progEmit
     )
 {
     // -- Draw boundary
-    progDraw.Draw(*m_camera, *m_fluidContainer);
+    prog.Draw(*m_camera, *m_fluidContainer);
 
     // -- Draw particles
-    progUpdate.Draw(m_camera, m_fluidGeo);
-    m_fluidGeo->ToggleVao();
-    progDraw.Draw(*m_camera, *m_fluidGeo);
+    progEmit.Draw(m_camera, m_fluidGeo);
 }

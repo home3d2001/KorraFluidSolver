@@ -21,15 +21,15 @@ float rand(vec2 co){
 
 void main()
 {
-    float life_time = 5000.0;
+    float life_time = 500000.0;
     if (a_spawntime == 0.0 || (u_time - a_spawntime > life_time) || a_position.y < -0.5) {
         // Generate a new particle
         v_position = vec3(0.0, 0.0, 0.0);
         v_velocity = a_velocity;
         v_spawntime = u_time;
     } else {
-        v_velocity = a_velocity + 0.01 * u_accel;
-        v_position = a_position + 0.01 * v_velocity;
+        v_velocity = a_velocity + u_accel;
+        v_position = a_position + v_velocity;
         v_spawntime = a_spawntime;
     }
 }
