@@ -9,7 +9,7 @@ FluidGeo::FluidGeo(
     ) :
         m_velocities(velocities),
         m_spawnTimes(spawnTimes),
-        m_useVao2(true)
+        m_useVao2(false)
 {
     m_positions = positions;
 }
@@ -67,15 +67,11 @@ FluidGeo::EnableVertexAttributes() const
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
-
-    // Bind element buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_idxBuffer);
 }
 
 void
 FluidGeo::DisableVertexAttributes() const
 {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
@@ -88,10 +84,12 @@ FluidGeo::Create()
 {
     InitIndices();
 
+    glGenBuffers(1, &m_idxBuffer);
+
     glGenVertexArrays(1, &m_vao);
     glGenBuffers(1, &m_posBuffer);
     glGenBuffers(1, &m_velBuffer);
-    glGenBuffers(1, &m_idxBuffer);
+    glGenBuffers(1, &m_spawnTimeBuffer);
 
     // -- Secondary vao to ping-pong transform feedback
     glGenVertexArrays(1, &m_vao2);
@@ -116,11 +114,14 @@ FluidGeo::Create()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
     glBindVertexArray(NULL);
 
-    UpdateVAO();
+    UpdateVao();
+    ToggleVao();
+    UpdateVao();
+    ToggleVao();
 }
 
 void
-FluidGeo::UpdateVAO()
+FluidGeo::UpdateVao()
 {
     GLuint curvao = m_useVao2 ? m_vao2 : m_vao;
     GLuint curposBuffer = m_useVao2 ? m_posBuffer2 : m_posBuffer;

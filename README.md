@@ -15,9 +15,9 @@ Submit on canvas with  a direct link to your pull request on GitHub
 
 And you're done!
 
-
 # Third Party
 
+## CIS277 Camera code
 ## glfw, [Website](http://www.glfw.org/)
 ## glew, [Website](http://glew.sourceforge.net/)
 ## glm, [Website](http://glm.g-truc.net/0.9.7/index.html)

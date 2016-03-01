@@ -25,7 +25,7 @@ public:
 protected:
     glm::vec3 m_pos;
     glm::vec3 m_vel;
-    float m_spawnTime;
+    float m_spawnTime = 0.0f;
 };
 
 // ---------------------------------------------------- //

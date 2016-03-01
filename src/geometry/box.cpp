@@ -1,5 +1,20 @@
 #include "box.h"
 
+const glm::vec3
+Box::GetMinBoundary() const
+{
+    // @todo: use global transformation when building a scene graph
+    return m_translation - m_scale;
+}
+
+const glm::vec3
+Box::GetMaxBoundary() const
+{
+    // @todo: use global transformation when building a scene graph
+    return m_translation + m_scale;
+}
+
+
 void
 Box::InitPositions()
 {

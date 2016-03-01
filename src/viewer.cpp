@@ -9,7 +9,7 @@ Viewer::Viewer(
     int height
     ) : m_window(nullptr),
         m_program(nullptr),
-        m_programEmit(nullptr),
+        m_programAdvect(nullptr),
         m_scene(nullptr)
 {
     m_width = width;
@@ -66,9 +66,9 @@ Viewer::Init()
 
     // -- Initialize shader program
     m_program = new ShaderProgram("../src/glsl/simple.vert", "../src/glsl/simple.frag");
-    m_programEmit = new ParticleEmitProgram(
-        "../src/glsl/particle_emit.vert",
-        "../src/glsl/particle_emit.frag",
+    m_programAdvect = new ParticleAdvectProgram(
+        "../src/glsl/particle_advect.vert",
+        "../src/glsl/particle_advect.frag",
         "../src/glsl/particle_draw.vert",
         "../src/glsl/particle_draw.frag"
         );
@@ -77,6 +77,7 @@ Viewer::Init()
     m_scene = new Scene(m_width, m_height);
 
     // Have a test scene here in case our graphics pipeline is broken
+// #define TEST_SCENE
 #ifdef TEST_SCENE
     m_scene->InitFromTestScene();
 #else
@@ -94,12 +95,12 @@ Viewer::Update()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        m_scene->Update(m_keyboard, *m_programEmit);
+        m_scene->Update(m_keyboard, *m_programAdvect);
 
 #ifdef TEST_SCENE
         m_scene->Draw(*m_program);
 #else
-        m_scene->DrawTransformFeedback(*m_program, *m_programEmit);
+        m_scene->DrawTransformFeedback(*m_program, *m_programAdvect);
 #endif
 
         // Swap buffers
@@ -116,12 +117,12 @@ void
 Viewer::CleanUp()
 {
     m_program->CleanUp();
-    m_programEmit->CleanUp();
+    m_programAdvect->CleanUp();
     m_scene->CleanUp();
 
     // *N.B*: Should delete resources in reverse order of creation
     delete m_scene;
-    delete m_programEmit;
+    delete m_programAdvect;
     delete m_program;
     delete m_keyboard;
 

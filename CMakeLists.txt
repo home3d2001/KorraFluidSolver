@@ -95,8 +95,7 @@ set(CORE_SRC
         src/utility.cpp
         src/main.cpp
         src/shaderProgram/shaderProgram.cpp
-        src/shaderProgram/particleEmitProgram.cpp
-        src/shaderProgram/particleDrawProgram.cpp
+        src/shaderProgram/particleAdvectProgram.cpp
         src/input/keyboardControl.cpp
         src/viewer.cpp
         src/camera/camera.cpp

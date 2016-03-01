@@ -14,7 +14,7 @@
 #include <glm/glm.hpp>
 
 #include <shaderProgram/shaderProgram.h>
-#include <shaderProgram/particleEmitProgram.h>
+#include <shaderProgram/particleAdvectProgram.h>
 #include <input/keyboardControl.h>
 #include <scene/scene.h>
 #include <camera/camera.h>
@@ -48,7 +48,7 @@ protected:
     GLFWwindow* m_window;
     KeyboardControl* m_keyboard;
     ShaderProgram* m_program;
-    ParticleEmitProgram* m_programEmit;
+    ParticleAdvectProgram* m_programAdvect;
     Scene* m_scene;
 };
 

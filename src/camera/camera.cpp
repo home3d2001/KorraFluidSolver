@@ -12,7 +12,7 @@ Camera::Camera(
     ) : m_width(width),
         m_height(height),
         m_fov(45),
-        m_eye(glm::vec3(0.0f, 0.0f, -12.0f)),
+        m_eye(glm::vec3(0.0f, 0.0f, -20.0f)),
         m_target(glm::vec3(0.0f)),
         m_up(glm::vec3(0.0f, 1.0f, 0.0f)),
         m_right(glm::vec3(1.0f, 0.0f, 0.0f)),

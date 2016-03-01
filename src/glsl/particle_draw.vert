@@ -11,13 +11,20 @@ layout(location = 0) in vec3 a_position;
 layout(location = 1) in vec3 a_velocity;
 layout(location = 2) in float a_spawntime;
 
+out vec3 v_position;
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
 void main()
 {
-	float life_time = 50000000.0;
-    float deltaTime = u_time - a_spawntime;
-    if (deltaTime < life_time) {
-        gl_Position = u_viewProj * u_model * vec4(a_position, 1.0);
-    } else {
-        gl_Position = u_viewProj * u_model * vec4(0.0, 0.0, 0.0, 1.0);
-    }
+	float r = rand(vec2(a_position.y, gl_VertexID));
+	vec3 position = vec3(
+		a_position.x * r * (u_time * u_time),
+		a_position.y - (u_time * u_time * u_time) + r * u_time * u_time * u_time * u_time * -abs(sin(a_position.x)),
+		a_position.z * r * (u_time * u_time)
+		);
+    gl_Position = u_viewProj * u_model * vec4(position, 1.0);
+    v_position = position;
 }

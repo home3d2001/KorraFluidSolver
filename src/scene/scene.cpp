@@ -80,13 +80,14 @@ Scene::InitFromJson(
         m_fluidSolver->ParticleVelocities(),
         m_fluidSolver->ParticleSpawnTimes()
         );
+    m_fluidGeo->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
     m_fluidGeo->Create();
 }
 
 void
 Scene::Update(
     const KeyboardControl* kc,
-    ParticleEmitProgram& progEmit
+    ParticleAdvectProgram& progAdvect
     )
 {
     UpdateCamera(kc);
@@ -97,7 +98,7 @@ Scene::Update(
     return;
 #endif
 
-    UpdateFluidSolver(progEmit);
+    UpdateFluidSolver(progAdvect);
 }
 
 void
@@ -114,10 +115,10 @@ Scene::Draw(
 void
 Scene::DrawTransformFeedback(
     const ShaderProgram& prog,
-    ParticleEmitProgram& progEmit
+    ParticleAdvectProgram& progAdvect
     )
 {
-    DrawFluidSolver(prog, progEmit);
+    DrawFluidSolver(prog, progAdvect);
 }
 
 void
@@ -187,24 +188,24 @@ Scene::UpdateCamera(
 
 void
 Scene::UpdateFluidSolver(
-    ParticleEmitProgram& progEmit
+    ParticleAdvectProgram& progAdvect
     )
 {
     m_fluidSolver->Update();
 
     // Advect particle?
-    progEmit.Emit(m_fluidGeo);
+    progAdvect.Advect(m_fluidGeo);
 }
 
 void
 Scene::DrawFluidSolver(
     const ShaderProgram& prog,
-    ParticleEmitProgram& progEmit
+    ParticleAdvectProgram& progAdvect
     )
 {
     // -- Draw boundary
     prog.Draw(*m_camera, *m_fluidContainer);
 
     // -- Draw particles
-    progEmit.Draw(m_camera, m_fluidGeo);
+    progAdvect.Draw(m_camera, m_fluidGeo, m_fluidContainer);
 }

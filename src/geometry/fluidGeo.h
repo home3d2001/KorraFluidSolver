@@ -19,7 +19,9 @@ public:
     // Override to update transform feedback buffers
     virtual void EnableVertexAttributes() const;
     virtual void DisableVertexAttributes() const;
-    virtual void UpdateVAO();
+
+    // Vao -> vertex array object
+    virtual void UpdateVao();
 
     void ToggleVao();
 

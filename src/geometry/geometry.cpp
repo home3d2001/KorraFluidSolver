@@ -59,6 +59,7 @@ Geometry::Translate(
     )
 {
     m_localTransform = glm::translate(m_localTransform, glm::vec3(x, y, z));
+    m_translation += glm::vec3(x, y, z);
 }
 
 void
@@ -71,6 +72,8 @@ Geometry::Rotate(
     m_localTransform = glm::rotate(m_localTransform, radx, glm::vec3(1.0f, 0.0f, 0.0f));
     m_localTransform = glm::rotate(m_localTransform, rady, glm::vec3(0.0f, 1.0f, 0.0f));
     m_localTransform = glm::rotate(m_localTransform, radz, glm::vec3(0.0f, 0.0f, 1.0f));
+
+    m_orientation *= glm::quat(glm::vec3(radx, rady, radz));
 }
 
 void
@@ -81,6 +84,8 @@ Geometry::Scale(
     )
 {
     m_localTransform = glm::scale(m_localTransform, glm::vec3(scalex, scaley, scalez));
+
+    m_scale += glm::vec3(scalex, scaley, scalez);
 }
 
 glm::mat4

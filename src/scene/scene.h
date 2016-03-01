@@ -2,7 +2,7 @@
 #define SCENE_H
 
 #include <shaderProgram/shaderProgram.h>
-#include <shaderProgram/particleEmitProgram.h>
+#include <shaderProgram/particleAdvectProgram.h>
 #include <geometry/box.h>
 #include <geometry/fluidGeo.h>
 #include <fluidSolver/fluidSolver.h>
@@ -22,12 +22,12 @@ public:
 
     virtual void Update(
         const KeyboardControl*,
-        ParticleEmitProgram& prog
+        ParticleAdvectProgram& prog
         );
     virtual void Draw(const ShaderProgram&) const;
     virtual void DrawTransformFeedback(
         const ShaderProgram& prog,
-        ParticleEmitProgram& progEmit
+        ParticleAdvectProgram& progAdvect
         );
     virtual void CleanUp();
 
@@ -41,13 +41,13 @@ protected:
     // -- Update helpers
     void UpdateCamera(const KeyboardControl*);
     void UpdateFluidSolver(
-        ParticleEmitProgram& prog
+        ParticleAdvectProgram& prog
         );
 
     // -- Draw helpers
     void DrawFluidSolver(
         const ShaderProgram& prog,
-        ParticleEmitProgram& progEmit
+        ParticleAdvectProgram& progAdvect
         );
 };
 

@@ -7,6 +7,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 // C++
 
@@ -66,6 +68,9 @@ protected:
     // Transformation
     glm::mat4 m_localTransform;
     glm::mat4 m_globalTransform;
+    glm::vec3 m_translation;
+    glm::quat m_orientation;
+    glm::vec3 m_scale;
 
     // Vertex buffers
     GLuint m_posBuffer;

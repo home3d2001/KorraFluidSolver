@@ -7,6 +7,8 @@ class Box : public Geometry
 {
 public:
     virtual void Create();
+    virtual const glm::vec3 GetMinBoundary() const;
+    virtual const glm::vec3 GetMaxBoundary() const;
 
 protected:
     virtual void InitPositions();
