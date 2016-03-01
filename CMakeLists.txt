@@ -90,7 +90,6 @@ endif()
 
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
-        src/thirdparty/jsoncpp/dist/jsoncpp.cpp
         src/loadShaders.cpp
         src/utility.cpp
         src/main.cpp

@@ -1,7 +1,6 @@
 #include <iostream>
 
-#include "main.hpp"
-#include "viewer.h"
+#include <viewer.h>
 
 using namespace std;
 
