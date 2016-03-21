@@ -21,9 +21,9 @@ void main()
 {
 	float r = rand(vec2(a_position.y, gl_VertexID));
 	vec3 position = vec3(
-		a_position.x * r * (u_time * u_time),
-		a_position.y - (u_time * u_time * u_time) + r * u_time * u_time * u_time * u_time * -abs(sin(a_position.x)),
-		a_position.z * r * (u_time * u_time)
+		a_position.x,
+		a_position.y - (u_time * u_time * u_time * u_time),
+		a_position.z
 		);
     gl_Position = u_viewProj * u_model * vec4(position, 1.0);
     v_position = position;
