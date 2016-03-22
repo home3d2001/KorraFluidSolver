@@ -40,10 +40,10 @@ namespace Json {
 class JSON_API Exception : public std::exception {
 public:
   Exception(std::string const& msg);
-  ~Exception() throw() override;
-  char const* what() const throw() override;
+  virtual ~Exception() throw();
+  virtual char const* what() const throw();
 protected:
-  std::string msg_;
+  std::string const msg_;
 };
 
 /** Exceptions which the user cannot easily avoid.
@@ -175,8 +175,11 @@ public:
   typedef Json::LargestUInt LargestUInt;
   typedef Json::ArrayIndex ArrayIndex;
 
-  static const Value& null;  ///< We regret this reference to a global instance; prefer the simpler Value().
-  static const Value& nullRef;  ///< just a kludge for binary-compatibility; same as null
+  static const Value& nullRef;
+#if !defined(__ARMEL__)
+  /// \deprecated This exists for binary compatibility only. Use nullRef.
+  static const Value null;
+#endif
   /// Minimum signed integer value that can be stored in a Json::Value.
   static const LargestInt minLargestInt;
   /// Maximum signed integer value that can be stored in a Json::Value.
@@ -212,9 +215,6 @@ private:
     CZString(ArrayIndex index);
     CZString(char const* str, unsigned length, DuplicationPolicy allocate);
     CZString(CZString const& other);
-#if JSON_HAS_RVALUE_REFERENCES
-    CZString(CZString&& other);
-#endif
     ~CZString();
     CZString& operator=(CZString other);
     bool operator<(CZString const& other) const;
@@ -297,15 +297,11 @@ Json::Value obj_value(Json::objectValue); // {}
   Value(bool value);
   /// Deep copy.
   Value(const Value& other);
-#if JSON_HAS_RVALUE_REFERENCES
-  /// Move constructor
-  Value(Value&& other);
-#endif
   ~Value();
 
   /// Deep copy, then swap(other).
   /// \note Over-write existing comments. To preserve comments, use #swapPayload().
-  Value& operator=(Value other);
+  Value &operator=(const Value &other);
   /// Swap everything.
   void swap(Value& other);
   /// Swap values but leave comments and source offsets in place.
@@ -552,13 +548,6 @@ Json::Value obj_value(Json::objectValue); // {}
   iterator begin();
   iterator end();
 
-  // Accessors for the [start, limit) range of bytes within the JSON text from
-  // which this value was parsed, if any.
-  void setOffsetStart(ptrdiff_t start);
-  void setOffsetLimit(ptrdiff_t limit);
-  ptrdiff_t getOffsetStart() const;
-  ptrdiff_t getOffsetLimit() const;
-
 private:
   void initBasic(ValueType type, bool allocated = false);
 
@@ -595,11 +584,6 @@ private:
   unsigned int allocated_ : 1; // Notes: if declared as bool, bitfield is useless.
                                // If not allocated_, string_ must be null-terminated.
   CommentInfo* comments_;
-
-  // [start, limit) byte offsets in the source JSON text from which this Value
-  // was extracted.
-  ptrdiff_t start_;
-  ptrdiff_t limit_;
 };
 
 /** \brief Experimental and untested: represents an element of the "path" to
@@ -745,7 +729,6 @@ public:
   typedef ValueConstIterator SelfType;
 
   ValueConstIterator();
-  ValueConstIterator(ValueIterator const& other);
 
 private:
 /*! \internal Use by Value to create an iterator.
@@ -795,7 +778,7 @@ public:
   typedef ValueIterator SelfType;
 
   ValueIterator();
-  explicit ValueIterator(const ValueConstIterator& other);
+  ValueIterator(const ValueConstIterator& other);
   ValueIterator(const ValueIterator& other);
 
 private:
