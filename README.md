@@ -1,5 +1,17 @@
 # Korra Fluid Solver, CIS 563, University of Pennsylvania, Spring 2016
 
+## Update March 23 (Sprint 1)
+I implemented the SPH Solver with naive neighbor search. When you started running the code, you'll see a test particle iterating through the grid and shows all the neighbors in red color. However, this neighbor search isn't using a working uniform grid yet.
+
+I have a simple test suite in main.cpp to test Poly6. Currently spiky kernel and viscous kernel are not tested. By uncommenting `#define UNIT_TEST`, there should be print out of the kernel unit testing.
+
+### Incomplete features:
+Uniform grid.
+Compute density.
+Compute pressure.
+Full unit testing.
+OpenVDB.
+
 ## Overview
 
 __Korra__ is a cross-platform C++ fluid FLIP solver, designed and built for CIS563 course. __Korra__ uses OpenGL heavily for the graphics pipeline. It is also designed for GPU optimization for fluid advection.

@@ -101,7 +101,9 @@ set(CORE_SRC
         src/geometry/geometry.cpp
         src/geometry/box.cpp
         src/geometry/fluidGeo.cpp
+        src/fluidSolver/fluidParticle.cpp
         src/fluidSolver/fluidSolver.cpp
+        src/fluidSolver/SPHGrid.cpp
         src/fluidSolver/SPHSolver.cpp
         src/scene/scene.cpp
 )
