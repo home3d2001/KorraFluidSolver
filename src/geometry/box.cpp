@@ -4,14 +4,14 @@ const glm::vec3
 Box::GetMinBoundary() const
 {
     // @todo: use global transformation when building a scene graph
-    return m_translation - m_scale;
+    return m_translation - m_scale / 2.0f;
 }
 
 const glm::vec3
 Box::GetMaxBoundary() const
 {
     // @todo: use global transformation when building a scene graph
-    return m_translation + m_scale;
+    return m_translation + m_scale / 2.0f;
 }
 
 

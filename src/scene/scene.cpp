@@ -206,5 +206,6 @@ Scene::DrawFluidSolver(
     prog.Draw(*m_camera, *m_fluidContainer);
 
     // -- Draw particles
+    m_fluidGeo->SetColors(m_fluidSolver->ParticleColors());
     progAdvect.Draw(m_camera, m_fluidGeo, m_fluidContainer);
 }

@@ -27,7 +27,7 @@ void main()
 {
 	vec3 position = vec3(
 		a_position.x,
-		a_position.y - (u_time * u_time * u_time * u_time),
+		a_position.y,// - (u_time * u_time * u_time * u_time),
 		a_position.z
 		);
     gl_Position = u_viewProj * u_model * vec4(position, 1.0);

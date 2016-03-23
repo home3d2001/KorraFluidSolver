@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 #include <mathConstants.h>
 #include <vector>
+#include <iostream>
+#include <random>
+#include <time.h>
 
 // ---------------------------------------------------- //
 // FluidParticle
