@@ -10,7 +10,8 @@ public:
     FluidGeo(
         const vector<glm::vec3>& positions,
         const vector<glm::vec3>& velocities,
-        const vector<float>& spawnTimes
+        const vector<float>& spawnTimes,
+        const vector<glm::vec4>& colors
         );
 
     virtual void Create();
@@ -28,6 +29,7 @@ public:
     GLuint PosBuffer() const;
     GLuint VelBuffer() const;
     GLuint SpawnTimeBuffer() const;
+    GLuint ColBuffer() const;
 
 protected:
     virtual void InitIndices();
@@ -48,6 +50,8 @@ protected:
 
     GLuint m_spawnTimeBuffer;
     GLuint m_spawnTimeBuffer2;
+
+    GLuint m_colBuffer2;
 
     // Vertex array object
     GLuint m_vao2;

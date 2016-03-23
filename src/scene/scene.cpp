@@ -54,7 +54,6 @@ Scene::InitFromJson(
     m_fluidContainer = new Box();
     m_fluidContainer->Scale(containerDim.x, containerDim.y, containerDim.z);
     m_fluidContainer->SetDrawMode(DrawMode_Wireframe);
-    m_fluidContainer->SetColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
     m_fluidContainer->Create();
 
     // -- Get particle information
@@ -68,7 +67,7 @@ Scene::InitFromJson(
     const float separation = root["particleSeparation"].asFloat();
 
     // -- Initialize fluid solvers
-    m_fluidSolver = new FluidSolver(
+    m_fluidSolver = new SPHSolver(
         containerDim,
         particleDim,
         separation
@@ -78,9 +77,9 @@ Scene::InitFromJson(
     m_fluidGeo = new FluidGeo(
         m_fluidSolver->ParticlePositions(),
         m_fluidSolver->ParticleVelocities(),
-        m_fluidSolver->ParticleSpawnTimes()
+        m_fluidSolver->ParticleSpawnTimes(),
+        m_fluidSolver->ParticleColors()
         );
-    m_fluidGeo->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
     m_fluidGeo->Create();
 }
 

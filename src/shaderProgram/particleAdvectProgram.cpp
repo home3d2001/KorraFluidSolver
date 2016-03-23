@@ -18,7 +18,7 @@ ParticleAdvectProgram::ParticleAdvectProgram(
     glAttachShader(m_programAdvect, fragShaderID);
 
     const GLchar* varyings[] = {
-        "v_position", "v_velocity", "v_spawntime"
+        "v_position", "v_velocity", "v_spawntime", "v_color"
     };
 
     glTransformFeedbackVaryings(
@@ -45,7 +45,6 @@ ParticleAdvectProgram::ParticleAdvectProgram(
     m_unifDrawModel = glGetUniformLocation(m_programDraw, "u_model");
     m_unifDrawViewProj = glGetUniformLocation(m_programDraw, "u_viewProj");
     m_unifDrawTime = glGetUniformLocation(m_programDraw, "u_time");
-    m_unifDrawColor = glGetUniformLocation(m_programDraw, "u_color");
     m_unifDrawMinBoundary = glGetUniformLocation(m_programDraw, "u_minBoundary");
     m_unifDrawMaxBoundary = glGetUniformLocation(m_programDraw, "u_maxBoundary");
 
@@ -91,6 +90,7 @@ ParticleAdvectProgram::Advect(
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, fluidGeo->PosBuffer());
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, fluidGeo->VelBuffer());
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, fluidGeo->SpawnTimeBuffer());
+        glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 3, fluidGeo->ColBuffer());
 
         fluidGeo->ToggleVao();
 
@@ -102,6 +102,8 @@ ParticleAdvectProgram::Advect(
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, fluidGeo->PosBuffer());
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, fluidGeo->VelBuffer());
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, fluidGeo->SpawnTimeBuffer());
+        glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 3, fluidGeo->ColBuffer());
+
     } else {
         glBindTransformFeedback(
             GL_TRANSFORM_FEEDBACK,
@@ -120,6 +122,7 @@ ParticleAdvectProgram::Advect(
     glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, fluidGeo->PosBuffer());
     glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, fluidGeo->VelBuffer());
     glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, fluidGeo->SpawnTimeBuffer());
+        glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 3, fluidGeo->ColBuffer());
 
     // Turn off rasterization - we are not drawing
     glEnable(GL_RASTERIZER_DISCARD);
@@ -135,6 +138,7 @@ ParticleAdvectProgram::Advect(
     glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, NULL);
     glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, NULL);
     glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, NULL);
+    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 3, NULL);
     fluidGeo->DisableVertexAttributes();
 
     fluidGeo->ToggleVao();
@@ -176,14 +180,6 @@ ParticleAdvectProgram::Draw(
     if (m_unifDrawTime != -1) {
         glUniform1f(
             m_unifDrawTime, currentTime
-            );
-    }
-
-    if (m_unifDrawColor != -1) {
-        glUniform4fv(
-            m_unifDrawColor,
-            1,
-            &(fluidGeo->GetColor()[0])
             );
     }
 

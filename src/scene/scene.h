@@ -5,7 +5,7 @@
 #include <shaderProgram/particleAdvectProgram.h>
 #include <geometry/box.h>
 #include <geometry/fluidGeo.h>
-#include <fluidSolver/fluidSolver.h>
+#include <fluidSolver/SPHSolver.h>
 #include <input/keyboardControl.h>
 
 class Scene
@@ -36,7 +36,7 @@ protected:
     Box* m_testBox;
     Box* m_fluidContainer;
     FluidGeo* m_fluidGeo;
-    FluidSolver* m_fluidSolver;
+    SPHSolver* m_fluidSolver;
 
     // -- Update helpers
     void UpdateCamera(const KeyboardControl*);

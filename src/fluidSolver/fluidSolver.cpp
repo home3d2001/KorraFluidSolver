@@ -10,8 +10,9 @@ FluidParticle::FluidParticle()
 
 FluidParticle::FluidParticle(
     const glm::vec3& pos,
-    const glm::vec3& vel
-    ) :m_pos(pos), m_vel(vel)
+    const glm::vec3& vel,
+    const glm::vec4& col
+    ) :m_pos(pos), m_vel(vel), m_col(col)
 {
 
 }
@@ -40,7 +41,8 @@ FluidSolver::FluidSolver(
                 m_particles.push_back(
                     new FluidParticle(
                         glm::vec3(x, y, z),
-                        glm::vec3(0.f, 0.0001f, 0.0f)
+                        glm::vec3(0.f, 0.0001f, 0.0f),
+                        glm::vec4(0.f, 0.f, 1.0f, 1.0f)
                         )
                     );
             }
@@ -93,6 +95,18 @@ FluidSolver::ParticleSpawnTimes() const
     }
 
     return spawnTimes;
+}
+
+const std::vector<glm::vec4>
+FluidSolver::ParticleColors() const
+{
+    std::vector<glm::vec4> colors;
+    for (auto &particle : m_particles)
+    {
+        colors.push_back(particle->Color());
+    }
+
+    return colors;
 }
 
 void

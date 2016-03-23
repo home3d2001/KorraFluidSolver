@@ -9,14 +9,21 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
-
 // C++
 
 #include <vector>
+#include <iostream>
 
 // Custom
 
 #include <mathConstants.h>
+
+
+#define POSITION_LOCATION 0
+#define VELOCITY_LOCATION 1
+#define SPAWNTIME_LOCATION 2
+#define COLOR_LOCATION 3
+
 
 typedef enum {
     DrawMode_Wireframe,
@@ -42,11 +49,8 @@ public:
     virtual void DisableVertexAttributes() const;
 
     // -- Color
-    void SetColor(const glm::vec4& color) {
-        m_color = color;
-    };
-    const glm::vec4& GetColor() const {
-        return m_color;
+    void SetColors(const vector<glm::vec4>& colors) {
+        m_colors = colors;
     };
 
     // -- Transformations
@@ -59,10 +63,8 @@ public:
 protected:
     DrawMode m_drawMode = DrawMode_Shaded;
 
-    // Data
-    glm::vec4 m_color = glm::vec4(1.0);
-
     vector<glm::vec3> m_positions;
+    vector<glm::vec4> m_colors;
     vector<GLushort> m_indices;
 
     // Transformation

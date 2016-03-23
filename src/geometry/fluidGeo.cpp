@@ -5,13 +5,15 @@
 FluidGeo::FluidGeo(
     const vector<glm::vec3>& positions,
     const vector<glm::vec3>& velocities,
-    const vector<float>& spawnTimes
+    const vector<float>& spawnTimes,
+    const vector<glm::vec4>& colors
     ) :
         m_velocities(velocities),
         m_spawnTimes(spawnTimes),
         m_useVao2(false)
 {
     m_positions = positions;
+    m_colors = colors;
 }
 
 GLenum
@@ -44,6 +46,12 @@ FluidGeo::SpawnTimeBuffer() const
     return m_useVao2 ? m_spawnTimeBuffer2 : m_spawnTimeBuffer;
 }
 
+GLuint
+FluidGeo::ColBuffer() const
+{
+    return m_useVao2 ? m_colBuffer2 : m_colBuffer;
+}
+
 void
 FluidGeo::EnableVertexAttributes() const
 {
@@ -51,30 +59,36 @@ FluidGeo::EnableVertexAttributes() const
     GLuint curposBuffer = m_useVao2 ? m_posBuffer2 : m_posBuffer;
     GLuint curvelBuffer = m_useVao2 ? m_velBuffer2 : m_velBuffer;
     GLuint curspawntimeBuffer = m_useVao2 ? m_spawnTimeBuffer2 : m_spawnTimeBuffer;
+    GLuint curColBuffer = m_useVao2 ? m_colBuffer2 : m_colBuffer;
 
     glBindVertexArray(curvao);
 
     // Enable vertex attributes
     glBindBuffer(GL_ARRAY_BUFFER, curposBuffer);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glVertexAttribPointer(POSITION_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     glBindBuffer(GL_ARRAY_BUFFER, curvelBuffer);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glVertexAttribPointer(VELOCITY_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     glBindBuffer(GL_ARRAY_BUFFER, curspawntimeBuffer);
-    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glVertexAttribPointer(SPAWNTIME_LOCATION, 1, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, curColBuffer);
+    glVertexAttribPointer(COLOR_LOCATION, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glEnableVertexAttribArray(POSITION_LOCATION);
+    glEnableVertexAttribArray(VELOCITY_LOCATION);
+    glEnableVertexAttribArray(SPAWNTIME_LOCATION);
+    glEnableVertexAttribArray(COLOR_LOCATION);
 }
 
 void
 FluidGeo::DisableVertexAttributes() const
 {
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(POSITION_LOCATION);
+    glDisableVertexAttribArray(VELOCITY_LOCATION);
+    glDisableVertexAttribArray(SPAWNTIME_LOCATION);
+    glDisableVertexAttribArray(COLOR_LOCATION);
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
     glBindVertexArray(NULL);
 }
@@ -90,12 +104,14 @@ FluidGeo::Create()
     glGenBuffers(1, &m_posBuffer);
     glGenBuffers(1, &m_velBuffer);
     glGenBuffers(1, &m_spawnTimeBuffer);
+    glGenBuffers(1, &m_colBuffer);
 
     // -- Secondary vao to ping-pong transform feedback
     glGenVertexArrays(1, &m_vao2);
     glGenBuffers(1, &m_posBuffer2);
     glGenBuffers(1, &m_velBuffer2);
     glGenBuffers(1, &m_spawnTimeBuffer2);
+    glGenBuffers(1, &m_colBuffer2);
 
     // Share the same m_idxBuffer
     glBindVertexArray(m_vao);
@@ -127,6 +143,7 @@ FluidGeo::UpdateVao()
     GLuint curposBuffer = m_useVao2 ? m_posBuffer2 : m_posBuffer;
     GLuint curvelBuffer = m_useVao2 ? m_velBuffer2 : m_velBuffer;
     GLuint curspawntimeBuffer = m_useVao2 ? m_spawnTimeBuffer2 : m_spawnTimeBuffer;
+    GLuint curColBuffer = m_useVao2 ? m_colBuffer2 : m_colBuffer;
 
     glBindVertexArray(curvao);
     glBindBuffer(GL_ARRAY_BUFFER, curposBuffer);
@@ -150,6 +167,14 @@ FluidGeo::UpdateVao()
         GL_ARRAY_BUFFER,
         m_spawnTimes.size() * sizeof(float),
         &m_spawnTimes[0],
+        GL_DYNAMIC_COPY);
+    glBindBuffer(GL_ARRAY_BUFFER, NULL);
+
+    glBindBuffer(GL_ARRAY_BUFFER, curColBuffer);
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        m_colors.size() * sizeof(glm::vec4),
+        &m_colors[0],
         GL_DYNAMIC_COPY);
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
 
