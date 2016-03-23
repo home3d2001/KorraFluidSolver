@@ -66,7 +66,6 @@ SPHGrid::GetCellIdx(
     return i + j * m_depth + k * m_width * m_height;
 }
 
-
 std::vector<FluidParticle*>
 SPHGrid::GetNeighborParticles(
     FluidParticle* particle
@@ -129,6 +128,8 @@ SPHSolver::Update()
 void
 SPHSolver::SearchNeighbors()
 {
-    int randIdx = rand() % m_particles.size();
-    m_grid->GetNeighborParticles(m_particles[randIdx]);
+    static int i = 0;
+    m_grid->GetNeighborParticles(m_particles[i]);
+    i = (i + 1) % m_particles.size();
 }
+
