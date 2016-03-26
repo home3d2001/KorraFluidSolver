@@ -14,7 +14,7 @@ SPHSolver::SPHSolver(
         -containerDim,
         containerDim,
         1.0f,
-        false
+        true
         );
 
     // Initialize random seed

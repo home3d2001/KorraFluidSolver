@@ -46,7 +46,7 @@ private:
     // Return the cell index
     int GetCellIdx(const glm::vec3&);
     int GetCellIdx(int i, int j, int k);
-    int GetTopCellIdx(int& i, int& j, int& k);
+    glm::ivec3 GetCellCoord(const glm::vec3&);
 
 };
 
