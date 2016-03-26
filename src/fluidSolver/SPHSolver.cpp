@@ -11,12 +11,9 @@ SPHSolver::SPHSolver(
 {
     m_grid = new SPHGrid(
         m_particles,
-        5,
-        5,
-        5,
-        1.0f,
         -containerDim,
         containerDim,
+        1.0f,
         false
         );
 

@@ -1,14 +1,17 @@
 #ifndef SPHGRID_H
 #define SPHGRID_H
 
-#include <glm/glm.hpp>
-#include <mathConstants.h>
-#include <vector>
 #include <time.h>
 #include <iostream>
+#include <vector>
+#include <glm/glm.hpp>
+#include <tbb/tbb.h>
 
+#include <mathConstants.h>
 #include <fluidSolver/fluidParticle.h>
 
+using namespace std;
+using namespace tbb;
 
 // ---------------------------------------------------- //
 // SPHGrid
@@ -18,12 +21,9 @@ class SPHGrid
 public:
     SPHGrid(
         const std::vector<FluidParticle*>& particles,
-        const int width,
-        const int height,
-        const int depth,
-        const float radius,
         const glm::vec3& gridMin,
         const glm::vec3& gridMax,
+        const float cellSize,
         const bool useGrid // Use grid to speed up neighbor search
         );
     void AddParticle(FluidParticle* particle);
@@ -32,10 +32,10 @@ public:
 
 private:
 
-    int m_width;  // i
-    int m_height; // j
-    int m_depth;  // k
-    float m_radius; // radius of particle influence
+    int m_width;  // Uses i or x
+    int m_height; // Uses j or y
+    int m_depth;  // Uses k or z
+    float m_cellSize; // radius of particle influence
     glm::vec3 m_gridMin;
     glm::vec3 m_gridMax;
     bool m_useGrid;
@@ -44,6 +44,7 @@ private:
     std::vector<std::vector<FluidParticle*>> m_cells;
 
     // Return the cell index
+    int GetCellIdx(const glm::vec3&);
     int GetCellIdx(int i, int j, int k);
     int GetTopCellIdx(int& i, int& j, int& k);
 

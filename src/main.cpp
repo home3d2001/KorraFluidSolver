@@ -13,7 +13,6 @@ void TestKernels()
 {
     float x[] = {0, 1.0f, 5.4f, 100.7f, -30.f, 36.f, -4.f};
     float h[] = {10.f, 1.0f, 2.4f, 140.23f, -22.f, -2.f, 20.f};
-    float expectedPoly6[] = {0.f, 0.0f, 0.f, 100.7f, 0.f, 0.f, 0.f};
 
     cout << "TestKernels" << endl;
 
