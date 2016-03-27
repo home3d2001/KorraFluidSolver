@@ -89,50 +89,72 @@ SPHGrid::GetCellCoord(
 }
 
 std::vector<FluidParticle*>
-SPHGrid::GetNeighborParticles(
+SPHGrid::SearchNeighbors(
+    FluidParticle* particle
+    )
+{
+    if (m_useGrid) {
+        return this->SearchNeighborsUniformGrid(particle);
+    } else {
+        return this->SearchNeighborsSimple(particle);
+    }
+}
+
+
+std::vector<FluidParticle*>
+SPHGrid::SearchNeighborsSimple(
     FluidParticle* particle
     )
 {
     vector<FluidParticle*> neighbors;
 
-    // @todo: Use naive neighbor search
-    if (!m_useGrid) {
-        int len = m_cells[0].size();
-        parallel_for(0, len, [&](int i) {
-            FluidParticle* neighbor = m_cells[0][i];
-            if (glm::distance(neighbor->Position(), particle->Position()) < m_cellSize &&
-                neighbor != particle) {
+    int len = m_cells[0].size();
+    for (int i = 0; i < len; ++i) {
+        FluidParticle* neighbor = m_cells[0][i];
+        if (glm::distance(neighbor->Position(), particle->Position()) < m_cellSize &&
+            neighbor != particle) {
 
-                // Change color of this neighbor
-                neighbor->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-            } else {
-                neighbor->SetColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
-            }
-        });
-    } else {
+            // Change color of this neighbor
+            neighbor->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+            neighbors.push_back(neighbor);
+        } else {
+            neighbor->SetColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
+        }
+    };
 
-        // -- Use grid to search neighbor
-        glm::ivec3 cellCoord = this->GetCellCoord(particle->Position());
-        // Search in all 27 neighboring cells
-        for (int i = -1; i <= 1; ++i) {
-            for (int j = -1; j <= 1; ++j) {
-                for (int k = -1; k <= 1; ++k) {
+    return neighbors;
+}
 
-                    // Check if any neighbor is out of bound
-                    if (cellCoord.x + i < 0 || cellCoord.y + j < 0 || cellCoord.z + k < 0) {
-                        continue;
-                    }
+std::vector<FluidParticle*>
+SPHGrid::SearchNeighborsUniformGrid(
+    FluidParticle* particle
+    )
+{
+    vector<FluidParticle*> neighbors;
 
-                    int idx = this->GetCellIdx(i + cellCoord.x, j + cellCoord.y, k + cellCoord.z);
-                    for(FluidParticle* neighbor : m_cells[idx]) {
-                        if (glm::distance(neighbor->Position(), particle->Position()) < m_cellSize &&
-                            neighbor != particle) {
+    // -- Use grid to search neighbor
+    glm::ivec3 cellCoord = this->GetCellCoord(particle->Position());
+    // Search in all 27 neighboring cells
+    for (int i = -1; i <= 1; ++i) {
+        for (int j = -1; j <= 1; ++j) {
+            for (int k = -1; k <= 1; ++k) {
 
-                            // Change color of this neighbor
-                            neighbor->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-                        } else {
-                            neighbor->SetColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
-                        }
+                // Check if any neighbor is out of bound
+                if (cellCoord.x + i < 0 || cellCoord.y + j < 0 || cellCoord.z + k < 0) {
+                    continue;
+                }
+
+                int idx = this->GetCellIdx(i + cellCoord.x, j + cellCoord.y, k + cellCoord.z);
+                glm::vec3 particlePosition = particle->Position();
+                for(FluidParticle* neighbor : m_cells[idx]) {
+                    if (glm::distance(neighbor->Position(), particlePosition) < m_cellSize &&
+                        neighbor != particle) {
+
+                        // Change color of this neighbor
+                        neighbor->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+                        neighbors.push_back(neighbor);
+                    } else {
+                        neighbor->SetColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
                     }
                 }
             }

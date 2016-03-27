@@ -13,12 +13,13 @@ public:
     SPHSolver(
         const glm::vec3& containerDim,
         const glm::vec3& particleDim,
-        const float& separation
+        const float separation,
+        const float cellSize
         );
 
     virtual ~SPHSolver();
 
-    virtual void Update();
+    virtual void Update(const float deltaT);
     void AddParticle(FluidParticle*);
 
 protected:
@@ -36,6 +37,7 @@ protected:
     void SearchNeighbors();
     void CalculateDensity();
     void CalculatePressure();
+    void Advect(const float deltaT);
 };
 
 #endif /* SPHSOLVER_H */

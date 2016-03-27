@@ -28,13 +28,15 @@ public:
     const std::vector<float> ParticleSpawnTimes() const;
     const std::vector<glm::vec4> ParticleColors() const;
 
-    virtual void Update();
+    virtual void Update(const float deltaT);
 
 protected:
 
     // -- Particle info
     glm::vec3 m_containerDim;
     glm::vec3 m_particleDim;
+    glm::vec3 m_minBoundary;
+    glm::vec3 m_maxBoundary;
     float m_separation;
 
     std::vector<FluidParticle*> m_particles;

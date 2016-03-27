@@ -27,8 +27,7 @@ public:
         const bool useGrid // Use grid to speed up neighbor search
         );
     void AddParticle(FluidParticle* particle);
-    std::vector<FluidParticle*> GetParticles(int i, int j, int k);
-    std::vector<FluidParticle*> GetNeighborParticles(FluidParticle*);
+    std::vector<FluidParticle*> SearchNeighbors(FluidParticle*);
 
 private:
 
@@ -40,14 +39,16 @@ private:
     glm::vec3 m_gridMax;
     bool m_useGrid;
 
-    // -- cells
     std::vector<std::vector<FluidParticle*>> m_cells;
 
-    // Return the cell index
+    // -- Cell idx/coordinates
     int GetCellIdx(const glm::vec3&);
     int GetCellIdx(int i, int j, int k);
     glm::ivec3 GetCellCoord(const glm::vec3&);
 
+    // -- Neighbor search algorithms
+    std::vector<FluidParticle*> SearchNeighborsSimple(FluidParticle*);
+    std::vector<FluidParticle*> SearchNeighborsUniformGrid(FluidParticle*);
 };
 
 #endif

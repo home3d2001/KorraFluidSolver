@@ -21,6 +21,7 @@ public:
     void InitFromJson(const char* filepath);
 
     virtual void Update(
+        const float deltaT,
         const KeyboardControl*,
         ParticleAdvectProgram& prog
         );
@@ -39,8 +40,11 @@ protected:
     SPHSolver* m_fluidSolver;
 
     // -- Update helpers
-    void UpdateCamera(const KeyboardControl*);
+    void UpdateCamera(
+        const float deltaT,
+        const KeyboardControl*);
     void UpdateFluidSolver(
+        const float deltaT,
         ParticleAdvectProgram& prog
         );
 

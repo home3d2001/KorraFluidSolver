@@ -24,13 +24,17 @@ FluidSolver::FluidSolver(
                 m_particles.push_back(
                     new FluidParticle(
                         glm::vec3(x, y, z),
-                        glm::vec3(0.f, 0.0001f, 0.0f),
+                        glm::vec3(0.f, 0.0f, 0.0f),
                         glm::vec4(0.f, 0.f, 1.0f, 1.0f)
                         )
                     );
             }
         }
     }
+
+    // -- Set container boundary
+    m_minBoundary = -m_containerDim / 2.0f;
+    m_maxBoundary = m_containerDim / 2.0f;
 }
 
 FluidSolver::~FluidSolver()
@@ -93,6 +97,8 @@ FluidSolver::ParticleColors() const
 }
 
 void
-FluidSolver::Update()
+FluidSolver::Update(
+    const float deltaT
+    )
 {
 }

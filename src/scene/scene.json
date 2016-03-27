@@ -5,9 +5,10 @@
         "scaleZ" : 10.0
     },
     "particleDim" : {
-        "boundX" : 3.7,
-        "boundY" : 3.7,
-        "boundZ" : 3.7
+        "boundX" : 4.0,
+        "boundY" : 4.0,
+        "boundZ" : 4.0
     },
-    "particleSeparation" : 0.1
+    "particleSeparation" : 0.2,
+    "cellSize" : 1.0
 }

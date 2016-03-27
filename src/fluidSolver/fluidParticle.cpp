@@ -17,3 +17,12 @@ FluidParticle::FluidParticle(
 
 }
 
+void
+FluidParticle::Update(
+	const float deltaT
+	)
+{
+	glm::vec3 gravity(0.0f, GRAVITY, 0.0f);
+	m_vel = m_vel + (m_accel + gravity) * deltaT;
+	m_pos = m_pos + m_vel * deltaT * 0.1f;
+}

@@ -48,10 +48,14 @@ public:
     virtual void EnableVertexAttributes() const;
     virtual void DisableVertexAttributes() const;
 
-    // -- Color
+    // Getters/Setters
     void SetColors(const vector<glm::vec4>& colors) {
         m_colors = colors;
     };
+
+    void SetPositions(const std::vector<glm::vec3>& positions) {
+        m_positions = positions;
+    }
 
     // -- Transformations
     void Translate(const float& x, const float& y, const float& z);

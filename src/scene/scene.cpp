@@ -66,11 +66,14 @@ Scene::InitFromJson(
 
     const float separation = root["particleSeparation"].asFloat();
 
+    const float cellSize = root["cellSize"].asFloat();
+
     // -- Initialize fluid solvers
     m_fluidSolver = new SPHSolver(
         containerDim,
         particleDim,
-        separation
+        separation,
+        cellSize
         );
 
     // -- Initialize fluid geo
@@ -85,19 +88,13 @@ Scene::InitFromJson(
 
 void
 Scene::Update(
+    const float deltaT,
     const KeyboardControl* kc,
     ParticleAdvectProgram& progAdvect
     )
 {
-    UpdateCamera(kc);
-
-#ifdef TEST_SCENE
-    // Rotate bounding box
-    m_testBox->Rotate(0.02f, 0.01f, 0.02);
-    return;
-#endif
-
-    UpdateFluidSolver(progAdvect);
+    UpdateCamera(deltaT, kc);
+    UpdateFluidSolver(deltaT, progAdvect);
 }
 
 void
@@ -105,10 +102,6 @@ Scene::Draw(
     const ShaderProgram& prog
     ) const
 {
-#ifdef TEST_SCENE
-    prog.Draw(*m_camera, *m_testBox);
-    return;
-#endif
 }
 
 void
@@ -148,6 +141,7 @@ Scene::CleanUp()
 
 void
 Scene::UpdateCamera(
+    const float deltaT,
     const KeyboardControl* kc
     )
 {
@@ -187,13 +181,16 @@ Scene::UpdateCamera(
 
 void
 Scene::UpdateFluidSolver(
+    const float deltaT,
     ParticleAdvectProgram& progAdvect
     )
 {
-    m_fluidSolver->Update();
+    m_fluidSolver->Update(deltaT);
+    m_fluidGeo->SetVelocities(m_fluidSolver->ParticleVelocities());
+    m_fluidGeo->SetPositions(m_fluidSolver->ParticlePositions());
 
     // Advect particle?
-    progAdvect.Advect(m_fluidGeo);
+    progAdvect.Advect(deltaT, m_fluidGeo);
 }
 
 void

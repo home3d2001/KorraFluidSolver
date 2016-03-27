@@ -54,17 +54,13 @@ ParticleAdvectProgram::ParticleAdvectProgram(
 
 void
 ParticleAdvectProgram::Advect(
+    const float deltaTime,
     FluidGeo* fluidGeo
     )
 {
     glUseProgram(m_programAdvect);
 
     // -- Setup uniforms
-
-    // @todo: maybe we only need to pass delta time through
-    static float lastTime = glfwGetTime();
-    float currentTime = glfwGetTime();
-    float deltaTime = float(currentTime - lastTime);
 
     if (m_unifAdvectTime != -1) {
         glUniform1f(

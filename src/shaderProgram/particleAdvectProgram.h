@@ -20,6 +20,7 @@ public:
 
     // First pass
     virtual void Advect(
+        const float deltaTime,
         FluidGeo*
         );
 

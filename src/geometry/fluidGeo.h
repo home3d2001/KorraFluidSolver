@@ -26,10 +26,14 @@ public:
 
     void ToggleVao();
 
+    // Getters/Setters
     GLuint PosBuffer() const;
     GLuint VelBuffer() const;
     GLuint SpawnTimeBuffer() const;
     GLuint ColBuffer() const;
+    void SetVelocities(const vector<glm::vec3>& velocities) {
+        m_velocities = velocities;
+    }
 
 protected:
     virtual void InitIndices();
