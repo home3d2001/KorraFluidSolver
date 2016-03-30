@@ -8,11 +8,11 @@ Viscosity force field (change value inside scene.json)
 Press Space to pause simulation
 z-index sorting
 
-Currently my simulation is running on the CPU still so it's pretty slow.
+Currently my simulation is running on the CPU still so it's pretty slow. The only tbb call is in SPHSolver::Update (in SPHSolver.cpp), that update the particle velocity & position using parallel_for (not even sure if this is worth any extra credits);
 
 ### Incomplete features:
-OpenVDB
-TBB
+- OpenVDB
+- TBB
 
 ## Update March 23 (Sprint 1)
 I implemented the SPH Solver with naive neighbor search. When you started running the code, you'll see a test particle iterating through the grid and shows all the neighbors in red color. However, this neighbor search isn't using a working uniform grid yet.

@@ -46,6 +46,7 @@ SPHSolver::Update(
     m_grid->ResetGrid(m_particles);
 
     std::vector<FluidParticle*> neighbors;
+    int len = m_particles.size();
     for (FluidParticle* p : m_particles) {
         neighbors.clear();
         neighbors = m_grid->SearchNeighbors(p);
@@ -60,9 +61,10 @@ SPHSolver::Update(
         this->CalculateViscosityForceField(p, neighbors);
     }
 
-    for (FluidParticle* p : m_particles) {
+    parallel_for(0, len, [&](int i) {
+        FluidParticle* p = m_particles[i];
         this->UpdateDynamics(p, deltaT);
-    }
+    });
 }
 
 void
