@@ -38,6 +38,7 @@ protected:
     float m_viscosity;
     float m_restDensity;
     float m_timestep;
+    float m_kernelRadius;
 
     void CalculateDensity(
         FluidParticle* particle,
@@ -47,6 +48,10 @@ protected:
         FluidParticle* particle
         );
     void CalculatePressureForceField(
+        FluidParticle* particle,
+        const std::vector<FluidParticle*>& neighbors
+        );
+    void CalculateViscosityForceField(
         FluidParticle* particle,
         const std::vector<FluidParticle*>& neighbors
         );

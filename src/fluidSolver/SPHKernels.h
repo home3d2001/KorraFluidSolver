@@ -46,6 +46,11 @@ inline glm::vec3 GradKernelSpiky(glm::vec3 x_vec, float x, float h)
     return scalarPart * x_vec;
 }
 
+inline float LaplacianKernelViscous(float x, float h)
+{
+    return 45.0f * (h - x) / (M_PI * pow(h, 6.0f));
+}
+
 inline float KernelViscous(float x, float h)
 {
     if (x <= 0 || x > h) {

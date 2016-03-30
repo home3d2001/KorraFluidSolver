@@ -97,8 +97,8 @@ Viewer::Update()
 
         static float lastTime = glfwGetTime();
         float currentTime = glfwGetTime();
-        float deltaTime = float(currentTime - lastTime) * 0.01f;
-        m_scene->Update(0.01f, m_keyboard, *m_programAdvect);
+        float deltaTime = float(currentTime - lastTime);
+        m_scene->Update(deltaTime, m_keyboard, *m_programAdvect);
 
 #ifdef TEST_SCENE
         m_scene->Draw(*m_program);

@@ -9,8 +9,8 @@
         "boundY" : 1.0,
         "boundZ" : 1.0
     },
-    "stiffness": 1000,
-    "viscosity": 25,
+    "stiffness": 100,
+    "viscosity": 0.1,
     "mass": 0.125,
     "restDensity": 1000,
     "cellSize": 0.100001,

@@ -66,7 +66,7 @@ SPHGrid::AddParticle(
         // Add particle to grid based on its position
         int idx = GetCellIdx(particle->Position());
         if (idx > m_cells.size() || idx < 0) {
-            LOG(WARNING) << "Error adding particle " + idx << endl;
+            // LOG(WARNING) << "Error adding particle " + idx << endl;
             return;
         }
 
@@ -88,13 +88,15 @@ SPHGrid::GetCellIdx(
 
     // -- Error checking
     if (i < 0 || j < 0 || k < 0 || i >= m_width || j >= m_height || k >= m_depth) {
-        LOG(WARNING) << "WARNING GetCellIdx "<< endl;
-        LOG(WARNING) << "x: "<< position.x << ", y: " << position.y << ", z: " << position.z << endl;
-        LOG(WARNING) << "i: "<< i << ", j: " << j << ", k: " << k << endl;
+        // LOG(WARNING) << "WARNING GetCellIdx "<< endl;
+        // LOG(WARNING) << "x: "<< position.x << ", y: " << position.y << ", z: " << position.z << endl;
+        // LOG(WARNING) << "i: "<< i << ", j: " << j << ", k: " << k << endl;
         return -1;
     }
 
-    return this->GetCellIdx(i, j, k);
+    int idx = this->GetCellIdx(i, j, k);
+    // LOG(DEBUG) << "i: "<< i << ", j: " << j << ", k: " << k << " -> " << idx << endl;
+    return idx;
 }
 
 int
@@ -104,9 +106,38 @@ SPHGrid::GetCellIdx(
     int k
     )
 {
-    int idx = i + j * m_depth + k * m_width * m_height;
-    if (idx < 0) {
-        LOG(ERROR) << "Get cell idx is negative " + idx << endl;
+    // int idx = i + j * m_depth + k * m_width * m_height;
+    // if (idx < 0) {
+    //     LOG(ERROR) << "Get cell idx is negative " + idx << endl;
+    // }
+
+    // -- Uses z-curve indexing
+    // See https://en.wikipedia.org/wiki/Z-order_curve
+    int i_temp = i;
+    int j_temp = j;
+    int k_temp = k;
+    int idx = 0;
+    int digit = 0;
+    while (i_temp != 0 || j_temp != 0 || k_temp != 0) {
+        // Interleave bits
+        char i_bit = i_temp & 0x1;
+        idx = idx | (i_bit << digit);
+        digit++;
+        i_temp = i_temp >> 1;
+
+        char j_bit = j_temp & 0x1;
+        idx = idx | (j_bit << digit);
+        digit++;
+        j_temp = j_temp >> 1;
+
+        char k_bit = k_temp & 0x1;
+        idx = idx | (k_bit << digit);
+        digit++;
+        k_temp = k_temp >> 1;
+    }
+    if (idx < 0 || idx > m_cells.size()) {
+        // LOG(ERROR) << "Get cell idx is negative " + idx << endl;
+        return -1;
     }
     return idx;
 }
