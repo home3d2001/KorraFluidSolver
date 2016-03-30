@@ -7,6 +7,7 @@
 #include <iostream>
 #include <random>
 #include <time.h>
+#include <algorithm>
 
 #include <thirdparty/easylogging++.h>
 #include <fluidSolver/fluidParticle.h>

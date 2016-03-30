@@ -4,6 +4,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <glm/glm.hpp>
+#include <thirdparty/easylogging++.h>
 
 inline float KernelPoly6(float x, float h)
 {

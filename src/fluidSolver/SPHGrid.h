@@ -28,8 +28,9 @@ public:
         const float cellSize,
         const bool useGrid // Use grid to speed up neighbor search
         );
-    void AddParticle(FluidParticle* particle);
-    std::vector<FluidParticle*> SearchNeighbors(FluidParticle*);
+    virtual void ResetGrid(const std::vector<FluidParticle*>& particles);
+    virtual void AddParticle(FluidParticle* particle);
+    virtual std::vector<FluidParticle*> SearchNeighbors(FluidParticle*);
 
 private:
 

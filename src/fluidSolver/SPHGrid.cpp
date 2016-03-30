@@ -19,17 +19,14 @@ SPHGrid::SPHGrid(
         m_depth = ceil((m_gridMax.z - m_gridMin.z) / m_cellSize);
         m_cells.resize(m_width * m_height * m_depth);
 
-        LOG(INFO) << "Number of particles: " << particles.size() << endl;
-        LOG(INFO) << "Grid dim: " << m_width << ", " << m_height << ", " << m_depth << endl;
+        // LOG(INFO) << "Number of particles: " << particles.size() << endl;
+        // LOG(INFO) << "Grid dim: " << m_width << ", " << m_height << ", " << m_depth << endl;
     } else {
         // Grid size is only 1
         m_cells.resize(1);
     }
 
-    for(FluidParticle* p : particles) {
-        AddParticle(p);
-    }
-
+    this->ResetGrid(particles);
 }
 
 void
@@ -44,6 +41,16 @@ InitializeVdb()
     // // Get an accessor for coordinate-based access to voxels.
     // openvdb::FloatGrid::Accessor accessor = grid->getAccessor();
 
+}
+
+void
+SPHGrid::ResetGrid(
+    const std::vector<FluidParticle*>& particles
+    )
+{
+    for(FluidParticle* p : particles) {
+        AddParticle(p);
+    }
 }
 
 // Add particle to grid based on its position
@@ -62,7 +69,11 @@ SPHGrid::AddParticle(
             LOG(WARNING) << "Error adding particle " + idx << endl;
             return;
         }
-        m_cells[idx].push_back(particle);
+
+        // If the particle isn't added to the cell yet, add it now
+        if (std::find(m_cells[idx].begin(), m_cells[idx].end(),particle) == m_cells[idx].end()) {
+            m_cells[idx].push_back(particle);
+        }
     }
 }
 
@@ -171,7 +182,7 @@ SPHGrid::SearchNeighborsUniformGrid(
                 int idx = this->GetCellIdx(i + cellCoord.x, j + cellCoord.y, k + cellCoord.z);
                 glm::vec3 particlePosition = particle->Position();
                 for(FluidParticle* neighbor : m_cells[idx]) {
-                    if (glm::distance(neighbor->Position(), particlePosition) < m_cellSize &&
+                    if (glm::distance(neighbor->Position(), particlePosition) < m_cellSize * 2 &&
                         neighbor != particle) {
                         neighbors.push_back(neighbor);
                     }
