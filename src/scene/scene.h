@@ -33,6 +33,7 @@ public:
     virtual void CleanUp();
 
 protected:
+    bool m_paused = false;
     Camera* m_camera;
     Box* m_testBox;
     Box* m_fluidContainer;

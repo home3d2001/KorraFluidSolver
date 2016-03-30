@@ -65,15 +65,24 @@ Scene::InitFromJson(
         );
 
     const float separation = root["particleSeparation"].asFloat();
-
     const float cellSize = root["cellSize"].asFloat();
+    const float stiffness = root["stiffness"].asFloat();
+    const float viscosity = root["viscosity"].asFloat();
+    const float mass = root["mass"].asFloat();
+    const float restDensity = root["restDensity"].asFloat();
+    const float timestep = root["timestep"].asFloat();
 
     // -- Initialize fluid solvers
     m_fluidSolver = new SPHSolver(
         containerDim,
         particleDim,
         separation,
-        cellSize
+        cellSize,
+        stiffness,
+        viscosity,
+        mass,
+        restDensity,
+        timestep
         );
 
     // -- Initialize fluid geo
@@ -94,6 +103,13 @@ Scene::Update(
     )
 {
     UpdateCamera(deltaT, kc);
+
+    if (kc->KeyPressed(Key_Space)) {
+        m_paused = !m_paused;
+    }
+    if (m_paused) {
+        return;
+    }
     UpdateFluidSolver(deltaT, progAdvect);
 }
 
@@ -145,6 +161,14 @@ Scene::UpdateCamera(
     const KeyboardControl* kc
     )
 {
+    // Camera mode
+    if (kc->KeyPressed(Key_P)) {
+        static bool perspective = true;
+        perspective = !perspective;
+        m_camera->EnablePerspective(perspective);
+    }
+
+    // Camera movement
     float rotateAmt = 20.0f;
     float zoomAmt = 0.01f;
     if (kc->KeyPressed(Key_Up)) {

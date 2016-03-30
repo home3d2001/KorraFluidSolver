@@ -12,7 +12,7 @@ Camera::Camera(
     ) : m_width(width),
         m_height(height),
         m_fov(45),
-        m_eye(glm::vec3(0.0f, 0.0f, -20.0f)),
+        m_eye(glm::vec3(10.0f, 10.0f, -20.0f)),
         m_target(glm::vec3(0.0f)),
         m_up(glm::vec3(0.0f, 1.0f, 0.0f)),
         m_right(glm::vec3(1.0f, 0.0f, 0.0f)),
@@ -20,6 +20,21 @@ Camera::Camera(
         m_farClip(1000.0f)
 {
     m_forward = m_target - m_eye;
+    RecomputeAttributes();
+}
+
+void
+Camera::EnablePerspective(
+    bool enabled
+    )
+{
+    m_isPerspective = enabled;
+
+    if (!m_isPerspective) {
+        m_eye = glm::vec3(0.0, 0.0, 10.0);
+    } else {
+        m_eye = glm::vec3(10.0f, 10.0f, -20.0f);
+    }
     RecomputeAttributes();
 }
 
@@ -35,18 +50,27 @@ Camera::RecomputeAttributes()
         m_up
         );
 
-    m_perspective = glm::perspective(
-        m_fov,
-        m_width / m_height,
-        m_nearClip,
-        m_farClip
+    if (m_isPerspective) {
+        m_proj = glm::perspective(
+            m_fov,
+            m_width / m_height,
+            m_nearClip,
+            m_farClip
+            );
+    } else {
+        m_proj = glm::ortho(
+            0.0f,
+            m_width,
+            0.0f,
+            m_height
         );
+    }
 }
 
 glm::mat4
 Camera::GetViewProj() const
 {
-    return m_perspective * m_view;
+    return m_proj * m_view;
 }
 
 void

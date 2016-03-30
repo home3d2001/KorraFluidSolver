@@ -85,7 +85,7 @@ Viewer::Init()
 #endif
 
     // -- Clear background
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 }
 
 void
@@ -97,7 +97,7 @@ Viewer::Update()
 
         static float lastTime = glfwGetTime();
         float currentTime = glfwGetTime();
-        float deltaTime = float(currentTime - lastTime);
+        float deltaTime = float(currentTime - lastTime) * 0.01f;
         m_scene->Update(deltaTime, m_keyboard, *m_programAdvect);
 
 #ifdef TEST_SCENE

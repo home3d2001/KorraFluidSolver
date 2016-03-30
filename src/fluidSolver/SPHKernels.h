@@ -3,6 +3,7 @@
 
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <glm/glm.hpp>
 
 inline float KernelPoly6(float x, float h)
 {
@@ -14,7 +15,7 @@ inline float KernelPoly6(float x, float h)
         return 0;
     }
 
-    return (315 * pow(pow(h, 2) - pow(x, 2), 3)) / (64 * M_PI * pow(h, 9));
+    return (315 * pow(pow(h, 2.0f) - pow(x, 2.0f), 3.0f)) / (64.0f * M_PI * pow(h, 9.0f));
 }
 
 inline float KernelSpiky(float x, float h)
@@ -27,7 +28,21 @@ inline float KernelSpiky(float x, float h)
         return 0;
     }
 
-    return (15 * pow(h - x, 3)) / (M_PI * pow(h, 6));
+    return (15.0f * pow(h - x, 3.0f)) / (M_PI * pow(h, 6.0f));
+}
+
+inline glm::vec3 GradKernelSpiky(glm::vec3 x_vec, float x, float h)
+{
+    if (x <= 0 || x > h) {
+        return glm::vec3(0.0f);
+    }
+
+    if (h <= 0) {
+        return glm::vec3(0.0f);
+    }
+
+    float scalarPart = -45.0f * pow ((h - x), 2.0f) / (M_PI * pow(h, 6.0f));
+    return scalarPart * x_vec;
 }
 
 inline float KernelViscous(float x, float h)

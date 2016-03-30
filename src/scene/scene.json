@@ -5,10 +5,15 @@
         "scaleZ" : 10.0
     },
     "particleDim" : {
-        "boundX" : 4.0,
-        "boundY" : 4.0,
-        "boundZ" : 4.0
+        "boundX" : 1.0,
+        "boundY" : 1.0,
+        "boundZ" : 1.0
     },
-    "particleSeparation" : 0.2,
-    "cellSize" : 1.0
+    "stiffness": 1000,
+    "viscosity": 25,
+    "mass": 0.125,
+    "restDensity": 1000,
+    "cellSize": 0.100001,
+    "particleSeparation": 0.05,
+    "timestep": 0.001
 }

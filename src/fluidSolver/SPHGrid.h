@@ -6,6 +6,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <tbb/tbb.h>
+#include <openvdb/openvdb.h>
+#include <thirdparty/easylogging++.h>
 
 #include <mathConstants.h>
 #include <fluidSolver/fluidParticle.h>

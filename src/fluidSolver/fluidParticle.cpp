@@ -19,10 +19,15 @@ FluidParticle::FluidParticle(
 
 void
 FluidParticle::Update(
-	const float deltaT
-	)
+    const float deltaT
+    )
 {
-	glm::vec3 gravity(0.0f, GRAVITY, 0.0f);
-	m_vel = m_vel + (m_accel + gravity) * deltaT;
-	m_pos = m_pos + m_vel * deltaT * 0.1f;
+    glm::vec3 gravity(0.0f, GRAVITY, 0.0f);
+    m_vel = m_vel + (m_accel + m_pressureForce + gravity) * deltaT;
+    // cout << "Position b4: " << m_pos.y << endl;
+    // cout << "Vel: " << m_vel.y << endl;
+    // cout << "Accel: " << m_accel.y << endl;
+    // cout << "Pressure force: " << m_pressureForce.y << endl;
+    m_pos = m_pos + m_vel * deltaT;
+    // cout << "Position after: " << m_pos.y << endl;
 }

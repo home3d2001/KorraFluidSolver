@@ -8,6 +8,7 @@
 #include <random>
 #include <time.h>
 
+#include <thirdparty/easylogging++.h>
 #include <fluidSolver/fluidParticle.h>
 
 // ---------------------------------------------------- //
@@ -19,7 +20,8 @@ public:
     FluidSolver(
         const glm::vec3& containerDim,
         const glm::vec3& particleDim,
-        const float& separation
+        const float separation,
+        const float mass
         );
 
     virtual ~FluidSolver();
@@ -38,6 +40,7 @@ protected:
     glm::vec3 m_minBoundary;
     glm::vec3 m_maxBoundary;
     float m_separation;
+    float m_mass;
 
     std::vector<FluidParticle*> m_particles;
 };

@@ -50,6 +50,9 @@ ParticleAdvectProgram::ParticleAdvectProgram(
 
     // -- Generate two transform feedback buffers for ping-pong'ing
     glGenTransformFeedbacks(2, &m_TFBuffers[0]);
+
+    // -- Set big point size
+    glPointSize(3.0f);
 }
 
 void

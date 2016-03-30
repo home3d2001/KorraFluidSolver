@@ -6,10 +6,12 @@
 FluidSolver::FluidSolver(
     const glm::vec3& containerDim,
     const glm::vec3& particleDim,
-    const float& separation
+    const float separation,
+    const float mass
     ) : m_containerDim(containerDim),
         m_particleDim(particleDim),
-        m_separation(separation)
+        m_separation(separation),
+        m_mass(mass)
 {
     // -- Initialize all particles
     float midX = m_particleDim.x / 2.f;
@@ -24,8 +26,8 @@ FluidSolver::FluidSolver(
                 m_particles.push_back(
                     new FluidParticle(
                         glm::vec3(x, y, z),
-                        glm::vec3(0.f, 0.0f, 0.0f),
-                        glm::vec4(0.f, 0.f, 1.0f, 1.0f)
+                        glm::vec3(0.0f, 0.0f, 0.0f),
+                        glm::vec4(0.3f, 0.3f, 1.0f, 1.0f)
                         )
                     );
             }

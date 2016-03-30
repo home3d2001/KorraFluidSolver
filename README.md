@@ -117,3 +117,4 @@ See Camera class section above.
 - glm, [Website](http://glm.g-truc.net/0.9.7/index.html)
 - opengl-tutorial.org, [Website](http://www.opengl-tutorial.org/)
 - jsoncpp, [Github](https://github.com/open-source-parsers/jsoncpp)
+- easylogging++, [Github](https://github.com/easylogging/easyloggingpp)

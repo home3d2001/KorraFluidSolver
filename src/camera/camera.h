@@ -12,6 +12,7 @@ public:
 
     // -- Camera attributes
     glm::mat4 GetViewProj() const;
+    void EnablePerspective(bool enabled);
     void RecomputeAttributes();
 
     // -- Camera movement
@@ -36,7 +37,8 @@ protected:
     float m_farClip;
 
     glm::mat4 m_view;
-    glm::mat4 m_perspective;
+    glm::mat4 m_proj;
+    bool m_isPerspective = true;
 };
 
 

@@ -18,6 +18,9 @@ SPHGrid::SPHGrid(
         m_height = ceil((m_gridMax.y - m_gridMin.y) / m_cellSize);
         m_depth = ceil((m_gridMax.z - m_gridMin.z) / m_cellSize);
         m_cells.resize(m_width * m_height * m_depth);
+
+        LOG(INFO) << "Number of particles: " << particles.size() << endl;
+        LOG(INFO) << "Grid dim: " << m_width << ", " << m_height << ", " << m_depth << endl;
     } else {
         // Grid size is only 1
         m_cells.resize(1);
@@ -26,6 +29,21 @@ SPHGrid::SPHGrid(
     for(FluidParticle* p : particles) {
         AddParticle(p);
     }
+
+}
+
+void
+InitializeVdb()
+{
+    // // -- Initialize openvdb
+    // openvdb::initialize();
+
+    // // Create an empty floating-point grid with background value 0.
+    // openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
+
+    // // Get an accessor for coordinate-based access to voxels.
+    // openvdb::FloatGrid::Accessor accessor = grid->getAccessor();
+
 }
 
 // Add particle to grid based on its position
@@ -40,9 +58,8 @@ SPHGrid::AddParticle(
     } else {
         // Add particle to grid based on its position
         int idx = GetCellIdx(particle->Position());
-        if (idx > m_cells.size()) {
-            cerr << "Error adding particle " + idx << endl;
-            throw idx;
+        if (idx > m_cells.size() || idx < 0) {
+            LOG(WARNING) << "Error adding particle " + idx << endl;
             return;
         }
         m_cells[idx].push_back(particle);
@@ -58,6 +75,14 @@ SPHGrid::GetCellIdx(
     int j = abs(position.y - m_gridMin.y) / m_cellSize;
     int k = abs(position.z - m_gridMin.z) / m_cellSize;
 
+    // -- Error checking
+    if (i < 0 || j < 0 || k < 0 || i >= m_width || j >= m_height || k >= m_depth) {
+        LOG(WARNING) << "WARNING GetCellIdx "<< endl;
+        LOG(WARNING) << "x: "<< position.x << ", y: " << position.y << ", z: " << position.z << endl;
+        LOG(WARNING) << "i: "<< i << ", j: " << j << ", k: " << k << endl;
+        return -1;
+    }
+
     return this->GetCellIdx(i, j, k);
 }
 
@@ -70,8 +95,7 @@ SPHGrid::GetCellIdx(
 {
     int idx = i + j * m_depth + k * m_width * m_height;
     if (idx < 0) {
-        cerr << "Get cell idx is negative " + idx << endl;
-        throw idx;
+        LOG(ERROR) << "Get cell idx is negative " + idx << endl;
     }
     return idx;
 }
@@ -113,12 +137,7 @@ SPHGrid::SearchNeighborsSimple(
         FluidParticle* neighbor = m_cells[0][i];
         if (glm::distance(neighbor->Position(), particle->Position()) < m_cellSize &&
             neighbor != particle) {
-
-            // Change color of this neighbor
-            neighbor->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
             neighbors.push_back(neighbor);
-        } else {
-            neighbor->SetColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
         }
     };
 
@@ -140,7 +159,12 @@ SPHGrid::SearchNeighborsUniformGrid(
             for (int k = -1; k <= 1; ++k) {
 
                 // Check if any neighbor is out of bound
-                if (cellCoord.x + i < 0 || cellCoord.y + j < 0 || cellCoord.z + k < 0) {
+                if (cellCoord.x + i < 0 ||
+                    cellCoord.y + j < 0 ||
+                    cellCoord.z + k < 0 ||
+                    cellCoord.x + i >= m_width ||
+                    cellCoord.y + j >= m_height ||
+                    cellCoord.z + k >= m_depth) {
                     continue;
                 }
 
@@ -149,12 +173,7 @@ SPHGrid::SearchNeighborsUniformGrid(
                 for(FluidParticle* neighbor : m_cells[idx]) {
                     if (glm::distance(neighbor->Position(), particlePosition) < m_cellSize &&
                         neighbor != particle) {
-
-                        // Change color of this neighbor
-                        neighbor->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
                         neighbors.push_back(neighbor);
-                    } else {
-                        neighbor->SetColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
                     }
                 }
             }
