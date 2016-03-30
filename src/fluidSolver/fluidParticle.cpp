@@ -26,7 +26,7 @@ FluidParticle::Update(
     float mass = 0.125;
     float cellSize = 0.10001;
 
-    glm::vec3 gravity(0.0f, GRAVITY, 0.0f);
+    glm::vec3 gravity(0.0f, mass * GRAVITY, 0.0f);
     glm::vec3 totalForce = m_accel + m_pressureForce + m_viscosityForce + gravity;
     m_vel = m_vel + totalForce * deltaT;
 

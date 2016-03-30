@@ -1,16 +1,23 @@
 # Korra Fluid Solver, CIS 563, University of Pennsylvania, Spring 2016
 
+## Update March 30 (Sprint 2)
+
+### Completed features:
+Pressure force field
+Viscosity force field (change value inside scene.json)
+Press Space to pause simulation
+z-index sorting
+
+Currently my simulation is running on the CPU still so it's pretty slow.
+
+### Incomplete features:
+OpenVDB
+TBB
+
 ## Update March 23 (Sprint 1)
 I implemented the SPH Solver with naive neighbor search. When you started running the code, you'll see a test particle iterating through the grid and shows all the neighbors in red color. However, this neighbor search isn't using a working uniform grid yet.
 
 I have a simple test suite in main.cpp to test Poly6. Currently spiky kernel and viscous kernel are not tested. By uncommenting `#define UNIT_TEST`, there should be print out of the kernel unit testing.
-
-### Incomplete features:
-Uniform grid.
-Compute density.
-Compute pressure.
-Full unit testing.
-OpenVDB.
 
 ## Overview
 
