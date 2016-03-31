@@ -21,9 +21,16 @@ I have a simple test suite in main.cpp to test Poly6. Currently spiky kernel and
 
 ## Overview
 
-__Korra__ is a cross-platform C++ fluid FLIP solver, designed and built for CIS563 course. __Korra__ uses OpenGL heavily for the graphics pipeline. It is also designed for GPU optimization for fluid advection.
+__Korra__ is a cross-platform C++ fluid SPH solver, designed and built for CIS563 course at the University of Pennsylvania, Sprin 2016, instructed by [Debanshu Singh](http://www.debanshusingh.com/). __Korra__ uses OpenGL heavily for the graphics pipeline. It is also designed for GPU optimization for fluid advection.
 
 Details will be updated as more features are coming soon.
+
+## Compiling
+
+- Clone using git clone --recursive https://github.com/trungtle/KorraFluidSolver
+
+- If you forgot to call --recursive, you can recover the submodules by calling git submodule update --init --recursive
+
 
 ## Classes
 
@@ -124,4 +131,6 @@ See Camera class section above.
 - glm, [Website](http://glm.g-truc.net/0.9.7/index.html)
 - opengl-tutorial.org, [Website](http://www.opengl-tutorial.org/)
 - jsoncpp, [Github](https://github.com/open-source-parsers/jsoncpp)
-- easylogging++, [Github](https://github.com/easylogging/easyloggingpp)
+- easylogging++, [Github](https://github.com/easylogging/easyloggingpp
+)
+- nanogui, [Github](https://github.com/wjakob/nanogui)
