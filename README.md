@@ -27,11 +27,27 @@ Details will be updated as more features are coming soon.
 
 ## Compiling
 
-- Clone using git clone --recursive https://github.com/trungtle/KorraFluidSolver
+1. Clone using git clone --recursive https://github.com/trungtle/KorraFluidSolver
 
-- If you forgot to call --recursive, you can recover the submodules by calling git submodule update --init --recursive
+If you forgot to call --recursive, you can recover the submodules by calling git submodule update --init --recursive
 
-- Go to the top directory with CMakeFile
+2. Cd to directory (note, this is for Unix build)
+```
+mkdir build
+cd build
+cmake -G "Unix Makefiles" ../
+```
+or
+```
+cmake -G "Xcode" ../
+```
+
+then
+
+```
+./Korra
+```
+to launch the application.
 
 
 ## Classes
