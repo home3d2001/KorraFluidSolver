@@ -45,37 +45,71 @@ SPHSolver::Update(
 {
     m_grid->ResetGrid(m_particles);
 
-    std::vector<FluidParticle*> neighbors;
+#define USE_TBB
+#ifdef USE_TBB
+    // -- Search all neighbors
     int len = m_particles.size();
-    for (FluidParticle* p : m_particles) {
-        neighbors.clear();
-        neighbors = m_grid->SearchNeighbors(p);
-        this->CalculateDensity(p, neighbors);
+    parallel_for(0, len, [&](int i) {
+        FluidParticle* p = m_particles[i];
+        m_grid->UpdateNeighbors(p);
+    });
+
+    // -- Calculate density & pressures
+    parallel_for(0, len, [&](int i) {
+        FluidParticle* p = m_particles[i];
+        this->CalculateDensity(p);
         this->CalculatePressure(p);
-    }
+    });
 
-    for (FluidParticle* p : m_particles) {
-        neighbors.clear();
-        neighbors = m_grid->SearchNeighbors(p);
-        this->CalculatePressureForceField(p, neighbors);
-        this->CalculateViscosityForceField(p, neighbors);
-    }
+    // -- Calculate force field
+    parallel_for(0, len, [&](int i) {
+        FluidParticle* p = m_particles[i];
+        this->CalculatePressureForceField(p);
+        this->CalculateViscosityForceField(p);
+    });
 
+    // -- Update particles
     parallel_for(0, len, [&](int i) {
         FluidParticle* p = m_particles[i];
         this->UpdateDynamics(p, deltaT);
     });
+
+#else
+
+    // -- Search all neighbors
+    for (FluidParticle* p : m_particles) {
+        m_grid->UpdateNeighbors(p);
+    }
+
+    // -- Calculate density & pressures
+    for (FluidParticle* p : m_particles) {
+        this->CalculateDensity(p);
+        this->CalculatePressure(p);
+    }
+
+    // -- Calculate force field
+    for (FluidParticle* p : m_particles) {
+        this->CalculatePressureForceField(p);
+        this->CalculateViscosityForceField(p);
+    }
+
+    // -- Update particles
+    for (FluidParticle* p : m_particles) {
+        this->UpdateDynamics(p, deltaT);
+    }
+
+#endif
 }
 
 void
 SPHSolver::CalculateDensity(
-    FluidParticle* particle,
-    const std::vector<FluidParticle*>& neighbors
+    FluidParticle* particle
     )
 {
     // -- Compute density over a kernel function of neighbors
     float density = 0.f;
-    for (FluidParticle* neighbor : neighbors) {
+    for (size_t i = 0; i < particle->neighborsCount; ++i) {
+        FluidParticle* neighbor = particle->neighbors[i];
         float tempDensity = KernelPoly6(glm::distance(neighbor->Position(), particle->Position()), m_kernelRadius);
         density += tempDensity;
     }
@@ -97,13 +131,13 @@ SPHSolver::CalculatePressure(
 
 void
 SPHSolver::CalculatePressureForceField(
-    FluidParticle* particle,
-    const std::vector<FluidParticle*>& neighbors
+    FluidParticle* particle
     )
 {
     // -- Compute pressure gradient
     glm::vec3 pressureGrad(0.0f);
-    for (FluidParticle* neighbor : neighbors) {
+    for (size_t i = 0; i < particle->neighborsCount; ++i) {
+        FluidParticle* neighbor = particle->neighbors[i];
         glm::vec3 r = particle->Position() - neighbor->Position();
         float x = glm::distance(neighbor->Position(), particle->Position());
         glm::vec3 kernelGrad = GradKernelSpiky(r, x, m_kernelRadius);
@@ -122,13 +156,12 @@ SPHSolver::CalculatePressureForceField(
 
 void
 SPHSolver::CalculateViscosityForceField(
-    FluidParticle* particle,
-    const std::vector<FluidParticle*>& neighbors
+    FluidParticle* particle
     )
 {
     glm::vec3 viscosityForce(0.0f);
-    for (FluidParticle* neighbor : neighbors) {
-
+    for (size_t i = 0; i < particle->neighborsCount; ++i) {
+        FluidParticle* neighbor = particle->neighbors[i];
         float laplacianKernelViscous = LaplacianKernelViscous(glm::distance(particle->Position(), neighbor->Position()), m_kernelRadius);
         glm::vec3 tempVisForce = (neighbor->Velocity() - particle->Velocity()) * laplacianKernelViscous / neighbor->Density();
         viscosityForce += tempVisForce;

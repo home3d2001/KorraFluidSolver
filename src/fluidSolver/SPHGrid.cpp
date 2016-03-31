@@ -88,14 +88,10 @@ SPHGrid::GetCellIdx(
 
     // -- Error checking
     if (i < 0 || j < 0 || k < 0 || i >= m_width || j >= m_height || k >= m_depth) {
-        // LOG(WARNING) << "WARNING GetCellIdx "<< endl;
-        // LOG(WARNING) << "x: "<< position.x << ", y: " << position.y << ", z: " << position.z << endl;
-        // LOG(WARNING) << "i: "<< i << ", j: " << j << ", k: " << k << endl;
         return -1;
     }
 
     int idx = this->GetCellIdx(i, j, k);
-    // LOG(DEBUG) << "i: "<< i << ", j: " << j << ", k: " << k << " -> " << idx << endl;
     return idx;
 }
 
@@ -106,11 +102,13 @@ SPHGrid::GetCellIdx(
     int k
     )
 {
-    // int idx = i + j * m_depth + k * m_width * m_height;
-    // if (idx < 0) {
-    //     LOG(ERROR) << "Get cell idx is negative " + idx << endl;
-    // }
-
+#define USE_Z_CURVE
+#ifndef USE_Z_CURVE
+    int idx = i + j * m_depth + k * m_width * m_height;
+    if (idx < 0) {
+        LOG(ERROR) << "Get cell idx is negative " + idx << endl;
+    }
+#else
     // -- Uses z-curve indexing
     // See https://en.wikipedia.org/wiki/Z-order_curve
     int i_temp = i;
@@ -139,6 +137,7 @@ SPHGrid::GetCellIdx(
         // LOG(ERROR) << "Get cell idx is negative " + idx << endl;
         return -1;
     }
+#endif
     return idx;
 }
 
@@ -154,47 +153,48 @@ SPHGrid::GetCellCoord(
         );
 }
 
-std::vector<FluidParticle*>
-SPHGrid::SearchNeighbors(
+void
+SPHGrid::UpdateNeighbors(
     FluidParticle* particle
     )
 {
+    particle->ResetNeighborCount();
     if (m_useGrid) {
-        return this->SearchNeighborsUniformGrid(particle);
+        this->UpdateNeighborsUniformGrid(particle);
     } else {
-        return this->SearchNeighborsSimple(particle);
+        this->UpdateNeighborsSimple(particle);
     }
 }
 
 
-std::vector<FluidParticle*>
-SPHGrid::SearchNeighborsSimple(
+void
+SPHGrid::UpdateNeighborsSimple(
     FluidParticle* particle
     )
 {
-    vector<FluidParticle*> neighbors;
+    size_t len = m_cells[0].size();
 
-    int len = m_cells[0].size();
-    for (int i = 0; i < len; ++i) {
+    for (size_t i = 0; i < len; ++i) {
         FluidParticle* neighbor = m_cells[0][i];
         if (glm::distance(neighbor->Position(), particle->Position()) < m_cellSize &&
             neighbor != particle) {
-            neighbors.push_back(neighbor);
-        }
-    };
 
-    return neighbors;
+            if(!particle->AddNeighbor(neighbor)) {
+                // Can't add more neighbors to limit, stop loop
+                break;
+            }
+        }
+    }
 }
 
-std::vector<FluidParticle*>
-SPHGrid::SearchNeighborsUniformGrid(
+void
+SPHGrid::UpdateNeighborsUniformGrid(
     FluidParticle* particle
     )
 {
-    vector<FluidParticle*> neighbors;
-
     // -- Use grid to search neighbor
     glm::ivec3 cellCoord = this->GetCellCoord(particle->Position());
+
     // Search in all 27 neighboring cells
     for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
@@ -211,16 +211,19 @@ SPHGrid::SearchNeighborsUniformGrid(
                 }
 
                 int idx = this->GetCellIdx(i + cellCoord.x, j + cellCoord.y, k + cellCoord.z);
+
                 glm::vec3 particlePosition = particle->Position();
                 for(FluidParticle* neighbor : m_cells[idx]) {
                     if (glm::distance(neighbor->Position(), particlePosition) < m_cellSize * 2 &&
                         neighbor != particle) {
-                        neighbors.push_back(neighbor);
+
+                        if(!particle->AddNeighbor(neighbor)) {
+                            // Can't add more neighbors to limit, stop loop
+                            break;
+                        }
                     }
                 }
             }
         }
     }
-
-    return neighbors;
 }

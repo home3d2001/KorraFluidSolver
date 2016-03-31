@@ -1,0 +1,38 @@
+2016-03-30 17:05:18,899 INFO  [default] ------------------------
+
+2016-03-30 17:05:18,900 INFO  [default] UNIT TEST ENABLED
+
+2016-03-30 17:05:18,900 INFO  [default] TestKernels
+
+2016-03-30 17:05:18,900 INFO  [default] KernelPoly6, x: 0.000000, h: 10.000000
+
+2016-03-30 17:05:18,900 INFO  [default] 0.00156668
+
+2016-03-30 17:05:18,900 INFO  [default] KernelPoly6, x: 1.000000, h: 1.000000
+
+2016-03-30 17:05:18,900 INFO  [default] 0
+
+2016-03-30 17:05:18,901 INFO  [default] KernelPoly6, x: 5.400000, h: 2.400000
+
+2016-03-30 17:05:18,901 INFO  [default] 0
+
+2016-03-30 17:05:18,901 INFO  [default] KernelPoly6, x: 100.699997, h: 140.229996
+
+2016-03-30 17:05:18,901 INFO  [default] 6.45454e-08
+
+2016-03-30 17:05:18,901 INFO  [default] KernelPoly6, x: -30.000000, h: -22.000000
+
+2016-03-30 17:05:18,901 INFO  [default] 0
+
+2016-03-30 17:05:18,901 INFO  [default] KernelPoly6, x: 36.000000, h: -2.000000
+
+2016-03-30 17:05:18,901 INFO  [default] 0
+
+2016-03-30 17:05:18,901 INFO  [default] KernelPoly6, x: -4.000000, h: 20.000000
+
+2016-03-30 17:05:18,901 INFO  [default] 0
+
+2016-03-30 17:05:18,901 INFO  [default] END UNIT TEST
+
+2016-03-30 17:05:18,901 INFO  [default] ------------------------
+

@@ -15,8 +15,9 @@ inline float KernelPoly6(float x, float h)
     if (h <= 0) {
         return 0;
     }
-
-    return (315 * pow(pow(h, 2.0f) - pow(x, 2.0f), 3.0f)) / (64.0f * M_PI * pow(h, 9.0f));
+    /// @todo: cache h2 and x2
+    float result = (315 * pow(h * h - x * x, 3.0f)) / (64.0f * M_PI * pow(h, 9.0f));
+    return result < 0.0f ? 0.0f : result;
 }
 
 inline float KernelSpiky(float x, float h)
@@ -29,7 +30,8 @@ inline float KernelSpiky(float x, float h)
         return 0;
     }
 
-    return (15.0f * pow(h - x, 3.0f)) / (M_PI * pow(h, 6.0f));
+    float result = (15.0f * pow(h - x, 3.0f)) / (M_PI * pow(h, 6.0f));
+    return result < 0.0 ? 0.0f : result;
 }
 
 inline glm::vec3 GradKernelSpiky(glm::vec3 x_vec, float x, float h)
@@ -42,8 +44,8 @@ inline glm::vec3 GradKernelSpiky(glm::vec3 x_vec, float x, float h)
         return glm::vec3(0.0f);
     }
 
-    float scalarPart = -45.0f * pow ((h - x), 2.0f) / (M_PI * pow(h, 6.0f));
-    return scalarPart * x_vec;
+    float scalarPart = -45.0f * (h - x) * (h - x) / (M_PI * pow(h, 6.0f));
+    return scalarPart * (x_vec) / x;
 }
 
 inline float LaplacianKernelViscous(float x, float h)

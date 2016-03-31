@@ -41,19 +41,16 @@ protected:
     float m_kernelRadius;
 
     void CalculateDensity(
-        FluidParticle* particle,
-        const std::vector<FluidParticle*>& neighbors
+        FluidParticle* particle
         );
     void CalculatePressure(
         FluidParticle* particle
         );
     void CalculatePressureForceField(
-        FluidParticle* particle,
-        const std::vector<FluidParticle*>& neighbors
+        FluidParticle* particle
         );
     void CalculateViscosityForceField(
-        FluidParticle* particle,
-        const std::vector<FluidParticle*>& neighbors
+        FluidParticle* particle
         );
     void UpdateDynamics(
         FluidParticle* particle,

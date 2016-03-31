@@ -30,7 +30,9 @@ public:
         );
     virtual void ResetGrid(const std::vector<FluidParticle*>& particles);
     virtual void AddParticle(FluidParticle* particle);
-    virtual std::vector<FluidParticle*> SearchNeighbors(FluidParticle*);
+    virtual void UpdateNeighbors(
+        FluidParticle*
+    );
 
 private:
 
@@ -50,8 +52,12 @@ private:
     glm::ivec3 GetCellCoord(const glm::vec3&);
 
     // -- Neighbor search algorithms
-    std::vector<FluidParticle*> SearchNeighborsSimple(FluidParticle*);
-    std::vector<FluidParticle*> SearchNeighborsUniformGrid(FluidParticle*);
+    void UpdateNeighborsSimple(
+        FluidParticle*
+    );
+    void UpdateNeighborsUniformGrid(
+        FluidParticle*
+    );
 };
 
 #endif
