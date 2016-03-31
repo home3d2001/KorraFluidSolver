@@ -31,6 +31,8 @@ Details will be updated as more features are coming soon.
 
 - If you forgot to call --recursive, you can recover the submodules by calling git submodule update --init --recursive
 
+- Go to the top directory with CMakeFile
+
 
 ## Classes
 
@@ -123,6 +125,10 @@ N/A
 
 See Camera class section above.
 
+## LICENSE
+
+See LICENSE.md for the MIT License.
+
 ## Third Party
 
 - CIS277, Camera code
@@ -131,6 +137,7 @@ See Camera class section above.
 - glm, [Website](http://glm.g-truc.net/0.9.7/index.html)
 - opengl-tutorial.org, [Website](http://www.opengl-tutorial.org/)
 - jsoncpp, [Github](https://github.com/open-source-parsers/jsoncpp)
+- tbb, [Download](https://www.threadingbuildingblocks.org/)
 - easylogging++, [Github](https://github.com/easylogging/easyloggingpp
 )
 - nanogui, [Github](https://github.com/wjakob/nanogui)
