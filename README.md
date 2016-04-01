@@ -25,7 +25,12 @@ __Korra__ is a cross-platform C++ fluid SPH solver, designed and built for CIS56
 
 Details will be updated as more features are coming soon.
 
-## Compiling
+## Automatic build (easy!)
+```
+./install.sh
+```
+
+## Manual build (if you prefer doing it manually)
 
 1. Clone using git clone --recursive git@github.com:trungtle/KorraFluidSolver.git
 
