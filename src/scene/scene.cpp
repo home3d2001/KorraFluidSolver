@@ -70,7 +70,6 @@ Scene::InitFromJson(
     const float viscosity = root["viscosity"].asFloat();
     const float mass = root["mass"].asFloat();
     const float restDensity = root["restDensity"].asFloat();
-    const float timestep = root["timestep"].asFloat();
 
     // -- Initialize fluid solvers
     m_fluidSolver = new SPHSolver(
@@ -81,8 +80,7 @@ Scene::InitFromJson(
         stiffness,
         viscosity,
         mass,
-        restDensity,
-        timestep
+        restDensity
         );
 
     // -- Initialize fluid geo
@@ -96,17 +94,43 @@ Scene::InitFromJson(
 }
 
 void
+Scene::SetConstant(
+    SPHConstantType type,
+    float value
+    )
+{
+    if (m_fluidSolver) {
+        m_fluidSolver->SetConstant(type, value);
+    }
+}
+
+void
+Scene::ReadInputs(
+    KeyCode key,
+    KeyAction action
+    )
+{
+    if (key == Key_Space && action == Key_Pressed) {
+        this->Pause();
+    }
+
+    if (action == Key_Repeat) {
+        UpdateCamera(key);
+    }
+}
+
+void
+Scene::Pause()
+{
+    m_paused = !m_paused;
+}
+
+void
 Scene::Update(
     const float deltaT,
-    const KeyboardControl* kc,
     ParticleAdvectProgram& progAdvect
     )
 {
-    UpdateCamera(deltaT, kc);
-
-    if (kc->KeyPressed(Key_Space)) {
-        m_paused = !m_paused;
-    }
     if (m_paused) {
         return;
     }
@@ -118,6 +142,7 @@ Scene::Draw(
     const ShaderProgram& prog
     ) const
 {
+    prog.Draw(*m_camera, *m_testBox);
 }
 
 void
@@ -157,12 +182,11 @@ Scene::CleanUp()
 
 void
 Scene::UpdateCamera(
-    const float deltaT,
-    const KeyboardControl* kc
+    KeyCode key
     )
 {
     // Camera mode
-    if (kc->KeyPressed(Key_P)) {
+    if (key == Key_P) {
         static bool perspective = true;
         perspective = !perspective;
         m_camera->EnablePerspective(perspective);
@@ -171,34 +195,34 @@ Scene::UpdateCamera(
     // Camera movement
     float rotateAmt = 20.0f;
     float zoomAmt = 0.01f;
-    if (kc->KeyPressed(Key_Up)) {
+    if (key == Key_Up) {
         m_camera->RotateAboutUp(rotateAmt);
     }
-    if (kc->KeyPressed(Key_Down)) {
+    if (key == Key_Down) {
         m_camera->RotateAboutUp(-rotateAmt);
     }
 
-    if (kc->KeyPressed(Key_Left)) {
+    if (key == Key_Left) {
         m_camera->RotateAboutRight(rotateAmt);
     }
 
-    if (kc->KeyPressed(Key_Right)) {
+    if (key == Key_Right) {
         m_camera->RotateAboutRight(-rotateAmt);
     }
 
-    if (kc->KeyPressed(Key_W)){
+    if (key == Key_W){
         m_camera->Zoom(zoomAmt);
     }
 
-    if (kc->KeyPressed(Key_S)){
+    if (key == Key_S){
         m_camera->Zoom(-zoomAmt);
     }
 
-    if (kc->KeyPressed(Key_D)){
+    if (key == Key_D){
         m_camera->TranslateAlongRight(zoomAmt);
     }
 
-    if (kc->KeyPressed(Key_A)){
+    if (key == Key_A){
         m_camera->TranslateAlongRight(-zoomAmt);
     }
 }

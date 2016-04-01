@@ -9,7 +9,6 @@
 using namespace std;
 
 #define NEIGHBORS_MAX 1000
-#define MASS 0.125f
 
 // ---------------------------------------------------- //
 // FluidParticle
@@ -17,6 +16,9 @@ using namespace std;
 class FluidParticle
 {
 public:
+
+    static float mass;
+
     FluidParticle();
     FluidParticle(
         const glm::vec3& pos,
@@ -32,7 +34,7 @@ public:
     inline const glm::vec3& Velocity() const { return m_vel; }
     inline void SetVelocity(const glm::vec3& vel) { m_vel = vel; }
     inline const glm::vec3& Acceleration() const { return m_accel; }
-    inline void SetForce(const glm::vec3& force) { m_accel = force / MASS; }
+    inline void SetForce(const glm::vec3& force) { m_accel = force / FluidParticle::mass; }
     inline const glm::vec4& Color() const { return m_col; }
     inline void SetColor(const glm::vec4& color) { m_col = color; }
     inline const float& Density() const { return m_density; }

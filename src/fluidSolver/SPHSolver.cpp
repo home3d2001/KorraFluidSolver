@@ -11,15 +11,13 @@ SPHSolver::SPHSolver(
     const float stiffness,
     const float viscosity,
     const float mass,
-    const float restDensity,
-    const float timestep
+    const float restDensity
     ) : FluidSolver(containerDim, particleDim, separation, mass),
         m_grid(nullptr),
         m_cellSize(cellSize),
         m_stiffness(stiffness),
         m_viscosity(viscosity),
         m_restDensity(restDensity),
-        m_timestep(timestep),
         m_kernelRadius(cellSize * 2.0f)
 {
     m_grid = new SPHGrid(
@@ -36,6 +34,28 @@ SPHSolver::SPHSolver(
 SPHSolver::~SPHSolver()
 {
     delete m_grid;
+}
+
+void
+SPHSolver::SetConstant(
+    SPHConstantType type,
+    float value
+    )
+{
+    switch(type) {
+        case SPHStiffness:
+            m_stiffness = value;
+            break;
+        case SPHViscosity:
+            m_viscosity = value;
+            break;
+        case SPHRestDensity:
+            m_restDensity = value;
+            break;
+        case SPHMass:
+            FluidParticle::mass = value;
+            break;
+    }
 }
 
 void
@@ -113,7 +133,7 @@ SPHSolver::CalculateDensity(
         float tempDensity = KernelPoly6(glm::distance(neighbor->Position(), particle->Position()), m_kernelRadius);
         density += tempDensity;
     }
-    density = m_mass * density;
+    density = FluidParticle::mass * density;
     particle->SetDensity(density);
 }
 
@@ -149,7 +169,7 @@ SPHSolver::CalculatePressureForceField(
             );
         pressureGrad += tempPressureForce * kernelGrad;
     }
-    pressureGrad = -pressureGrad * m_mass * m_mass;
+    pressureGrad = -pressureGrad * FluidParticle::mass * FluidParticle::mass;
     particle->SetPressureForce(pressureGrad);
     // particle->SetColor(glm::vec4(glm::abs(pressureGrad), 1.f));
 }
@@ -166,7 +186,7 @@ SPHSolver::CalculateViscosityForceField(
         glm::vec3 tempVisForce = (neighbor->Velocity() - particle->Velocity()) * laplacianKernelViscous / neighbor->Density();
         viscosityForce += tempVisForce;
     }
-    viscosityForce = viscosityForce * m_mass * m_viscosity;
+    viscosityForce = viscosityForce * FluidParticle::mass * m_viscosity;
     particle->SetViscosityForce(viscosityForce);
 }
 

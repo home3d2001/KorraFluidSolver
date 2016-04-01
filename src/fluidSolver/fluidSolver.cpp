@@ -10,8 +10,7 @@ FluidSolver::FluidSolver(
     const float mass
     ) : m_containerDim(containerDim),
         m_particleDim(particleDim),
-        m_separation(separation),
-        m_mass(mass)
+        m_separation(separation)
 {
     // -- Initialize all particles
     float midX = m_particleDim.x / 2.f;
@@ -37,6 +36,9 @@ FluidSolver::FluidSolver(
     // -- Set container boundary
     m_minBoundary = -m_containerDim / 2.0f;
     m_maxBoundary = m_containerDim / 2.0f;
+
+    // -- Set particle properties
+    FluidParticle::mass = mass;
 }
 
 FluidSolver::~FluidSolver()

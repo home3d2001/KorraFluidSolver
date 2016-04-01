@@ -1,5 +1,7 @@
 #include "FluidParticle.h"
 
+float FluidParticle::mass = 0.125f;
+
 // ---------------------------------------------------- //
 // FluidParticle
 // ---------------------------------------------------- //
@@ -25,7 +27,7 @@ FluidParticle::Update(
     // @todo: HACK HERE, should read cell size from json!
     float cellSize = 0.10001;
 
-    glm::vec3 gravity(0.0f, MASS * GRAVITY, 0.0f);
+    glm::vec3 gravity(0.0f, FluidParticle::mass * GRAVITY, 0.0f);
     glm::vec3 totalForce = m_accel + m_pressureForce + m_viscosityForce + gravity;
     m_vel = m_vel + totalForce * deltaT;
 

@@ -41,7 +41,6 @@ protected:
     glm::vec3 m_minBoundary;
     glm::vec3 m_maxBoundary;
     float m_separation;
-    float m_mass;
 
     std::vector<FluidParticle*> m_particles;
 };

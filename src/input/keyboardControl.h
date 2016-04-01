@@ -17,6 +17,12 @@ typedef enum {
     Key_Space = GLFW_KEY_SPACE
 } KeyCode;
 
+typedef enum {
+    Key_Pressed = GLFW_PRESS,
+    Key_Released = GLFW_RELEASE,
+    Key_Repeat = GLFW_REPEAT
+} KeyAction;
+
 class KeyboardControl
 {
 public:

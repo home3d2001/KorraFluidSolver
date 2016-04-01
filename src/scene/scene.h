@@ -19,10 +19,15 @@ public:
 
     void InitFromTestScene();
     void InitFromJson(const char* filepath);
+    void Pause();
+    void SetConstant(
+        SPHConstantType type,
+        float value
+        );
 
+    virtual void ReadInputs(KeyCode key, KeyAction action);
     virtual void Update(
         const float deltaT,
-        const KeyboardControl*,
         ParticleAdvectProgram& prog
         );
     virtual void Draw(const ShaderProgram&) const;
@@ -41,9 +46,7 @@ protected:
     SPHSolver* m_fluidSolver;
 
     // -- Update helpers
-    void UpdateCamera(
-        const float deltaT,
-        const KeyboardControl*);
+    void UpdateCamera(KeyCode key);
     void UpdateFluidSolver(
         const float deltaT,
         ParticleAdvectProgram& prog

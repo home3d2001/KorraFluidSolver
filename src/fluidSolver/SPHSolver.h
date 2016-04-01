@@ -5,6 +5,13 @@
 #include <fluidSolver/SPHGrid.h>
 #include <fluidSolver/SPHKernels.h>
 
+typedef enum {
+    SPHStiffness,
+    SPHViscosity,
+    SPHRestDensity,
+    SPHMass
+} SPHConstantType;
+
 // ---------------------------------------------------- //
 // SPHSolver
 // ---------------------------------------------------- //
@@ -19,12 +26,15 @@ public:
         const float stiffness,
         const float viscosity,
         const float mass,
-        const float restDensity,
-        const float timestep
+        const float restDensity
         );
 
     virtual ~SPHSolver();
 
+    void SetConstant(
+        SPHConstantType type,
+        float value
+        );
     virtual void Update(const float deltaT);
     void AddParticle(FluidParticle*);
 
@@ -37,7 +47,6 @@ protected:
     float m_stiffness;
     float m_viscosity;
     float m_restDensity;
-    float m_timestep;
     float m_kernelRadius;
 
     void CalculateDensity(

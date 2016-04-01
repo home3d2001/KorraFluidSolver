@@ -52,7 +52,7 @@ ParticleAdvectProgram::ParticleAdvectProgram(
     glGenTransformFeedbacks(2, &m_TFBuffers[0]);
 
     // -- Set big point size
-    glPointSize(3.0f);
+    glPointSize(5.0f);
 }
 
 void
