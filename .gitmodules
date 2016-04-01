@@ -1,3 +1,7 @@
 [submodule "src/thirdparty/jsoncpp"]
 	path = src/thirdparty/jsoncpp
 	url = git@github.com:open-source-parsers/jsoncpp.git
+
+[submodule "src/thirdparty/nanogui"]
+	path = src/thirdparty/nanogui
+	url = git@github.com:wjakob/nanogui.git
