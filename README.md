@@ -27,27 +27,36 @@ Details will be updated as more features are coming soon.
 
 ## Compiling
 
-1. Clone using git clone --recursive https://github.com/trungtle/KorraFluidSolver
+1. Clone using git clone --recursive git@github.com:trungtle/KorraFluidSolver.git
 
-If you forgot to call --recursive, you can recover the submodules by calling git submodule update --init --recursive
-
-2. Cd to directory (note, this is for Unix build)
+If you forgot to call --recursive, you can recover the submodules by
 ```
+cd CIS563-FluidSolver (at top directory)
+git submodule update --init --recursive
+```
+
+There should be 2 submodules for `jsoncpp` and `nanogui`
+
+2. Compile nanogui with cmake and make
+```
+cd src/thirdparty/nanogui
+cmake -G "Unix Makefiles" .
+make
+```
+
+3. Compile Korra with cmake and make
+```
+cd ../../../ (at top directory)
 mkdir build
 cd build
 cmake -G "Unix Makefiles" ../
-```
-or
-```
-cmake -G "Xcode" ../
-```
+make
 
-then
-
+4. Launch
 ```
 ./Korra
 ```
-to launch the application.
+
 
 
 ## Classes
