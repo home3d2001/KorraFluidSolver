@@ -2,6 +2,7 @@
 #define FLUIDSOLVER_H
 
 #include <glm/glm.hpp>
+#include <tbb/tbb.h>
 #include <mathConstants.h>
 #include <vector>
 #include <iostream>
@@ -11,6 +12,8 @@
 
 #include <thirdparty/easylogging++.h>
 #include <fluidSolver/fluidParticle.h>
+
+using namespace tbb;
 
 // ---------------------------------------------------- //
 // FluidSolver
@@ -26,10 +29,10 @@ public:
         );
 
     virtual ~FluidSolver();
-    const std::vector<glm::vec3> ParticlePositions() const;
-    const std::vector<glm::vec3> ParticleVelocities() const;
-    const std::vector<float> ParticleSpawnTimes() const;
-    const std::vector<glm::vec4> ParticleColors() const;
+    virtual const std::vector<glm::vec3> ParticlePositions() const;
+    virtual const std::vector<glm::vec3> ParticleVelocities() const;
+    virtual const std::vector<float> ParticleSpawnTimes() const;
+    virtual const std::vector<glm::vec4> ParticleColors() const;
 
     virtual void Update(const float deltaT);
 

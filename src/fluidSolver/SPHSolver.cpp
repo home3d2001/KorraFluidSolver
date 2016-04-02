@@ -171,7 +171,6 @@ SPHSolver::CalculatePressureForceField(
     }
     pressureGrad = -pressureGrad * FluidParticle::mass * FluidParticle::mass;
     particle->SetPressureForce(pressureGrad);
-    // particle->SetColor(glm::vec4(glm::abs(pressureGrad), 1.f));
 }
 
 void

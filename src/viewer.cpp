@@ -164,14 +164,13 @@ Viewer::InitGUI()
     });
 
     // -- Coloring particles
-    // widget = new Widget(toolbox);
-    // widget->setLayout(new GroupLayout());
-    // new Label(widget, "Combo box", "sans-bold");
-    // ComboBox* new ComboBox(widget, { "Combo box item 1", "Combo box item 2", "Combo box item 3"});
-    // slider->setCallback([this, label](float value) {
-    //     m_timeStep = value / 100.0f + 0.001f;
-    //     label->setCaption(to_string(m_timeStep));
-    // });
+    widget = new Widget(toolbox);
+    widget->setLayout(new GroupLayout());
+    new Label(widget, "Particle color", "sans-bold");
+    ComboBox* cb = new ComboBox(widget, { "Simple", "Pressure", "Viscosity", "Velocity", "All forces"});
+    cb->setCallback([this](int index) {
+        FluidParticle::colorType = (SPHColor)index;
+    });
 
 
     // -- Buttons

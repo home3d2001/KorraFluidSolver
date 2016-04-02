@@ -10,6 +10,14 @@ using namespace std;
 
 #define NEIGHBORS_MAX 1000
 
+typedef enum {
+    SPHColorSimple,
+    SPHColorPressure,
+    SPHColorViscosity,
+    SPHColorVelocity,
+    SPHColorAllForces
+} SPHColor;
+
 // ---------------------------------------------------- //
 // FluidParticle
 // ---------------------------------------------------- //
@@ -18,6 +26,7 @@ class FluidParticle
 public:
 
     static float mass;
+    static SPHColor colorType;
 
     FluidParticle();
     FluidParticle(
@@ -33,9 +42,22 @@ public:
     inline void SetPosition(const glm::vec3& pos) { m_pos = pos; }
     inline const glm::vec3& Velocity() const { return m_vel; }
     inline void SetVelocity(const glm::vec3& vel) { m_vel = vel; }
-    inline const glm::vec3& Acceleration() const { return m_accel; }
-    inline void SetForce(const glm::vec3& force) { m_accel = force / FluidParticle::mass; }
-    inline const glm::vec4& Color() const { return m_col; }
+    inline const glm::vec4& Color() const {
+        switch(FluidParticle::colorType) {
+            case SPHColorSimple:
+                return m_col;
+            case SPHColorPressure:
+                return glm::vec4(glm::abs(m_pressureForce), 1.0f);
+            case SPHColorViscosity:
+                return glm::vec4(glm::abs(m_viscosityForce), 1.0f);
+            case SPHColorVelocity:
+                return glm::vec4(glm::abs(m_vel), 1.0f);
+            case SPHColorAllForces:
+                return glm::vec4(glm::abs(m_force), 1.0f);
+            default:
+                return m_col;
+        }
+    }
     inline void SetColor(const glm::vec4& color) { m_col = color; }
     inline const float& Density() const { return m_density; }
     inline void SetDensity(float density) { m_density = density; }
@@ -65,10 +87,10 @@ public:
 protected:
     glm::vec3 m_pos;
     glm::vec3 m_vel;
-    glm::vec3 m_accel;
     glm::vec4 m_col;
     glm::vec3 m_pressureForce;
     glm::vec3 m_viscosityForce;
+    glm::vec3 m_force;
     float m_pressure = 0.0f;
     float m_density = 1.0f;
     float m_spawnTime = 0.0f;

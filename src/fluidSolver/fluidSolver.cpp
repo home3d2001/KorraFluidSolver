@@ -91,10 +91,12 @@ FluidSolver::ParticleSpawnTimes() const
 const std::vector<glm::vec4>
 FluidSolver::ParticleColors() const
 {
+    int len = m_particles.size();
     std::vector<glm::vec4> colors;
-    for (auto &particle : m_particles)
-    {
-        colors.push_back(particle->Color());
+    colors.resize(len);
+    for (int i = 0; i < len; ++i) {
+        FluidParticle* particle = m_particles[i];
+        colors.insert(colors.begin() + i, particle->Color());
     }
 
     return colors;
