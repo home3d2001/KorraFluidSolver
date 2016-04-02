@@ -29,6 +29,7 @@ Details will be updated as more features are coming soon.
 ```
 ./install.sh
 ```
+The application `Korra` will be created in build folder. Simply run `./Korra` to launch.
 
 ## Manual build (if you prefer doing it manually)
 
