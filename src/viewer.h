@@ -63,7 +63,7 @@ protected:
     float m_width;
     float m_height;
     float m_timeStep = 0.001f;
-    float m_fps;
+    uint m_fps;
     Label* m_labelFps;
 
     ShaderProgram* m_program;

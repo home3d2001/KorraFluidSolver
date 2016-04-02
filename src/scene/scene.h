@@ -37,6 +37,14 @@ public:
         );
     virtual void CleanUp();
 
+    inline const uint NumParticles() const {
+        if (m_fluidSolver) {
+            return m_fluidSolver->NumParticles();
+        } else {
+            return 0;
+        }
+    }
+
 protected:
     bool m_paused = false;
     Camera* m_camera;

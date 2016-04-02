@@ -96,6 +96,9 @@ Viewer::InitGUI()
     new Label(widget, "FPS: ", "sans-bold");
     m_labelFps = new Label(widget, to_string(m_fps), "sans-bold");
 
+    new Label(widget, "Number of particles: ", "sans-bold");
+    new Label(widget, to_string(m_scene->NumParticles()), "sans-bold");
+
     // Paricle infos
 
     // -- Parameter widgets
@@ -126,10 +129,10 @@ Viewer::InitGUI()
 
     new Label(widget, "Stiffness: ", "sans-bold");
     slider = new Slider(widget);
-    label = new Label(widget, "1000", "sans-bold");
-    slider->setValue(0.5f);
+    label = new Label(widget, "10", "sans-bold");
+    slider->setValue(0.f);
     slider->setCallback([this, label](float value) {
-        float stiffness = value * 2000.0f;
+        float stiffness = value * 1000.0f + 10.f;
         m_scene->SetConstant(SPHStiffness, stiffness);
         label->setCaption(to_string(stiffness));
     });
@@ -139,7 +142,7 @@ Viewer::InitGUI()
     label = new Label(widget, "0", "sans-bold");
     slider->setValue(0.0f);
     slider->setCallback([this, label](float value) {
-        float viscosity = value * 100.0f;
+        float viscosity = value * 10.0f;
         m_scene->SetConstant(SPHViscosity, viscosity);
         label->setCaption(to_string(viscosity));
     });
@@ -167,7 +170,7 @@ Viewer::InitGUI()
     widget = new Widget(toolbox);
     widget->setLayout(new GroupLayout());
     new Label(widget, "Particle color", "sans-bold");
-    ComboBox* cb = new ComboBox(widget, { "Simple", "Pressure", "Viscosity", "Velocity", "All forces"});
+    ComboBox* cb = new ComboBox(widget, { "Default", "Pressure", "Viscosity", "Velocity", "All forces"});
     cb->setCallback([this](int index) {
         FluidParticle::colorType = (SPHColor)index;
     });
@@ -219,10 +222,11 @@ Viewer::draw(
 void
 Viewer::drawContents()
 {
+    // -- Update fps
     static double lastTime = glfwGetTime();
     double currentTime = glfwGetTime();
     double deltaTime = double(currentTime - lastTime);
-    m_fps = 1.0 / deltaTime;
+    m_fps = 1000.0 / deltaTime;
     m_labelFps->setCaption(to_string(m_fps));
 
 #ifdef TEST_SCENE

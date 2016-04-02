@@ -36,6 +36,10 @@ public:
 
     virtual void Update(const float deltaT);
 
+    inline const uint NumParticles() const {
+        return m_particles.size();
+    }
+
 protected:
 
     // -- Particle info
