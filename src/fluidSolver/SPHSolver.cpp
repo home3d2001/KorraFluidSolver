@@ -203,26 +203,38 @@ SPHSolver::UpdateDynamics(
     glm::vec3 newVel = particle->Velocity();
     if (particle->Position().x < m_minBoundary.x) {
         newPosition.x = m_minBoundary.x + 0.0f;
-        newVel.x = -newVel.x * 0.1;
+        newVel.x = -newVel.x * 0.5;
+        newVel.y *= 1.1;
+        newVel.z *= 1.1;
     } else if (particle->Position().x > m_maxBoundary.x) {
         newPosition.x = m_maxBoundary.x - 0.0f;
-        newVel.x = -newVel.x * 0.1;
+        newVel.x = -newVel.x * 0.5;
+        newVel.y *= 1.1;
+        newVel.z *= 1.1;
     }
 
     if (particle->Position().y < m_minBoundary.y) {
         newPosition.y = m_minBoundary.y + 0.0f;
-        newVel.y = -newVel.y * 0.1;
+        newVel.y = -newVel.y * 0.5;
+        newVel.x *= 1.1;
+        newVel.z *= 1.1;
     } else if (particle->Position().y > m_maxBoundary.y) {
         newPosition.y = m_maxBoundary.y - 0.0f;
-        newVel.y = -newVel.y * 0.1f;
+        newVel.y = -newVel.y * 0.5f;
+        newVel.x *= 1.1;
+        newVel.z *= 1.1;
     }
 
     if (particle->Position().z < m_minBoundary.z) {
         newPosition.z = m_minBoundary.z + 0.0f;
-        newVel.z = -newVel.z * 0.1;
+        newVel.z = -newVel.z * 0.5;
+        newVel.x *= 1.1;
+        newVel.y *= 1.1;
     } else if (particle->Position().z > m_maxBoundary.z) {
         newPosition.z = m_maxBoundary.z - 0.0f;
-        newVel.z = -newVel.z * 0.1;
+        newVel.z = -newVel.z * 0.5;
+        newVel.x *= 1.1;
+        newVel.y *= 1.1;
     }
 
     particle->SetPosition(newPosition);
