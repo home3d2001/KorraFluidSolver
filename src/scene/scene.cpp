@@ -91,6 +91,14 @@ Scene::InitFromJson(
         m_fluidSolver->ParticleColors()
         );
     m_fluidGeo->Create();
+
+    // -- Solid object
+    m_testBox = new Box();
+    m_testBox->Translate(0.2f, -0.7f, 0.0f);
+    m_testBox->Scale(0.2f, 0.2f, 0.2f);
+    m_testBox->SetDrawMode(DrawMode_Wireframe);
+    m_testBox->SetColor(glm::vec4(0.8f, 0.3f, 0.2f, 1.0f));
+    m_testBox->Create();
 }
 
 void
@@ -233,6 +241,7 @@ Scene::UpdateFluidSolver(
     ParticleAdvectProgram& progAdvect
     )
 {
+    m_fluidSolver->CheckBoxIntersection(m_testBox);
     m_fluidSolver->Update(deltaT);
     m_fluidGeo->SetVelocities(m_fluidSolver->ParticleVelocities());
     m_fluidGeo->SetPositions(m_fluidSolver->ParticlePositions());
@@ -253,4 +262,7 @@ Scene::DrawFluidSolver(
     // -- Draw particles
     m_fluidGeo->SetColors(m_fluidSolver->ParticleColors());
     progAdvect.Draw(m_camera, m_fluidGeo, m_fluidContainer);
+
+    // -- Draw solids
+    prog.Draw(*m_camera, *m_testBox);
 }

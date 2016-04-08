@@ -12,6 +12,9 @@ FluidSolver::FluidSolver(
         m_particleDim(particleDim),
         m_separation(separation)
 {
+    // -- Store separation in particle class
+    FluidParticle::separation = m_separation;
+
     // -- Initialize all particles
     float midX = m_particleDim.x / 2.f;
     float midY = m_particleDim.y / 2.f;

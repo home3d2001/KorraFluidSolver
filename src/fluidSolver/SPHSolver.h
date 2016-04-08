@@ -22,7 +22,7 @@ public:
         const glm::vec3& containerDim,
         const glm::vec3& particleDim,
         const float separation,
-        const float cellSize,
+        const double cellSize,
         const float stiffness,
         const float viscosity,
         const float mass,
@@ -36,6 +36,7 @@ public:
         float value
         );
     virtual void Update(const float deltaT);
+    void CheckBoxIntersection(Box* box);
     void AddParticle(FluidParticle*);
 
 protected:
@@ -43,11 +44,10 @@ protected:
     SPHGrid* m_grid;
 
     // -- Particle info
-    float m_cellSize;
     float m_stiffness;
     float m_viscosity;
     float m_restDensity;
-    float m_kernelRadius;
+    double m_kernelRadius;
 
     void CalculateDensity(
         FluidParticle* particle

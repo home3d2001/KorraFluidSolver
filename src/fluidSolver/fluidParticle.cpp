@@ -2,6 +2,7 @@
 
 float FluidParticle::mass = 0.125f;
 SPHColor FluidParticle::colorType = SPHColorSimple;
+float FluidParticle::separation = 0.05f;
 
 // ---------------------------------------------------- //
 // FluidParticle

@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -49,6 +50,12 @@ public:
     virtual void DisableVertexAttributes() const;
 
     // Getters/Setters
+    void SetColor(const glm::vec4& color) {
+        int len = m_colors.size();
+        for (int i = 0; i < len; ++i) {
+            m_colors[i] = color;
+        }
+    }
     void SetColors(const vector<glm::vec4>& colors) {
         m_colors = colors;
     };
@@ -56,6 +63,8 @@ public:
     void SetPositions(const std::vector<glm::vec3>& positions) {
         m_positions = positions;
     }
+
+    virtual glm::vec3 Intersect(const glm::vec3& position) {return position;}
 
     // -- Transformations
     void Translate(const float& x, const float& y, const float& z);

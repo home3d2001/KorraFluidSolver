@@ -54,7 +54,10 @@ find_package(GLEW)
 find_library(GLFW_LIBRARY "glfw3" HINTS ${GLFW_LIBRARY_DIR})
 find_library(JSONCPP "jsoncpp")
 find_library(TBB "tbb")
+# link half for openvdb
+find_library(HALF "half")
 find_library(OPENVDB "openvdb")
+# find_library(PARTIO "partio")
 find_library(NANOGUI "nanogui")
 
 add_definitions(
@@ -65,7 +68,7 @@ add_definitions(
         -D_CRT_SECURE_NO_WARNINGS
 )
 
-set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${TBB} ${OPENVDB} ${NANOGUI} ${OPENGL_LIBRARY} )
+set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${TBB} ${HALF} ${OPENVDB} ${NANOGUI} ${PARTIO} ${ZILB} ${OPENGL_LIBRARY} )
 
 # OSX-specific hacks/fixes
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -124,3 +127,11 @@ set(CORE_SRC
 
 add_executable(Korra ${CORE_SRC})
 target_link_libraries(Korra ${CORE_LIBS})
+
+# Include zlib for osx
+find_package( ZLIB REQUIRED )
+if ( ZLIB_FOUND )
+    include_directories( ${ZLIB_INCLUDE_DIRS} )
+    target_link_libraries( Korra ${ZLIB_LIBRARIES} )
+endif( ZLIB_FOUND )
+

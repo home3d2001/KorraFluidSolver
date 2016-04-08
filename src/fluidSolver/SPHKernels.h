@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include <thirdparty/easylogging++.h>
 
-inline float KernelPoly6(float x, float h)
+inline double KernelPoly6(double x, double h)
 {
     if (x < 0 || x > h) {
         return 0;
@@ -16,11 +16,11 @@ inline float KernelPoly6(float x, float h)
         return 0;
     }
     /// @todo: cache h2 and x2
-    float result = (315 * pow(h * h - x * x, 3.0f)) / (64.0f * M_PI * pow(h, 9.0f));
+    double result = (315 * pow(h * h - x * x, 3.0f)) / (64.0f * M_PI * pow(h, 9.0f));
     return result < 0.0f ? 0.0f : result;
 }
 
-inline float KernelSpiky(float x, float h)
+inline double KernelSpiky(double x, double h)
 {
     if (x < 0 || x > h) {
         return 0;
@@ -30,11 +30,11 @@ inline float KernelSpiky(float x, float h)
         return 0;
     }
 
-    float result = (15.0f * pow(h - x, 3.0f)) / (M_PI * pow(h, 6.0f));
+    double result = (15.0f * pow(h - x, 3.0f)) / (M_PI * pow(h, 6.0f));
     return result < 0.0 ? 0.0f : result;
 }
 
-inline glm::vec3 GradKernelSpiky(glm::vec3 x_vec, float x, float h)
+inline glm::vec3 GradKernelSpiky(glm::vec3 x_vec, double x, double h)
 {
     if (x <= 0 || x > h) {
         return glm::vec3(0.0f);
@@ -45,15 +45,15 @@ inline glm::vec3 GradKernelSpiky(glm::vec3 x_vec, float x, float h)
     }
 
     float scalarPart = -45.0f * (h - x) * (h - x) / (M_PI * pow(h, 6.0f));
-    return scalarPart * (x_vec) / x;
+    return scalarPart * (x_vec) / (float)x;
 }
 
-inline float LaplacianKernelViscous(float x, float h)
+inline double LaplacianKernelViscous(double x, double h)
 {
     return 45.0f * (h - x) / (M_PI * pow(h, 6.0f));
 }
 
-inline float KernelViscous(float x, float h)
+inline double KernelViscous(double x, double h)
 {
     if (x <= 0 || x > h) {
         return 0;

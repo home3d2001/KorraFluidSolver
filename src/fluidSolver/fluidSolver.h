@@ -12,6 +12,7 @@
 
 #include <thirdparty/easylogging++.h>
 #include <fluidSolver/fluidParticle.h>
+#include <geometry/box.h>
 
 using namespace tbb;
 
@@ -49,6 +50,7 @@ protected:
     glm::vec3 m_maxBoundary;
     float m_separation;
 
+    // @todo: convert to shared pointers
     std::vector<FluidParticle*> m_particles;
 };
 

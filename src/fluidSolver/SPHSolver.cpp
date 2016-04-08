@@ -7,24 +7,23 @@ SPHSolver::SPHSolver(
     const glm::vec3& containerDim,
     const glm::vec3& particleDim,
     const float separation,
-    const float cellSize,
+    const double cellSize,
     const float stiffness,
     const float viscosity,
     const float mass,
     const float restDensity
     ) : FluidSolver(containerDim, particleDim, separation, mass),
         m_grid(nullptr),
-        m_cellSize(cellSize),
         m_stiffness(stiffness),
         m_viscosity(viscosity),
         m_restDensity(restDensity),
-        m_kernelRadius(cellSize * 2.0f)
+        m_kernelRadius(cellSize * 2.0)
 {
     m_grid = new SPHGrid(
         m_particles,
         -m_containerDim,
         m_containerDim,
-        m_cellSize,
+        cellSize,
         true
     );
 
@@ -55,6 +54,22 @@ SPHSolver::SetConstant(
         case SPHMass:
             FluidParticle::mass = value;
             break;
+    }
+}
+
+void
+SPHSolver::CheckBoxIntersection(
+    Box* box
+    )
+{
+    for (FluidParticle* particle : m_particles) {
+        glm::vec3 newVel;
+        bool intersected = false;
+        glm::vec3 newPos = box->Intersect(particle->Position(), intersected, newVec);
+        if (intersected) {
+            particle->SetPosition(newPos);
+            particle->SetVelocity(particle->Velocity() + newVel);
+        }
     }
 }
 
@@ -145,7 +160,7 @@ SPHSolver::CalculatePressure(
     float pressure = m_stiffness * (particle->Density() - m_restDensity);
 
     // Clamp from being negative
-    pressure = pressure < 0.0 ? 0 : pressure;
+    // pressure = pressure < 0.0 ? 0 : pressure;
     particle->SetPressure(pressure);
 }
 

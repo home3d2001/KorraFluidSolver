@@ -1,5 +1,77 @@
 #include "SPHGrid.h"
 
+void
+SPHGrid::InitializeVdb(
+    const std::vector<FluidParticle*>& particles
+    )
+{
+    openvdb::initialize();
+
+    openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create(2.0);
+
+    CoordBBox indexBB(Coord(-10, -10, -10), Coord(10, 10, 10));
+    // CoordBBox indexBB(Coord(0, 0, 0), Coord(20, 20, 20));
+    MakeWaterSurface(grid, FluidParticle::separation, indexBB, m_cellSize, particles);
+
+    // specify dataset name
+    grid->setName("WaterSurface");
+
+    // save grid in the file
+    openvdb::io::File file("fluidGeo.vdb");
+    openvdb::GridPtrVec grids;
+    grids.push_back(grid);
+    file.write(grids);
+    file.close();
+}
+
+void
+SPHGrid::MakeWaterSurface(
+    FloatGrid::Ptr grid,
+    const float radius,
+    const CoordBBox& indexBB,
+    const double cellSize,
+    const std::vector<FluidParticle*>& particles
+    )
+{
+    double h = cellSize;
+    // radius = 5.0f;
+    h = 0.5;
+    typename FloatGrid::Accessor accessor = grid->getAccessor();
+
+    for (Int32 i = indexBB.min().x(); i <= indexBB.max().x(); ++i) {
+        for (Int32 j = indexBB.min().y(); j <= indexBB.max().y(); ++j) {
+            for (Int32 k = indexBB.min().z(); k <= indexBB.max().z(); ++k) {
+
+                // transform point (i, j, k) of index space into world space
+                glm::vec3 vecP = GetWorlCoord(glm::ivec3(i, j, k));
+                Vec3d p(vecP.x, vecP.y, vecP.z);
+                // Vec3d p(i * h, j * h, k * h);
+
+                // compute level set function value
+                float distance = 0;
+
+                // int cellIdx = GetCellIdx(i, j, k);
+                // std::vector<FluidParticle*> list = m_cells[cellIdx];
+
+                // LOG(INFO) << "Cell idx: " << to_string(cellIdx) << " with # particles: " << to_string(list.size()) << endl;
+
+                // for (FluidParticle* particle : particles) {
+                //     float voxelToParticle = glm::distance(particle->Position(), vecP);
+                //     // if (voxelToParticle < h * 2.0f) {
+                //         distance += voxelToParticle - radius;
+                //     // }
+                // }
+                distance = glm::length(vecP) - 1.0;
+                // LOG(INFO) << "voxel p: " << glm::to_string(vecP) << ", i: " << to_string(i) << ", j" << to_string(j) << ", k" << to_string(k) << ", distance: " << distance << endl;
+                // distance = sqrt(p.x() * p.x() + p.y() * p.y()) - radius;
+                accessor.setValue(Coord(i, j, k), distance);
+            }
+        }
+    }
+
+    grid->setTransform(openvdb::math::Transform::createLinearTransform(h));
+}
+
 // ---------------------------------------------------- //
 // SPHGrid
 // ---------------------------------------------------- //
@@ -7,7 +79,7 @@ SPHGrid::SPHGrid(
     const std::vector<FluidParticle*>& particles,
     const glm::vec3& gridMin,
     const glm::vec3& gridMax,
-    const float cellSize,
+    const double cellSize,
     const bool useGrid
     ) : m_width(1), m_height(1), m_depth(1),
         m_cellSize(cellSize), m_gridMin(gridMin), m_gridMax(gridMax),
@@ -19,28 +91,14 @@ SPHGrid::SPHGrid(
         m_depth = ceil((m_gridMax.z - m_gridMin.z) / m_cellSize);
         m_cells.resize(m_width * m_height * m_depth);
 
-        // LOG(INFO) << "Number of particles: " << particles.size() << endl;
-        // LOG(INFO) << "Grid dim: " << m_width << ", " << m_height << ", " << m_depth << endl;
     } else {
         // Grid size is only 1
         m_cells.resize(1);
     }
 
     this->ResetGrid(particles);
-}
 
-void
-InitializeVdb()
-{
-    // // -- Initialize openvdb
-    // openvdb::initialize();
-
-    // // Create an empty floating-point grid with background value 0.
-    // openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
-
-    // // Get an accessor for coordinate-based access to voxels.
-    // openvdb::FloatGrid::Accessor accessor = grid->getAccessor();
-
+    InitializeVdb(particles);
 }
 
 void
@@ -82,9 +140,10 @@ SPHGrid::GetCellIdx(
     const glm::vec3& position
     )
 {
-    int i = abs(position.x - m_gridMin.x) / m_cellSize;
-    int j = abs(position.y - m_gridMin.y) / m_cellSize;
-    int k = abs(position.z - m_gridMin.z) / m_cellSize;
+    glm::ivec3 coord = GetCellCoord(position);
+    int i = coord.x;
+    int j = coord.y;
+    int k = coord.z;
 
     // -- Error checking
     if (i < 0 || j < 0 || k < 0 || i >= m_width || j >= m_height || k >= m_depth) {
@@ -153,6 +212,18 @@ SPHGrid::GetCellCoord(
         );
 }
 
+glm::vec3
+SPHGrid::GetWorlCoord(
+    const glm::ivec3& cellCoord
+    )
+{
+    return glm::vec3(
+        cellCoord.x * m_cellSize + m_gridMin.x,
+        cellCoord.y * m_cellSize + m_gridMin.y,
+        cellCoord.z * m_cellSize + m_gridMin.z
+        );
+}
+
 void
 SPHGrid::UpdateNeighbors(
     FluidParticle* particle
@@ -214,7 +285,7 @@ SPHGrid::UpdateNeighborsUniformGrid(
 
                 glm::vec3 particlePosition = particle->Position();
                 for(FluidParticle* neighbor : m_cells[idx]) {
-                    if (glm::distance(neighbor->Position(), particlePosition) < m_cellSize * 2 &&
+                    if (glm::distance(neighbor->Position(), particlePosition) < m_cellSize * 2.0 &&
                         neighbor != particle) {
 
                         if(!particle->AddNeighbor(neighbor)) {

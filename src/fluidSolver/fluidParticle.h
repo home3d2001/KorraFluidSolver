@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <mathConstants.h>
 
 using namespace std;
@@ -27,6 +28,7 @@ public:
 
     static float mass;
     static SPHColor colorType;
+    static float separation;
 
     FluidParticle();
     FluidParticle(
