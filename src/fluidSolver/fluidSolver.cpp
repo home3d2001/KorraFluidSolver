@@ -12,6 +12,9 @@ FluidSolver::FluidSolver(
         m_particleDim(particleDim),
         m_separation(separation)
 {
+    /* initialize random seed: */
+    srand (time(NULL));
+
     // -- Initialize all particles
     float midX = m_particleDim.x / 2.f;
     float midY = m_particleDim.y / 2.f;
@@ -22,9 +25,12 @@ FluidSolver::FluidSolver(
         {
             for (float z = -midZ; z < midX; z += m_separation)
             {
+                float jitterx = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+                float jittery = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+                float jitterz = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
                 m_particles.push_back(
                     new FluidParticle(
-                        glm::vec3(x, y, z),
+                        glm::vec3(x + jitterx / 10.0f, y + jittery / 10.0f, z + jitterz / 10.0f),
                         glm::vec3(0.0f, 0.0f, 0.0f),
                         glm::vec4(0.3f, 0.3f, 1.0f, 1.0f)
                         )

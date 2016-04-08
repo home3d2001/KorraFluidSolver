@@ -4,29 +4,21 @@
 // SPHGrid
 // ---------------------------------------------------- //
 SPHGrid::SPHGrid(
-    const std::vector<FluidParticle*>& particles,
+    std::vector<FluidParticle*>& particles,
     const glm::vec3& gridMin,
     const glm::vec3& gridMax,
-    const float cellSize,
-    const bool useGrid
+    const float cellSize
     ) : m_width(1), m_height(1), m_depth(1),
-        m_cellSize(cellSize), m_gridMin(gridMin), m_gridMax(gridMax),
-        m_useGrid(useGrid)
+        m_cellSize(cellSize), m_gridMin(gridMin), m_gridMax(gridMax)
 {
-    if (useGrid) {
-        m_width = ceil((m_gridMax.x - m_gridMin.x) / m_cellSize);
-        m_height = ceil((m_gridMax.y - m_gridMin.y) / m_cellSize);
-        m_depth = ceil((m_gridMax.z - m_gridMin.z) / m_cellSize);
-        m_cells.resize(m_width * m_height * m_depth);
-
-        // LOG(INFO) << "Number of particles: " << particles.size() << endl;
-        // LOG(INFO) << "Grid dim: " << m_width << ", " << m_height << ", " << m_depth << endl;
-    } else {
-        // Grid size is only 1
-        m_cells.resize(1);
-    }
+    // -- Initialize uniform grid
+    m_width = ceil((m_gridMax.x - m_gridMin.x) / m_cellSize);
+    m_height = ceil((m_gridMax.y - m_gridMin.y) / m_cellSize);
+    m_depth = ceil((m_gridMax.z - m_gridMin.z) / m_cellSize);
+    m_cells.resize(m_width * m_height * m_depth);
 
     this->ResetGrid(particles);
+
 }
 
 void
@@ -43,38 +35,88 @@ InitializeVdb()
 
 }
 
-void
-SPHGrid::ResetGrid(
-    const std::vector<FluidParticle*>& particles
-    )
-{
-    for(FluidParticle* p : particles) {
-        AddParticle(p);
-    }
-}
-
-// Add particle to grid based on its position
-void
-SPHGrid::AddParticle(
+void Insert(
+    std::vector<FluidParticle*>& list,
+    int index,
     FluidParticle* particle
     )
 {
-    if (!m_useGrid) {
-        // No grid, push particle in normally
-        m_cells[0].push_back(particle);
-    } else {
+    // Shift values over
+    int i;
+    for (i = index; i >= 0, particle->m_cellIdx <= list[i]->m_cellIdx; --i) {
+        list[i + 1] = list[i];
+    }
+    // Insert particle in the correct place
+    list[i + 1] = particle;
+}
+
+void InsertionSort(
+    std::vector<FluidParticle*>& list
+    )
+{
+    int len = list.size();
+    for (int i = 1; i < len; ++i) {
+        Insert(list, i - 1, list[i]);
+    }
+}
+
+void
+SPHGrid::ResetGrid(
+    std::vector<FluidParticle*>& particles
+    )
+{
+    // -- Set cell index for each particle
+    int len = particles.size();
+    parallel_for(0, len, [&](int particleIdx) {
+
+        FluidParticle* particle = particles[particleIdx];
+
         // Add particle to grid based on its position
-        int idx = GetCellIdx(particle->Position());
-        if (idx > m_cells.size() || idx < 0) {
-            // LOG(WARNING) << "Error adding particle " + idx << endl;
-            return;
+        int cellIdx = GetCellIdx(particle->Position());
+        if (cellIdx < m_cells.size() && cellIdx >= 0) {
+            particle->m_cellIdx = cellIdx;
+        }
+    });
+
+    // -- Sort particles based on cell index
+    // InsertionSort(particles);
+
+    // -- Initialize cell idx
+    len = m_cells.size();
+    parallel_for(0, len, [&](int cellIdx) {
+        m_cells[cellIdx] = std::make_pair(-1, 0); // -1 for invalid
+    });
+
+    // -- Update cell values based on sorted particle list
+    len = particles.size();
+    for (int particleIdx = 0; particleIdx < len; ++particleIdx) {
+
+        int cellIdx = particles[particleIdx]->m_cellIdx;
+        if (m_cells[cellIdx].first = -1) {
+            // If there are no particles yet in the cell, add the first one
+            m_cells[cellIdx].first = particleIdx;
+            if (particleIdx == 0) {
+
+            }
         }
 
-        // If the particle isn't added to the cell yet, add it now
-        if (std::find(m_cells[idx].begin(), m_cells[idx].end(),particle) == m_cells[idx].end()) {
-            m_cells[idx].push_back(particle);
+        ++m_cells[cellIdx].second;
+    }
+
+    for (int i = 0; i < m_cells.size(); ++i) {
+        if (m_cells[i].first != -1) {
+            LOG(INFO) << "cell #" << to_string(i) << ", first particle: " << to_string(m_cells[i].first) << ", # particles: " << to_string(m_cells[i].second) << endl;
         }
     }
+
+    // -- Update neighbors
+    len = particles.size();
+    for(int i = 0; i < len; ++i) {
+        // LOG(DEBUG) << "neighbor: " << particles[i]->m_cellIdx << endl;
+        // LOG(INFO) << "1: " << to_string(m_cells[cellIdx].first) << ", 2: " << to_string(m_cells[cellIdx].second) << endl;
+
+        // this->UpdateNeighbors(particles[i], particles);
+    };
 }
 
 int
@@ -155,43 +197,13 @@ SPHGrid::GetCellCoord(
 
 void
 SPHGrid::UpdateNeighbors(
-    FluidParticle* particle
+    FluidParticle* particle,
+    const std::vector<FluidParticle*>& particles
     )
 {
     particle->ResetNeighborCount();
-    if (m_useGrid) {
-        this->UpdateNeighborsUniformGrid(particle);
-    } else {
-        this->UpdateNeighborsSimple(particle);
-    }
-}
+    glm::vec3 particlePosition = particle->Position();
 
-
-void
-SPHGrid::UpdateNeighborsSimple(
-    FluidParticle* particle
-    )
-{
-    size_t len = m_cells[0].size();
-
-    for (size_t i = 0; i < len; ++i) {
-        FluidParticle* neighbor = m_cells[0][i];
-        if (glm::distance(neighbor->Position(), particle->Position()) < m_cellSize &&
-            neighbor != particle) {
-
-            if(!particle->AddNeighbor(neighbor)) {
-                // Can't add more neighbors to limit, stop loop
-                break;
-            }
-        }
-    }
-}
-
-void
-SPHGrid::UpdateNeighborsUniformGrid(
-    FluidParticle* particle
-    )
-{
     // -- Use grid to search neighbor
     glm::ivec3 cellCoord = this->GetCellCoord(particle->Position());
 
@@ -210,18 +222,32 @@ SPHGrid::UpdateNeighborsUniformGrid(
                     continue;
                 }
 
-                int idx = this->GetCellIdx(i + cellCoord.x, j + cellCoord.y, k + cellCoord.z);
+                int cellIdx = this->GetCellIdx(i + cellCoord.x, j + cellCoord.y, k + cellCoord.z);
+                static bool colored = false;
 
-                glm::vec3 particlePosition = particle->Position();
-                for(FluidParticle* neighbor : m_cells[idx]) {
+                // Unpack particles stored
+                int firstParticleIdx = m_cells[cellIdx].first;
+                int numParticlesInCell = m_cells[cellIdx].second;
+                for (int offset = 0; offset < numParticlesInCell; ++offset) {
+                    FluidParticle* neighbor = particles[firstParticleIdx + offset];
+
+
                     if (glm::distance(neighbor->Position(), particlePosition) < m_cellSize * 2 &&
                         neighbor != particle) {
 
-                        if(!particle->AddNeighbor(neighbor)) {
-                            // Can't add more neighbors to limit, stop loop
-                            break;
+                        if (particle->m_cellIdx == 10 & !colored) {
+                            // neighbor->SetColor(glm::vec4(1.0, 0, 0, 1));
                         }
+
+                        // if(!particle->AddNeighbor(neighbor)) {
+                        //     // Can't add more neighbors to limit, stop loop
+                        //     break;
+                        // }
                     }
+                }
+
+                if (particle->m_cellIdx == 10) {
+                    colored = true;
                 }
             }
         }

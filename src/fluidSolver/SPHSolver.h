@@ -36,7 +36,6 @@ public:
         float value
         );
     virtual void Update(const float deltaT);
-    void AddParticle(FluidParticle*);
 
 protected:
 

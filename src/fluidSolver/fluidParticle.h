@@ -69,20 +69,21 @@ public:
     inline void SetViscosityForce(const glm::vec3& viscosityForce) { m_viscosityForce = viscosityForce; }
     inline const float& SpawnTime() const { return m_spawnTime; }
     inline void SetSpawnTime(float spawnTime) { m_spawnTime = spawnTime; }
-    inline void ResetNeighborCount() { neighborsCount = 0; }
+    inline void ResetNeighborCount() { m_neighborsCount = 0; }
 
     // @return true if successful
     inline bool AddNeighbor(FluidParticle* neighbor) {
-        if (neighborsCount < NEIGHBORS_MAX) {
-            neighbors[neighborsCount++] = neighbor;
+        if (m_neighborsCount < NEIGHBORS_MAX) {
+            m_neighbors[m_neighborsCount++] = neighbor;
             return true;
         } else {
             return false;
         }
     }
 
-    FluidParticle* neighbors[NEIGHBORS_MAX];
-    size_t neighborsCount = 0;
+    FluidParticle* m_neighbors[NEIGHBORS_MAX];
+    size_t m_neighborsCount = 0;
+    int m_cellIdx = -1;
 
 protected:
     glm::vec3 m_pos;
@@ -95,5 +96,10 @@ protected:
     float m_density = 1.0f;
     float m_spawnTime = 0.0f;
 };
+
+// Comparator
+inline bool FluidParticleComp(FluidParticle* a, FluidParticle* b) {
+    return a->m_cellIdx < b->m_cellIdx;
+}
 
 #endif

@@ -24,11 +24,10 @@ SPHSolver::SPHSolver(
         m_particles,
         -m_containerDim,
         m_containerDim,
-        m_cellSize,
-        true
+        m_cellSize
     );
 
-    srand(time(NULL));
+    m_grid->ResetGrid(m_particles);
 }
 
 SPHSolver::~SPHSolver()
@@ -63,18 +62,13 @@ SPHSolver::Update(
     const float deltaT
     )
 {
-    m_grid->ResetGrid(m_particles);
+    // -- Update particle's cell indices and their neighbors
+    // m_grid->ResetGrid(m_particles);
 
 #define USE_TBB
 #ifdef USE_TBB
-    // -- Search all neighbors
-    int len = m_particles.size();
-    parallel_for(0, len, [&](int i) {
-        FluidParticle* p = m_particles[i];
-        m_grid->UpdateNeighbors(p);
-    });
-
     // -- Calculate density & pressures
+    int len = m_particles.size();
     parallel_for(0, len, [&](int i) {
         FluidParticle* p = m_particles[i];
         this->CalculateDensity(p);
@@ -128,8 +122,8 @@ SPHSolver::CalculateDensity(
 {
     // -- Compute density over a kernel function of neighbors
     float density = 0.f;
-    for (size_t i = 0; i < particle->neighborsCount; ++i) {
-        FluidParticle* neighbor = particle->neighbors[i];
+    for (size_t i = 0; i < particle->m_neighborsCount; ++i) {
+        FluidParticle* neighbor = particle->m_neighbors[i];
         float tempDensity = KernelPoly6(glm::distance(neighbor->Position(), particle->Position()), m_kernelRadius);
         density += tempDensity;
     }
@@ -145,7 +139,7 @@ SPHSolver::CalculatePressure(
     float pressure = m_stiffness * (particle->Density() - m_restDensity);
 
     // Clamp from being negative
-    pressure = pressure < 0.0 ? 0 : pressure;
+    // pressure = pressure < 0.0 ? 0 : pressure;
     particle->SetPressure(pressure);
 }
 
@@ -156,8 +150,8 @@ SPHSolver::CalculatePressureForceField(
 {
     // -- Compute pressure gradient
     glm::vec3 pressureGrad(0.0f);
-    for (size_t i = 0; i < particle->neighborsCount; ++i) {
-        FluidParticle* neighbor = particle->neighbors[i];
+    for (size_t i = 0; i < particle->m_neighborsCount; ++i) {
+        FluidParticle* neighbor = particle->m_neighbors[i];
         glm::vec3 r = particle->Position() - neighbor->Position();
         float x = glm::distance(neighbor->Position(), particle->Position());
         glm::vec3 kernelGrad = GradKernelSpiky(r, x, m_kernelRadius);
@@ -179,8 +173,8 @@ SPHSolver::CalculateViscosityForceField(
     )
 {
     glm::vec3 viscosityForce(0.0f);
-    for (size_t i = 0; i < particle->neighborsCount; ++i) {
-        FluidParticle* neighbor = particle->neighbors[i];
+    for (size_t i = 0; i < particle->m_neighborsCount; ++i) {
+        FluidParticle* neighbor = particle->m_neighbors[i];
         float laplacianKernelViscous = LaplacianKernelViscous(glm::distance(particle->Position(), neighbor->Position()), m_kernelRadius);
         glm::vec3 tempVisForce = (neighbor->Velocity() - particle->Velocity()) * laplacianKernelViscous / neighbor->Density();
         viscosityForce += tempVisForce;
