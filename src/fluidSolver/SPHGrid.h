@@ -10,6 +10,9 @@
 #include <tbb/tbb.h>
 #include <openvdb/openvdb.h>
 #include <openvdb/tools/LevelSetSphere.h>
+// #include <PointDataGrid.h>
+// #include <PointConversion.h>
+// #include <PointCount.h>
 #include <thirdparty/easylogging++.h>
 
 #include <mathConstants.h>

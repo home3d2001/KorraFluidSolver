@@ -9,8 +9,8 @@ SPHGrid::InitializeVdb(
 
     openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create(2.0);
 
-    CoordBBox indexBB(Coord(-10, -10, -10), Coord(10, 10, 10));
-    // CoordBBox indexBB(Coord(0, 0, 0), Coord(20, 20, 20));
+    // CoordBBox indexBB(Coord(-10, -10, -10), Coord(10, 10, 10));
+    CoordBBox indexBB(Coord(0, 0, 0), Coord(20, 20, 20));
     MakeWaterSurface(grid, FluidParticle::separation, indexBB, m_cellSize, particles);
 
     // specify dataset name
@@ -35,7 +35,7 @@ SPHGrid::MakeWaterSurface(
 {
     double h = cellSize;
     // radius = 5.0f;
-    h = 0.5;
+    // h = 0.5;
     typename FloatGrid::Accessor accessor = grid->getAccessor();
 
     for (Int32 i = indexBB.min().x(); i <= indexBB.max().x(); ++i) {
@@ -45,26 +45,22 @@ SPHGrid::MakeWaterSurface(
                 // transform point (i, j, k) of index space into world space
                 glm::vec3 vecP = GetWorlCoord(glm::ivec3(i, j, k));
                 Vec3d p(vecP.x, vecP.y, vecP.z);
-                // Vec3d p(i * h, j * h, k * h);
 
                 // compute level set function value
-                float distance = 0;
+                float distance = 9999;
 
-                // int cellIdx = GetCellIdx(i, j, k);
-                // std::vector<FluidParticle*> list = m_cells[cellIdx];
+                int cellIdx = GetCellIdx(i, j, k);
+                std::vector<FluidParticle*> list = m_cells[cellIdx];
 
-                // LOG(INFO) << "Cell idx: " << to_string(cellIdx) << " with # particles: " << to_string(list.size()) << endl;
-
-                // for (FluidParticle* particle : particles) {
-                //     float voxelToParticle = glm::distance(particle->Position(), vecP);
-                //     // if (voxelToParticle < h * 2.0f) {
-                //         distance += voxelToParticle - radius;
-                //     // }
-                // }
-                distance = glm::length(vecP) - 1.0;
-                // LOG(INFO) << "voxel p: " << glm::to_string(vecP) << ", i: " << to_string(i) << ", j" << to_string(j) << ", k" << to_string(k) << ", distance: " << distance << endl;
-                // distance = sqrt(p.x() * p.x() + p.y() * p.y()) - radius;
-                accessor.setValue(Coord(i, j, k), distance);
+                for (FluidParticle* particle : list) {
+                    float voxelToParticle = glm::distance(particle->Position(), vecP) - radius;
+                    if (voxelToParticle < distance) {
+                        distance = voxelToParticle;
+                    }
+                }
+                if (distance < 9999) {
+                    accessor.setValue(Coord(i, j, k), distance);
+                }
             }
         }
     }

@@ -12,6 +12,7 @@ Scene::Scene(
     const float& screenHeight
     ) :
     m_testBox(nullptr),
+    m_testBoxV(nullptr),
     m_fluidContainer(nullptr),
     m_fluidGeo(nullptr),
     m_fluidSolver(nullptr)
@@ -23,7 +24,7 @@ Scene::Scene(
 void
 Scene::InitFromTestScene()
 {
-    m_testBox = new Box();
+    m_testBox = new Box(DrawMode_Wireframe);
     m_testBox->SetDrawMode(DrawMode_Wireframe);
     m_testBox->Create();
 }
@@ -51,9 +52,8 @@ Scene::InitFromJson(
         );
 
     // Create geometry for the container
-    m_fluidContainer = new Box();
+    m_fluidContainer = new Box(DrawMode_Wireframe);
     m_fluidContainer->Scale(containerDim.x, containerDim.y, containerDim.z);
-    m_fluidContainer->SetDrawMode(DrawMode_Wireframe);
     m_fluidContainer->Create();
 
     // -- Get particle information
@@ -93,12 +93,17 @@ Scene::InitFromJson(
     m_fluidGeo->Create();
 
     // -- Solid object
-    m_testBox = new Box();
-    m_testBox->Translate(0.2f, -0.7f, 0.0f);
-    m_testBox->Scale(0.2f, 0.2f, 0.2f);
-    m_testBox->SetDrawMode(DrawMode_Wireframe);
+    m_testBox = new Box(DrawMode_Shaded);
+    m_testBox->Translate(0.0f, -1.0f, 0.1f);
+    m_testBox->Scale(1.0f, 0.2f, 0.9f);
     m_testBox->SetColor(glm::vec4(0.8f, 0.3f, 0.2f, 1.0f));
     m_testBox->Create();
+
+    m_testBoxV = new Box(DrawMode_Shaded);
+    m_testBoxV->Translate(-1.0f, 0.0f, 0.0f);
+    m_testBoxV->Scale(0.2f, 1.0f, 0.9f);
+    m_testBoxV->SetColor(glm::vec4(0.3f, 0.8f, 0.2f, 1.0f));
+    m_testBoxV->Create();
 }
 
 void
@@ -142,6 +147,13 @@ Scene::Update(
     if (m_paused) {
         return;
     }
+    // Rotate solid
+    m_testBox->Rotate(0.0f, deltaT * 100.0f, 0.0f);
+    m_testBox->Translate(0.0f, cos(deltaT) * 0.05f, 0.0f);
+
+    m_testBoxV->Translate(cos(deltaT) * 0.05f, 0.0f, 0.0f);
+
+    // Update solver
     UpdateFluidSolver(deltaT, progAdvect);
 }
 
@@ -242,6 +254,7 @@ Scene::UpdateFluidSolver(
     )
 {
     m_fluidSolver->CheckBoxIntersection(m_testBox);
+    m_fluidSolver->CheckBoxIntersection(m_testBoxV);
     m_fluidSolver->Update(deltaT);
     m_fluidGeo->SetVelocities(m_fluidSolver->ParticleVelocities());
     m_fluidGeo->SetPositions(m_fluidSolver->ParticlePositions());
@@ -256,13 +269,15 @@ Scene::DrawFluidSolver(
     ParticleAdvectProgram& progAdvect
     )
 {
-    // -- Draw boundary
+    // -- Draw container
     prog.Draw(*m_camera, *m_fluidContainer);
+
+    // -- Draw solids
+    prog.Draw(*m_camera, *m_testBox);
+    prog.Draw(*m_camera, *m_testBoxV);
 
     // -- Draw particles
     m_fluidGeo->SetColors(m_fluidSolver->ParticleColors());
     progAdvect.Draw(m_camera, m_fluidGeo, m_fluidContainer);
 
-    // -- Draw solids
-    prog.Draw(*m_camera, *m_testBox);
 }

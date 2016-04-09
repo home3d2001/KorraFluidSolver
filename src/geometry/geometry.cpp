@@ -38,6 +38,14 @@ Geometry::EnableVertexAttributes() const
     glBindBuffer(GL_ARRAY_BUFFER, m_posBuffer);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, m_norBuffer);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, m_colBuffer);
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
     // Bind element buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_idxBuffer);
 }
@@ -47,6 +55,8 @@ Geometry::DisableVertexAttributes() const
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
     glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
     glBindVertexArray(NULL);
 }
@@ -114,6 +124,22 @@ Geometry::UpdateVAO()
         GL_ARRAY_BUFFER,
         m_positions.size() * sizeof(glm::vec3),
         &m_positions[0],
+        GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, NULL);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_norBuffer);
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        m_normals.size() * sizeof(glm::vec3),
+        &m_normals[0],
+        GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, NULL);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_colBuffer);
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        m_colors.size() * sizeof(glm::vec4),
+        &m_colors[0],
         GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
 

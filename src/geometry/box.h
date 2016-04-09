@@ -16,6 +16,7 @@ typedef enum {
 class Box : public Geometry
 {
 public:
+    Box(DrawMode mode);
     virtual void Create();
     virtual glm::vec3 Intersect(
         const glm::vec3& position,

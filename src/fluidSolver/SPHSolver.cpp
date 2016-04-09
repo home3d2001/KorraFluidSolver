@@ -65,10 +65,10 @@ SPHSolver::CheckBoxIntersection(
     for (FluidParticle* particle : m_particles) {
         glm::vec3 newVel;
         bool intersected = false;
-        glm::vec3 newPos = box->Intersect(particle->Position(), intersected, newVec);
+        glm::vec3 newPos = box->Intersect(particle->Position(), newVel, intersected);
         if (intersected) {
             particle->SetPosition(newPos);
-            particle->SetVelocity(particle->Velocity() + newVel);
+            particle->SetVelocity(particle->Velocity() + 2.0f * newVel);
         }
     }
 }
@@ -160,7 +160,7 @@ SPHSolver::CalculatePressure(
     float pressure = m_stiffness * (particle->Density() - m_restDensity);
 
     // Clamp from being negative
-    // pressure = pressure < 0.0 ? 0 : pressure;
+    pressure = pressure < 0.0 ? 0 : pressure;
     particle->SetPressure(pressure);
 }
 
@@ -219,37 +219,37 @@ SPHSolver::UpdateDynamics(
     if (particle->Position().x < m_minBoundary.x) {
         newPosition.x = m_minBoundary.x + 0.0f;
         newVel.x = -newVel.x * 0.5;
-        newVel.y *= 1.1;
-        newVel.z *= 1.1;
+        newVel.y *= 0.9;
+        newVel.z *= 0.9;
     } else if (particle->Position().x > m_maxBoundary.x) {
         newPosition.x = m_maxBoundary.x - 0.0f;
         newVel.x = -newVel.x * 0.5;
-        newVel.y *= 1.1;
-        newVel.z *= 1.1;
+        newVel.y *= 0.9;
+        newVel.z *= 0.9;
     }
 
     if (particle->Position().y < m_minBoundary.y) {
         newPosition.y = m_minBoundary.y + 0.0f;
         newVel.y = -newVel.y * 0.5;
-        newVel.x *= 1.1;
-        newVel.z *= 1.1;
+        newVel.x *= 0.9;
+        newVel.z *= 0.9;
     } else if (particle->Position().y > m_maxBoundary.y) {
         newPosition.y = m_maxBoundary.y - 0.0f;
         newVel.y = -newVel.y * 0.5f;
-        newVel.x *= 1.1;
-        newVel.z *= 1.1;
+        newVel.x *= 0.9;
+        newVel.z *= 0.9;
     }
 
     if (particle->Position().z < m_minBoundary.z) {
         newPosition.z = m_minBoundary.z + 0.0f;
         newVel.z = -newVel.z * 0.5;
-        newVel.x *= 1.1;
-        newVel.y *= 1.1;
+        newVel.x *= 0.9;
+        newVel.y *= 0.9;
     } else if (particle->Position().z > m_maxBoundary.z) {
         newPosition.z = m_maxBoundary.z - 0.0f;
         newVel.z = -newVel.z * 0.5;
-        newVel.x *= 1.1;
-        newVel.y *= 1.1;
+        newVel.x *= 0.9;
+        newVel.y *= 0.9;
     }
 
     particle->SetPosition(newPosition);

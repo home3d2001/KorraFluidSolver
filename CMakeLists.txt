@@ -33,7 +33,7 @@ endif()
 
 # set creates a variable
 set (THIRDPARTY "src/thirdparty")
-# add include and src directories to path
+# add include and src directories to path for nanogui
 include_directories(
         ${THIRDPARTY}/nanogui/include
         ${THIRDPARTY}/nanogui/src
@@ -41,6 +41,17 @@ include_directories(
 
 # NanoGUI library path
 set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${THIRDPARTY}/nanogui)
+
+# add include and src directories to path for openvdb_points
+include_directories(
+        ${THIRDPARTY}/
+        ${THIRDPARTY}/openvdb_points_dev/
+        ${THIRDPARTY}/openvdb_points_dev/openvdb_points/
+        ${THIRDPARTY}/openvdb_points_dev/openvdb_points/tools/
+)
+
+# OpenVDB point library path
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${THIRDPARTY}/openvdb_points_dev/lib)
 
 #set include variables
 set(GLFW_INCLUDE_DIR ${NUPARU}/include )
@@ -57,8 +68,8 @@ find_library(TBB "tbb")
 # link half for openvdb
 find_library(HALF "half")
 find_library(OPENVDB "openvdb")
-# find_library(PARTIO "partio")
 find_library(NANOGUI "nanogui")
+find_library(OPENVDB_POINT "openvdb_points")
 
 add_definitions(
         -DTW_STATIC
@@ -68,7 +79,7 @@ add_definitions(
         -D_CRT_SECURE_NO_WARNINGS
 )
 
-set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${TBB} ${HALF} ${OPENVDB} ${NANOGUI} ${PARTIO} ${ZILB} ${OPENGL_LIBRARY} )
+set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${TBB} ${HALF} ${OPENVDB} ${OPENVDB_POINT} ${NANOGUI} ${ZILB} ${OPENGL_LIBRARY} )
 
 # OSX-specific hacks/fixes
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")

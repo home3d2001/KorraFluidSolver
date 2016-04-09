@@ -49,6 +49,7 @@ protected:
     bool m_paused = false;
     Camera* m_camera;
     Box* m_testBox;
+    Box* m_testBoxV;
     Box* m_fluidContainer;
     FluidGeo* m_fluidGeo;
     SPHSolver* m_fluidSolver;

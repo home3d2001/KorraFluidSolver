@@ -51,9 +51,10 @@ public:
 
     // Getters/Setters
     void SetColor(const glm::vec4& color) {
-        int len = m_colors.size();
+        m_colors.clear();
+        int len = m_positions.size();
         for (int i = 0; i < len; ++i) {
-            m_colors[i] = color;
+            m_colors.push_back(color);
         }
     }
     void SetColors(const vector<glm::vec4>& colors) {
@@ -63,6 +64,10 @@ public:
     void SetPositions(const std::vector<glm::vec3>& positions) {
         m_positions = positions;
     }
+
+    const GLuint PosBuffer() const { return m_posBuffer; }
+    const GLuint NorBuffer() const { return m_norBuffer; }
+    const GLuint ColBuffer() const { return m_colBuffer; }
 
     virtual glm::vec3 Intersect(const glm::vec3& position) {return position;}
 
@@ -77,6 +82,7 @@ protected:
     DrawMode m_drawMode = DrawMode_Shaded;
 
     vector<glm::vec3> m_positions;
+    vector<glm::vec3> m_normals;
     vector<glm::vec4> m_colors;
     vector<GLushort> m_indices;
 

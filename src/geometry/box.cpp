@@ -1,5 +1,16 @@
 #include "box.h"
 
+Box::Box(
+    DrawMode drawMode
+    )
+{
+    SetDrawMode(drawMode);
+    InitPositions();
+    InitNormals();
+    InitColors();
+    InitIndices();
+}
+
 const glm::vec3
 Box::GetMinBoundary() const
 {
@@ -48,34 +59,36 @@ Box::Intersect(
 
         switch(face) {
             case BoxFace_PosX:
-                localPos.x = 0.5f;
-                newVelocity = glm::vec3(-1.0f, 0.0f, 0.0f);
-                break;
-            case BoxFace_NegX:
-                localPos.x = -0.5f;
+                localPos.x = 0.6f;
                 newVelocity = glm::vec3(1.0f, 0.0f, 0.0f);
                 break;
-            case BoxFace_PosY:
-                localPos.y = 0.5f;
-                newVelocity = glm::vec3(0.0f, -1.0f, 0.0f);
+            case BoxFace_NegX:
+                localPos.x = -0.6f;
+                newVelocity = glm::vec3(-1.0f, 0.0f, 0.0f);
                 break;
-            case BoxFace_NegY:
-                localPos.y = -0.5f;
+            case BoxFace_PosY:
+                localPos.y = 0.6f;
                 newVelocity = glm::vec3(0.0f, 1.0f, 0.0f);
                 break;
-            case BoxFace_PosZ:
-                localPos.z = 0.5f;
-                newVelocity = glm::vec3(0.0f, 0.0f, -1.0f);
+            case BoxFace_NegY:
+                localPos.y = -0.6f;
+                newVelocity = glm::vec3(0.0f, -1.0f, 0.0f);
                 break;
-            case BoxFace_NegZ:
-                localPos.z = -0.5f;
+            case BoxFace_PosZ:
+                localPos.z = 0.6f;
                 newVelocity = glm::vec3(0.0f, 0.0f, 1.0f);
                 break;
+            case BoxFace_NegZ:
+                localPos.z = -0.6f;
+                newVelocity = glm::vec3(0.0f, 0.0f, -1.0f);
+                break;
         }
+        newVelocity = glm::vec3(m_localTransform * glm::vec4(newVelocity, 0.0f));
 
         intersected = true;
-        // std::cout << "Intersected: " << " global: " << glm::to_string(position) << ", local: " << glm::to_string(localPos) << endl;
-        return glm::vec3(m_localTransform * glm::vec4(position, 1.0f));
+
+        glm::vec3 positionWorld = glm::vec3(m_localTransform * glm::vec4(localPos, 1.0f));
+        return positionWorld;
     }
 
     return position;
@@ -150,13 +163,77 @@ Box::InitPositions()
 void
 Box::InitNormals()
 {
+    m_normals.clear();
+    // Front face
+    m_normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+    //LR
+    m_normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+    //LL
+    m_normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+    //UL
+    m_normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
 
+    //Right face
+    //UR
+    m_normals.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+    //LR
+    m_normals.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+    //LL
+    m_normals.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+    //UL
+    m_normals.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+
+    //Left face
+    //UR
+    m_normals.push_back(glm::vec3(-1.0f, 0.0f, 0.0f));
+    //LR
+    m_normals.push_back(glm::vec3(-1.0f, 0.0f, 0.0f));
+    //LL
+    m_normals.push_back(glm::vec3(-1.0f, 0.0f, 0.0f));
+    //UL
+    m_normals.push_back(glm::vec3(-1.0f, 0.0f, 0.0f));
+
+    //Back face
+    //UR
+    m_normals.push_back(glm::vec3(0.0f, 0.0f, -1.0f));
+    //LR
+    m_normals.push_back(glm::vec3(0.0f, 0.0f, -1.0f));
+    //LL
+    m_normals.push_back(glm::vec3(0.0f, 0.0f, -1.0f));
+    //UL
+    m_normals.push_back(glm::vec3(0.0f, 0.0f, -1.0f));
+
+    //Top face
+    //UR
+    m_normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+    //LR
+    m_normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+    //LL
+    m_normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+    //UL
+    m_normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+
+    //Bottom face
+    //UR
+    m_normals.push_back(glm::vec3(0.0f, -1.0f, 0.0f));
+    //LR
+    m_normals.push_back(glm::vec3(0.0f, -1.0f, 0.0f));
+    //LL
+    m_normals.push_back(glm::vec3(0.0f, -1.0f, 0.0f));
+    //UL
+    m_normals.push_back(glm::vec3(0.0f, -1.0f, 0.0f));
 }
 
 void
 Box::InitColors()
 {
-
+    if (m_colors.size() == 0) {
+        // Set default color
+        int len = m_positions.size();
+        for (int i = 0; i < len; ++i) {
+            m_colors.push_back(glm::vec4(0, 1.0f, 1.0f, 1.0f));
+        }
+    }
 }
 
 void
@@ -194,11 +271,10 @@ Box::InitIndices()
 void
 Box::Create()
 {
-    InitPositions();
-    InitIndices();
-
     glGenVertexArrays(1, &m_vao);
     glGenBuffers(1, &m_posBuffer);
+    glGenBuffers(1, &m_norBuffer);
+    glGenBuffers(1, &m_colBuffer);
     glGenBuffers(1, &m_idxBuffer);
 
     UpdateVAO();

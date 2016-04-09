@@ -9,6 +9,11 @@ ShaderProgram::ShaderProgram(
 
     m_unifModel = glGetUniformLocation(m_programID, "u_model");
     m_unifViewProj = glGetUniformLocation(m_programID, "u_viewProj");
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
 }
 
 void
@@ -45,7 +50,8 @@ ShaderProgram::Draw(
     glDrawElements(
         geo.GLDrawMode(),
         geo.ElementCount(),
-        GL_UNSIGNED_SHORT, NULL
+        GL_UNSIGNED_SHORT,
+        NULL
         );
 
     geo.DisableVertexAttributes();
