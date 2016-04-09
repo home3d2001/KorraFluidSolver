@@ -1,15 +1,15 @@
 #include "SPHGrid.h"
 
 void
-SPHGrid::InitializeVdb(
-    const std::vector<FluidParticle*>& particles
+SPHGrid::WriteVdb(
+    const std::vector<FluidParticle*>& particles,
+    size_t frameNumber
     )
 {
     openvdb::initialize();
 
-    openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create(2.0);
+    openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create(10.0);
 
-    // CoordBBox indexBB(Coord(-10, -10, -10), Coord(10, 10, 10));
     CoordBBox indexBB(Coord(0, 0, 0), Coord(20, 20, 20));
     MakeWaterSurface(grid, FluidParticle::separation, indexBB, m_cellSize, particles);
 
@@ -17,7 +17,7 @@ SPHGrid::InitializeVdb(
     grid->setName("WaterSurface");
 
     // save grid in the file
-    openvdb::io::File file("fluidGeo.vdb");
+    openvdb::io::File file(string("geo/fluidGeo") + to_string(frameNumber) + string(".vdb"));
     openvdb::GridPtrVec grids;
     grids.push_back(grid);
     file.write(grids);
@@ -33,18 +33,14 @@ SPHGrid::MakeWaterSurface(
     const std::vector<FluidParticle*>& particles
     )
 {
-    double h = cellSize;
-    // radius = 5.0f;
-    // h = 0.5;
-    typename FloatGrid::Accessor accessor = grid->getAccessor();
+    FloatGrid::Accessor accessor = grid->getAccessor();
 
     for (Int32 i = indexBB.min().x(); i <= indexBB.max().x(); ++i) {
         for (Int32 j = indexBB.min().y(); j <= indexBB.max().y(); ++j) {
             for (Int32 k = indexBB.min().z(); k <= indexBB.max().z(); ++k) {
 
                 // transform point (i, j, k) of index space into world space
-                glm::vec3 vecP = GetWorlCoord(glm::ivec3(i, j, k));
-                Vec3d p(vecP.x, vecP.y, vecP.z);
+                glm::vec3 point = GetWorlCoord(glm::ivec3(i, j, k));
 
                 // compute level set function value
                 float distance = 9999;
@@ -53,7 +49,7 @@ SPHGrid::MakeWaterSurface(
                 std::vector<FluidParticle*> list = m_cells[cellIdx];
 
                 for (FluidParticle* particle : list) {
-                    float voxelToParticle = glm::distance(particle->Position(), vecP) - radius;
+                    float voxelToParticle = glm::distance(particle->Position(), point) - radius;
                     if (voxelToParticle < distance) {
                         distance = voxelToParticle;
                     }
@@ -65,7 +61,7 @@ SPHGrid::MakeWaterSurface(
         }
     }
 
-    grid->setTransform(openvdb::math::Transform::createLinearTransform(h));
+    grid->setTransform(openvdb::math::Transform::createLinearTransform(cellSize));
 }
 
 // ---------------------------------------------------- //
@@ -94,7 +90,6 @@ SPHGrid::SPHGrid(
 
     this->ResetGrid(particles);
 
-    InitializeVdb(particles);
 }
 
 void
@@ -105,6 +100,9 @@ SPHGrid::ResetGrid(
     for(FluidParticle* p : particles) {
         AddParticle(p);
     }
+
+    static size_t frameNumber = 0;
+    WriteVdb(particles, frameNumber++);
 }
 
 // Add particle to grid based on its position

@@ -4,15 +4,12 @@
 #include <time.h>
 #include <iostream>
 #include <vector>
+#include <string>
 #include <utility>
 #include <algorithm>
 #include <glm/glm.hpp>
 #include <tbb/tbb.h>
 #include <openvdb/openvdb.h>
-#include <openvdb/tools/LevelSetSphere.h>
-// #include <PointDataGrid.h>
-// #include <PointConversion.h>
-// #include <PointCount.h>
 #include <thirdparty/easylogging++.h>
 
 #include <mathConstants.h>
@@ -54,7 +51,10 @@ private:
     std::vector<std::vector<FluidParticle*>> m_cells;
 
     // -- Open vdb
-    void InitializeVdb(const std::vector<FluidParticle*>& particles);
+    void WriteVdb(
+        const std::vector<FluidParticle*>& particles,
+        size_t frameNumber
+        );
     void MakeWaterSurface(
         FloatGrid::Ptr grid,
         const float radius,
