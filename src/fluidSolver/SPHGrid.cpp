@@ -10,7 +10,7 @@ SPHGrid::WriteVdb(
 
     openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create(10.0);
 
-    CoordBBox indexBB(Coord(0, 0, 0), Coord(20, 20, 20));
+    CoordBBox indexBB(Coord(0, 0, 0), Coord(m_width, m_height, m_depth));
     MakeWaterSurface(grid, FluidParticle::separation, indexBB, m_cellSize, particles);
 
     // specify dataset name
@@ -164,6 +164,13 @@ SPHGrid::GetCellIdx(
 #else
     // -- Uses z-curve indexing
     // See https://en.wikipedia.org/wiki/Z-order_curve
+
+    auto key = make_tuple(i, j, k);
+    if (m_idxCache.find(key) != m_idxCache.end()) {
+        // We already cached the index, return the value
+        return m_idxCache[key];
+    }
+
     int i_temp = i;
     int j_temp = j;
     int k_temp = k;
@@ -190,6 +197,7 @@ SPHGrid::GetCellIdx(
         // LOG(ERROR) << "Get cell idx is negative " + idx << endl;
         return -1;
     }
+    m_idxCache[key] = idx;
 #endif
     return idx;
 }

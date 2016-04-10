@@ -4,6 +4,7 @@
 #include <time.h>
 #include <iostream>
 #include <vector>
+#include <tuple>
 #include <string>
 #include <utility>
 #include <algorithm>
@@ -48,7 +49,9 @@ private:
     glm::vec3 m_gridMax;
     bool m_useGrid;
 
+    // -- Grid
     std::vector<std::vector<FluidParticle*>> m_cells;
+    std::map<std::tuple<int, int, int>, int> m_idxCache;
 
     // -- Open vdb
     void WriteVdb(
