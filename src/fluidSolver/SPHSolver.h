@@ -5,6 +5,8 @@
 #include <fluidSolver/SPHGrid.h>
 #include <fluidSolver/SPHKernels.h>
 
+#define USE_TBB
+
 typedef enum {
     SPHStiffness,
     SPHViscosity,
@@ -21,6 +23,8 @@ public:
     SPHSolver(
         const glm::vec3& containerDim,
         const glm::vec3& particleDim,
+        const glm::vec3& particleCenter,
+        const float tankHeight,
         const float separation,
         const double cellSize,
         const float stiffness,

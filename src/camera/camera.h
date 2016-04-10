@@ -14,6 +14,8 @@ public:
     glm::mat4 GetViewProj() const;
     void EnablePerspective(bool enabled);
     void RecomputeAttributes();
+    inline const float Width() const { return m_width; }
+    inline const float Height() const { return m_height; }
 
     // -- Camera movement
     void RotateAboutRight(float deg);

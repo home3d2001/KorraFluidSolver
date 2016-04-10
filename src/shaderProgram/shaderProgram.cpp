@@ -1,4 +1,5 @@
 #include "shaderProgram.h"
+using namespace std;
 
 ShaderProgram::ShaderProgram(
         const char* vertFilePath,

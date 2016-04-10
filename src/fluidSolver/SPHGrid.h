@@ -11,6 +11,10 @@
 #include <glm/glm.hpp>
 #include <tbb/tbb.h>
 #include <openvdb/openvdb.h>
+// #include <openvdb_points/openvdb.h>
+// #include <openvdb_points/tools/PointDataGrid.h>
+// #include <openvdb_points/tools/PointConversion.h>
+// #include <openvdb_points/tools/PointCount.h>
 #include <thirdparty/easylogging++.h>
 
 #include <mathConstants.h>

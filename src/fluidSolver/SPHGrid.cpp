@@ -17,11 +17,45 @@ SPHGrid::WriteVdb(
     grid->setName("WaterSurface");
 
     // save grid in the file
-    openvdb::io::File file(string("geo/fluidGeo") + to_string(frameNumber) + string(".vdb"));
+    openvdb::io::File file(string("geo_tank/fluidGeo") + to_string(frameNumber) + string(".vdb"));
     openvdb::GridPtrVec grids;
     grids.push_back(grid);
     file.write(grids);
     file.close();
+
+
+
+    // Initialize the OpenVDB and OpenVDB Points library.  This must be called at least
+    // once per program and may safely be called multiple times.
+    // openvdb::initialize();
+    // openvdb::points::initialize();
+
+    // // Create some point positions
+    // std::vector<openvdb::Vec3f> positions;
+
+    // for (FluidParticle* p : particles) {
+    //     glm::vec3
+    //     positions.push_back(openvdb::Vec3f(p->Position().x, p->Position().y, p->Position().z));
+    // }
+
+    // // Create a linear transform with voxel size of 10.0
+    // const float voxelSize = 10.0f;
+    // openvdb::math::Transform::Ptr transform = openvdb::math::Transform::createLinearTransform(voxelSize);
+
+    // // Create the PointDataGrid, position attribute is mandatory
+    // PointDataGrid::Ptr pointDataGrid = createPointDataGrid<PointDataGrid>(
+    //                 positions, TypedAttributeArray<openvdb::Vec3f>::attributeType(), *transform);
+
+    // // Create a VDB file object.
+    // openvdb::io::File file("mygrids.vdb");
+
+    // // Add the grid pointer to a container.
+    // openvdb::GridPtrVec grids;
+    // grids.push_back(pointDataGrid);
+
+    // // Write out the contents of the container.
+    // file.write(grids);
+    // file.close();
 }
 
 void
@@ -102,7 +136,7 @@ SPHGrid::ResetGrid(
     }
 
     static size_t frameNumber = 0;
-    WriteVdb(particles, frameNumber++);
+    // WriteVdb(particles, frameNumber++);
 }
 
 // Add particle to grid based on its position

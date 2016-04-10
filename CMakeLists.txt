@@ -44,14 +44,14 @@ set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${THIRDPARTY}/nanogui)
 
 # add include and src directories to path for openvdb_points
 include_directories(
-        ${THIRDPARTY}/
-        ${THIRDPARTY}/openvdb_points_dev/
-        ${THIRDPARTY}/openvdb_points_dev/openvdb_points/
-        ${THIRDPARTY}/openvdb_points_dev/openvdb_points/tools/
+    /usr/local/include/openvdb/
+    /usr/local/openvdb/
+    /Library/Frameworks/Houdini.framework/Versions/15.0.347/Resources/toolkit/include/
 )
 
 # OpenVDB point library path
-set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${THIRDPARTY}/openvdb_points_dev/lib)
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/openvdb/lib)
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /Library/Frameworks/Houdini.framework/Versions/15.0.347/Libraries/)
 
 #set include variables
 set(GLFW_INCLUDE_DIR ${NUPARU}/include )
@@ -65,11 +65,10 @@ find_package(GLEW)
 find_library(GLFW_LIBRARY "glfw3" HINTS ${GLFW_LIBRARY_DIR})
 find_library(JSONCPP "jsoncpp")
 find_library(TBB "tbb")
-# link half for openvdb
+find_library(NANOGUI "nanogui")
 find_library(HALF "half")
 find_library(OPENVDB "openvdb")
-find_library(NANOGUI "nanogui")
-find_library(OPENVDB_POINT "openvdb_points")
+find_library(OPENVDB_POINTS "openvdb_points")
 
 add_definitions(
         -DTW_STATIC
@@ -79,7 +78,7 @@ add_definitions(
         -D_CRT_SECURE_NO_WARNINGS
 )
 
-set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${TBB} ${HALF} ${OPENVDB} ${OPENVDB_POINT} ${NANOGUI} ${ZILB} ${OPENGL_LIBRARY} )
+set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${TBB} ${HALF} ${OPENVDB} ${OPENVDB_POINTS} ${NANOGUI} ${OPENGL_LIBRARY} )
 
 # OSX-specific hacks/fixes
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -118,6 +117,7 @@ endif()
 
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
+        nuparu/src/stb_image/stb_image_write.c
         src/loadShaders.cpp
         src/utility.cpp
         src/main.cpp

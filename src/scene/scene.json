@@ -5,14 +5,20 @@
         "scaleZ" : 2.0
     },
     "particleDim" : {
-        "boundX" : 1.0,
-        "boundY" : 1.0,
-        "boundZ" : 1.0
+        "boundX" : 0.5,
+        "boundY" : 0.7,
+        "boundZ" : 0.5
     },
+    "particleCenter": {
+        "centerX": 0.2,
+        "centerY": 0.2,
+        "centerZ": 0.0
+    },
+    "tankHeight": 0.2,
     "stiffness": 10,
     "viscosity": 0.0,
     "mass": 0.125,
     "restDensity": 1000,
-    "cellSize": 0.100001,
+    "cellSize": 0.1,
     "particleSeparation": 0.05
 }

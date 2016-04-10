@@ -6,13 +6,15 @@
 SPHSolver::SPHSolver(
     const glm::vec3& containerDim,
     const glm::vec3& particleDim,
+    const glm::vec3& particleCenter,
+    const float tankHeight,
     const float separation,
     const double cellSize,
     const float stiffness,
     const float viscosity,
     const float mass,
     const float restDensity
-    ) : FluidSolver(containerDim, particleDim, separation, mass),
+    ) : FluidSolver(containerDim, particleDim, particleCenter, tankHeight, separation, mass),
         m_grid(nullptr),
         m_stiffness(stiffness),
         m_viscosity(viscosity),
@@ -80,7 +82,6 @@ SPHSolver::Update(
 {
     m_grid->ResetGrid(m_particles);
 
-#define USE_TBB
 #ifdef USE_TBB
     // -- Search all neighbors
     int len = m_particles.size();
@@ -142,12 +143,30 @@ SPHSolver::CalculateDensity(
     )
 {
     // -- Compute density over a kernel function of neighbors
-    float density = 0.f;
+
+#ifdef USE_TBB
+    float density = parallel_reduce(
+        blocked_range<FluidParticle**>( particle->neighbors, particle->neighbors + particle->neighborsCount ),
+        0.f,
+        [&](const blocked_range<FluidParticle**>& range, float init)->float {
+            for( FluidParticle** neighbor = range.begin(); neighbor != range.end(); ++neighbor)
+            {
+                init += KernelPoly6(glm::distance((*neighbor)->Position(), particle->Position()), m_kernelRadius);
+            }
+            return init;
+        },
+        []( float x, float y )->float {
+            return x + y;
+        }
+    );
+#else
+    float density = 0.0f;
     for (size_t i = 0; i < particle->neighborsCount; ++i) {
         FluidParticle* neighbor = particle->neighbors[i];
         float tempDensity = KernelPoly6(glm::distance(neighbor->Position(), particle->Position()), m_kernelRadius);
         density += tempDensity;
     }
+#endif;
     density = FluidParticle::mass * density;
     particle->SetDensity(density);
 }
@@ -160,7 +179,7 @@ SPHSolver::CalculatePressure(
     float pressure = m_stiffness * (particle->Density() - m_restDensity);
 
     // Clamp from being negative
-    pressure = pressure < 0.0 ? 0 : pressure;
+    // pressure = pressure < 0.0 ? 0 : pressure;
     particle->SetPressure(pressure);
 }
 
@@ -171,21 +190,52 @@ SPHSolver::CalculatePressureForceField(
 {
     // -- Compute pressure gradient
     glm::vec3 pressureGrad(0.0f);
+    float particleDensitySquared = particle->Density() * particle->Density();
+
+#ifdef USE_TBB
+    pressureGrad = parallel_reduce(
+        blocked_range<FluidParticle**>( particle->neighbors, particle->neighbors + particle->neighborsCount ),
+        glm::vec3(0.0),
+        [&](const blocked_range<FluidParticle**>& range, glm::vec3 init)->glm::vec3 {
+            for( FluidParticle** neighbor = range.begin(); neighbor != range.end(); ++neighbor )
+            {
+                glm::vec3 r = particle->Position() - (*neighbor)->Position();
+                float x = glm::distance((*neighbor)->Position(), particle->Position());
+                glm::vec3 kernelGrad = GradKernelSpiky(r, x, m_kernelRadius);
+
+                float neighborDensitySquared = (*neighbor)->Density() * (*neighbor)->Density();
+                float tempPressureForce =
+                    (
+                        (particle->Pressure() / particleDensitySquared) +
+                        ((*neighbor)->Pressure() / neighborDensitySquared)
+                    );
+                init += tempPressureForce * kernelGrad;
+            }
+            return init;
+        },
+        []( glm::vec3 x, glm::vec3 y )->glm::vec3 {
+            return x + y;
+        }
+    );
+#else
     for (size_t i = 0; i < particle->neighborsCount; ++i) {
         FluidParticle* neighbor = particle->neighbors[i];
         glm::vec3 r = particle->Position() - neighbor->Position();
         float x = glm::distance(neighbor->Position(), particle->Position());
         glm::vec3 kernelGrad = GradKernelSpiky(r, x, m_kernelRadius);
 
+        float neighborDensitySquared = neighbor->Density() * neighbor->Density();
         float tempPressureForce =
             (
-                particle->Pressure() / (pow(particle->Density(), 2.0f)) +
-                neighbor->Pressure() / (pow(neighbor->Density(), 2.0f))
+                particle->Pressure() / particleDensitySquared +
+                neighbor->Pressure() / neighborDensitySquared
             );
         pressureGrad += tempPressureForce * kernelGrad;
     }
+#endif
     pressureGrad = -pressureGrad * FluidParticle::mass * FluidParticle::mass;
     particle->SetPressureForce(pressureGrad);
+
 }
 
 void
@@ -216,40 +266,40 @@ SPHSolver::UpdateDynamics(
     // Check boundary
     glm::vec3 newPosition = particle->Position();
     glm::vec3 newVel = particle->Velocity();
-    if (particle->Position().x < m_minBoundary.x) {
-        newPosition.x = m_minBoundary.x + 0.0f;
-        newVel.x = -newVel.x * 0.5;
-        newVel.y *= 0.9;
-        newVel.z *= 0.9;
-    } else if (particle->Position().x > m_maxBoundary.x) {
-        newPosition.x = m_maxBoundary.x - 0.0f;
-        newVel.x = -newVel.x * 0.5;
-        newVel.y *= 0.9;
-        newVel.z *= 0.9;
+    if (particle->Position().x < m_minBoundary.x + 0.01f) {
+        newPosition.x = m_minBoundary.x + 0.01f;
+        newVel.x = -newVel.x * 0.2;
+        // newVel.y *= 0.9f;
+        // newVel.z *= 0.9f;
+    } else if (particle->Position().x > m_maxBoundary.x - 0.01f) {
+        newPosition.x = m_maxBoundary.x - 0.01f;
+        newVel.x = -newVel.x * 0.2;
+        // newVel.y *= 0.9f;
+        // newVel.z *= 0.9f;
     }
 
-    if (particle->Position().y < m_minBoundary.y) {
-        newPosition.y = m_minBoundary.y + 0.0f;
-        newVel.y = -newVel.y * 0.5;
-        newVel.x *= 0.9;
-        newVel.z *= 0.9;
-    } else if (particle->Position().y > m_maxBoundary.y) {
-        newPosition.y = m_maxBoundary.y - 0.0f;
-        newVel.y = -newVel.y * 0.5f;
-        newVel.x *= 0.9;
-        newVel.z *= 0.9;
+    if (particle->Position().y < m_minBoundary.y + 0.01f) {
+        newPosition.y = m_minBoundary.y + 0.01f;
+        newVel.y = -newVel.y * 0.2;
+        // newVel.x *= 0.9f;
+        // newVel.z *= 0.9f;
+    } else if (particle->Position().y > m_maxBoundary.y - 0.01f) {
+        newPosition.y = m_maxBoundary.y - 0.01f;
+        newVel.y = -newVel.y * 0.2f;
+        // newVel.x *= 0.9f;
+        // newVel.z *= 0.9f;
     }
 
-    if (particle->Position().z < m_minBoundary.z) {
-        newPosition.z = m_minBoundary.z + 0.0f;
-        newVel.z = -newVel.z * 0.5;
-        newVel.x *= 0.9;
-        newVel.y *= 0.9;
-    } else if (particle->Position().z > m_maxBoundary.z) {
-        newPosition.z = m_maxBoundary.z - 0.0f;
-        newVel.z = -newVel.z * 0.5;
-        newVel.x *= 0.9;
-        newVel.y *= 0.9;
+    if (particle->Position().z < m_minBoundary.z + 0.01f) {
+        newPosition.z = m_minBoundary.z + 0.01f;
+        newVel.z = -newVel.z * 0.2;
+        // newVel.x *= 0.9f;
+        // newVel.y *= 0.9f;
+    } else if (particle->Position().z > m_maxBoundary.z - 0.01f) {
+        newPosition.z = m_maxBoundary.z - 0.01f;
+        newVel.z = -newVel.z * 0.2;
+        // newVel.x *= 0.9f;
+        // newVel.y *= 0.9f;
     }
 
     particle->SetPosition(newPosition);

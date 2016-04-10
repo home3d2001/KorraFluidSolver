@@ -25,6 +25,8 @@ public:
     FluidSolver(
         const glm::vec3& containerDim,
         const glm::vec3& particleDim,
+        const glm::vec3& particleCenter,
+        const float tankHeight,
         const float separation,
         const float mass
         );
@@ -46,6 +48,7 @@ protected:
     // -- Particle info
     glm::vec3 m_containerDim;
     glm::vec3 m_particleDim;
+    glm::vec3 m_particleCenter;
     glm::vec3 m_minBoundary;
     glm::vec3 m_maxBoundary;
     float m_separation;

@@ -1,7 +1,46 @@
+#include <stb_image/stb_image_write.h>
 #include <shaderProgram/particleAdvectProgram.h>
 #include <geometry/fluidgeo.h>
 #include <iostream>
-#include <string>
+
+void
+FlipPixels(
+    GLubyte* pixels,
+    int w,
+    int h
+    )
+{
+    int i = 0, j = h-1, k;
+    while (i < j) {
+        GLubyte* ri = &pixels[i];
+        GLubyte* rj = &pixels[j];
+        for (k = 0; k < w * 3; k++) {
+            GLubyte t = ri[k];
+            ri[k] = rj[k];
+            rj[k] = t;
+        }
+        i++;
+        j--;
+    }
+}
+
+void
+SaveScreenShotBmp(
+    int width,
+    int height,
+    string filePath,
+    int frameNumber
+    )
+{
+    GLubyte* pixels = new GLubyte[ 3 * width * height];
+    glReadBuffer( GL_BACK );
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+    FlipPixels(pixels, width, height);
+    std::string fileName = filePath + std::to_string(frameNumber) + std::string(".bmp");
+    stbi_write_bmp(fileName.c_str(), width, height, 3, pixels);
+    delete pixels;
+}
 
 ParticleAdvectProgram::ParticleAdvectProgram(
     const char* vertAdvectFilepath,
@@ -216,6 +255,14 @@ ParticleAdvectProgram::Draw(
             fluidGeo->GLDrawMode(),
             m_TFBuffers[m_curTFBuffer]);
     }
+
+
+    // -- Read frame buffer pixels the store to image
+    int width = (int)camera->Width() * 2;
+    int height = (int)camera->Height() * 2;
+    static int frameNumber = 0;
+    SaveScreenShotBmp(width, height, "recording/frame_", frameNumber++);
+
     fluidGeo->DisableVertexAttributes();
 
     // -- Toggle transform feedback buffer

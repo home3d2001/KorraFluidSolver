@@ -62,6 +62,14 @@ Scene::InitFromJson(
         particleDimJson["boundZ"].asFloat()
         );
 
+    const Json::Value particleCenterJson = root["particleCenter"];
+    glm::vec3 particleCenter(
+        particleCenterJson["centerX"].asFloat(),
+        particleCenterJson["centerY"].asFloat(),
+        particleCenterJson["centerZ"].asFloat()
+        );
+
+    const float tankHeight = root["tankHeight"].asFloat();
     const float separation = root["particleSeparation"].asFloat();
     const float cellSize = root["cellSize"].asFloat();
     const float stiffness = root["stiffness"].asFloat();
@@ -73,6 +81,8 @@ Scene::InitFromJson(
     m_fluidSolver = new SPHSolver(
         containerDim,
         particleDim,
+        particleCenter,
+        tankHeight,
         separation,
         cellSize,
         stiffness,
