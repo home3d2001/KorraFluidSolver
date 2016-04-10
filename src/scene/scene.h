@@ -24,6 +24,12 @@ public:
         SPHConstantType type,
         float value
         );
+    void EnableTestBoxOne(bool enable) {
+        m_enableTestBox1 = enable;
+    }
+    void EnableTestBoxTwo(bool enable) {
+        m_enableTestBox2 = enable;
+    }
 
     virtual void ReadInputs(KeyCode key, KeyAction action);
     virtual void Update(
@@ -48,6 +54,8 @@ public:
 protected:
     bool m_paused = false;
     Camera* m_camera;
+    bool m_enableTestBox1 = false;
+    bool m_enableTestBox2 = false;
     Box* m_testBox;
     Box* m_testBoxV;
     Box* m_fluidContainer;

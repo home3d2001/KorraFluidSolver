@@ -1,8 +1,6 @@
 #include <scene/scene.h>
 #include <utility.h>
 
-// #define TEST_SCENE
-
 Scene::Scene() :
     Scene(800, 600)
 {}
@@ -93,17 +91,21 @@ Scene::InitFromJson(
     m_fluidGeo->Create();
 
     // -- Solid object
-    m_testBox = new Box(DrawMode_Shaded);
-    m_testBox->Translate(0.0f, -1.0f, 0.1f);
-    m_testBox->Scale(1.0f, 0.2f, 0.9f);
-    m_testBox->SetColor(glm::vec4(0.8f, 0.3f, 0.2f, 1.0f));
-    m_testBox->Create();
+    if (m_enableTestBox1) {
+        m_testBox = new Box(DrawMode_Shaded);
+        m_testBox->Translate(0.0f, -1.0f, 0.1f);
+        m_testBox->Scale(1.0f, 0.2f, 0.9f);
+        m_testBox->SetColor(glm::vec4(0.8f, 0.3f, 0.2f, 1.0f));
+        m_testBox->Create();
+    }
 
-    m_testBoxV = new Box(DrawMode_Shaded);
-    m_testBoxV->Translate(-1.0f, 0.0f, 0.0f);
-    m_testBoxV->Scale(0.2f, 1.0f, 0.9f);
-    m_testBoxV->SetColor(glm::vec4(0.3f, 0.8f, 0.2f, 1.0f));
-    m_testBoxV->Create();
+    if (m_enableTestBox2) {
+        m_testBoxV = new Box(DrawMode_Shaded);
+        m_testBoxV->Translate(-1.0f, 0.0f, 0.0f);
+        m_testBoxV->Scale(0.2f, 1.0f, 0.9f);
+        m_testBoxV->SetColor(glm::vec4(0.3f, 0.8f, 0.2f, 1.0f));
+        m_testBoxV->Create();
+    }
 }
 
 void
@@ -148,10 +150,14 @@ Scene::Update(
         return;
     }
     // Rotate solid
-    m_testBox->Rotate(0.0f, deltaT * 100.0f, 0.0f);
-    m_testBox->Translate(0.0f, cos(deltaT) * 0.05f, 0.0f);
+    if (m_enableTestBox1) {
+        m_testBox->Rotate(0.0f, deltaT * 100.0f, 0.0f);
+        m_testBox->Translate(0.0f, cos(deltaT) * 0.05f, 0.0f);
+    }
 
-    m_testBoxV->Translate(cos(deltaT) * 0.05f, 0.0f, 0.0f);
+    if (m_enableTestBox2) {
+        m_testBoxV->Translate(cos(deltaT) * 0.05f, 0.0f, 0.0f);
+    }
 
     // Update solver
     UpdateFluidSolver(deltaT, progAdvect);
@@ -253,8 +259,16 @@ Scene::UpdateFluidSolver(
     ParticleAdvectProgram& progAdvect
     )
 {
-    m_fluidSolver->CheckBoxIntersection(m_testBox);
-    m_fluidSolver->CheckBoxIntersection(m_testBoxV);
+    // -- Test box 1
+    if (m_enableTestBox1) {
+        m_fluidSolver->CheckBoxIntersection(m_testBox);
+    }
+
+    // -- Test box 2
+    if (m_enableTestBox2) {
+        m_fluidSolver->CheckBoxIntersection(m_testBoxV);
+    }
+
     m_fluidSolver->Update(deltaT);
     m_fluidGeo->SetVelocities(m_fluidSolver->ParticleVelocities());
     m_fluidGeo->SetPositions(m_fluidSolver->ParticlePositions());
@@ -273,8 +287,13 @@ Scene::DrawFluidSolver(
     prog.Draw(*m_camera, *m_fluidContainer);
 
     // -- Draw solids
-    prog.Draw(*m_camera, *m_testBox);
-    prog.Draw(*m_camera, *m_testBoxV);
+    if (m_enableTestBox1) {
+        prog.Draw(*m_camera, *m_testBox);
+    }
+
+    if (m_enableTestBox2) {
+        prog.Draw(*m_camera, *m_testBoxV);
+    }
 
     // -- Draw particles
     m_fluidGeo->SetColors(m_fluidSolver->ParticleColors());
