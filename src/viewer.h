@@ -19,6 +19,7 @@
 #include <nanogui/textbox.h>
 #include <nanogui/label.h>
 #include <nanogui/slider.h>
+#include <nanogui/checkbox.h>
 #include <nanogui/combobox.h>
 #if defined(_WIN32)
 #include <windows.h>
@@ -64,11 +65,15 @@ protected:
     float m_height;
     float m_timeStep = 0.001f;
     uint m_fps;
-    Label* m_labelFps;
 
     ShaderProgram* m_program;
     ParticleAdvectProgram* m_programAdvect;
     Scene* m_scene;
+
+    // -- GUI variables
+    Label* m_labelFps;
+    CheckBox* m_checkBoxSolid1;
+    CheckBox* m_checkBoxSolid2;
 };
 
 #endif /* viewer_hpp */

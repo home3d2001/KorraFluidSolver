@@ -6,7 +6,10 @@ Viewer::Viewer(
     ) : nanogui::Screen(Eigen::Vector2i(width, height), "Korra Fluid Simulation"),
         m_program(nullptr),
         m_programAdvect(nullptr),
-        m_scene(nullptr)
+        m_scene(nullptr),
+        m_labelFps(nullptr),
+        m_checkBoxSolid1(nullptr),
+        m_checkBoxSolid2(nullptr)
 {
     m_width = width;
     m_height = height;
@@ -93,8 +96,8 @@ Viewer::InitGUI()
     widget->setLayout(layout);
 
     // FPS
-    new Label(widget, "FPS: ", "sans-bold");
-    m_labelFps = new Label(widget, to_string(m_fps), "sans-bold");
+    // new Label(widget, "FPS: ", "sans-bold");
+    // m_labelFps = new Label(widget, to_string(m_fps), "sans-bold");
 
     new Label(widget, "Number of particles: ", "sans-bold");
     new Label(widget, to_string(m_scene->NumParticles()), "sans-bold");
@@ -166,15 +169,24 @@ Viewer::InitGUI()
         label->setCaption(to_string(m_timeStep));
     });
 
+    m_checkBoxSolid1 = new CheckBox(widget, "Test box 1");
+    m_checkBoxSolid1->setCallback([this](bool state) {
+        m_scene->EnableTestBoxOne(state);
+    });
+
+    m_checkBoxSolid2 = new CheckBox(widget, "Test box 2");
+    m_checkBoxSolid2->setCallback([this](bool state) {
+        m_scene->EnableTestBoxTwo(state);
+    });
+
     // -- Coloring particles
     widget = new Widget(toolbox);
     widget->setLayout(new GroupLayout());
     new Label(widget, "Particle color", "sans-bold");
-    ComboBox* cb = new ComboBox(widget, { "Default", "Pressure", "Viscosity", "Velocity", "All forces"});
+    ComboBox* cb = new ComboBox(widget, { "Blue", "Pressure", "Viscosity", "Velocity", "All forces"});
     cb->setCallback([this](int index) {
         FluidParticle::colorType = (SPHColor)index;
     });
-
 
     // -- Buttons
     widget = new Widget(toolbox);
@@ -209,6 +221,10 @@ Viewer::ReplayScene()
     }
     m_scene = new Scene(m_width, m_height);
     m_scene->InitFromJson("../src/scene/scene.json");
+
+    // -- Update scene based on current state of GUI
+    m_scene->EnableTestBoxOne(m_checkBoxSolid1->checked());
+    m_scene->EnableTestBoxTwo(m_checkBoxSolid2->checked());
 }
 
 void
@@ -227,7 +243,7 @@ Viewer::drawContents()
     double currentTime = glfwGetTime();
     double deltaTime = double(currentTime - lastTime);
     m_fps = 1000.0 / deltaTime;
-    m_labelFps->setCaption(to_string(m_fps));
+    // m_labelFps->setCaption(to_string(m_fps));
 
 #ifdef TEST_SCENE
     m_scene->Draw(*m_program);

@@ -18,7 +18,7 @@ out vec4 v_color;
 out vec3 v_normal;
 out vec3 v_lightVec;
 
-const vec4 lightPos = vec4(2, 1, 1, 1); // Virtual light
+const vec4 lightPos = vec4(7, 5, -3, 1); // Virtual light
 
 void main()
 {

@@ -9,8 +9,8 @@ Scene::Scene(
     const float& screenWidth,
     const float& screenHeight
     ) :
-    m_testBox(nullptr),
-    m_testBoxV(nullptr),
+    m_testBoxOne(nullptr),
+    m_testBoxTwo(nullptr),
     m_fluidContainer(nullptr),
     m_fluidGeo(nullptr),
     m_fluidSolver(nullptr)
@@ -22,9 +22,9 @@ Scene::Scene(
 void
 Scene::InitFromTestScene()
 {
-    m_testBox = new Box(DrawMode_Wireframe);
-    m_testBox->SetDrawMode(DrawMode_Wireframe);
-    m_testBox->Create();
+    m_testBoxOne = new Box(DrawMode_Wireframe);
+    m_testBoxOne->SetDrawMode(DrawMode_Wireframe);
+    m_testBoxOne->Create();
 }
 
 void
@@ -92,19 +92,11 @@ Scene::InitFromJson(
 
     // -- Solid object
     if (m_enableTestBox1) {
-        m_testBox = new Box(DrawMode_Shaded);
-        m_testBox->Translate(0.0f, -1.0f, 0.1f);
-        m_testBox->Scale(1.0f, 0.2f, 0.9f);
-        m_testBox->SetColor(glm::vec4(0.8f, 0.3f, 0.2f, 1.0f));
-        m_testBox->Create();
+        CreateTestBoxOne();
     }
 
     if (m_enableTestBox2) {
-        m_testBoxV = new Box(DrawMode_Shaded);
-        m_testBoxV->Translate(-1.0f, 0.0f, 0.0f);
-        m_testBoxV->Scale(0.2f, 1.0f, 0.9f);
-        m_testBoxV->SetColor(glm::vec4(0.3f, 0.8f, 0.2f, 1.0f));
-        m_testBoxV->Create();
+        CreateTestBoxTwo();
     }
 }
 
@@ -151,12 +143,12 @@ Scene::Update(
     }
     // Rotate solid
     if (m_enableTestBox1) {
-        m_testBox->Rotate(0.0f, deltaT * 100.0f, 0.0f);
-        m_testBox->Translate(0.0f, cos(deltaT) * 0.05f, 0.0f);
+        m_testBoxOne->Rotate(0.0f, deltaT * 200.0f, 0.0f);
+        m_testBoxOne->Translate(0.0f, cos(deltaT) * 0.05f, 0.0f);
     }
 
     if (m_enableTestBox2) {
-        m_testBoxV->Translate(cos(deltaT) * 0.05f, 0.0f, 0.0f);
+        m_testBoxTwo->Translate(cos(deltaT) * 0.05f, 0.0f, 0.0f);
     }
 
     // Update solver
@@ -168,7 +160,7 @@ Scene::Draw(
     const ShaderProgram& prog
     ) const
 {
-    prog.Draw(*m_camera, *m_testBox);
+    prog.Draw(*m_camera, *m_testBoxOne);
 }
 
 void
@@ -187,8 +179,12 @@ Scene::CleanUp()
         delete m_camera;
     }
 
-    if (m_testBox != nullptr) {
-        delete m_testBox;
+    if (m_testBoxOne != nullptr) {
+        delete m_testBoxOne;
+    }
+
+    if (m_testBoxTwo != nullptr) {
+        delete m_testBoxTwo;
     }
 
     if (m_fluidContainer != nullptr) {
@@ -261,12 +257,12 @@ Scene::UpdateFluidSolver(
 {
     // -- Test box 1
     if (m_enableTestBox1) {
-        m_fluidSolver->CheckBoxIntersection(m_testBox);
+        m_fluidSolver->CheckBoxIntersection(m_testBoxOne);
     }
 
     // -- Test box 2
     if (m_enableTestBox2) {
-        m_fluidSolver->CheckBoxIntersection(m_testBoxV);
+        m_fluidSolver->CheckBoxIntersection(m_testBoxTwo);
     }
 
     m_fluidSolver->Update(deltaT);
@@ -288,15 +284,40 @@ Scene::DrawFluidSolver(
 
     // -- Draw solids
     if (m_enableTestBox1) {
-        prog.Draw(*m_camera, *m_testBox);
+        prog.Draw(*m_camera, *m_testBoxOne);
     }
 
     if (m_enableTestBox2) {
-        prog.Draw(*m_camera, *m_testBoxV);
+        prog.Draw(*m_camera, *m_testBoxTwo);
     }
 
     // -- Draw particles
     m_fluidGeo->SetColors(m_fluidSolver->ParticleColors());
     progAdvect.Draw(m_camera, m_fluidGeo, m_fluidContainer);
 
+}
+
+void
+Scene::CreateTestBoxOne()
+{
+    if (m_testBoxOne == nullptr) {
+        m_testBoxOne = new Box(DrawMode_Shaded);
+        m_testBoxOne->Translate(0.0f, -1.0f, 0.1f);
+        m_testBoxOne->Scale(1.0f, 0.2f, 0.9f);
+        m_testBoxOne->SetColor(glm::vec4(0.8f, 0.3f, 0.2f, 1.0f));
+        m_testBoxOne->Create();
+    }
+
+}
+
+void
+Scene::CreateTestBoxTwo()
+{
+    if (m_testBoxTwo == nullptr) {
+        m_testBoxTwo = new Box(DrawMode_Shaded);
+        m_testBoxTwo->Translate(-1.0f, 0.0f, 0.0f);
+        m_testBoxTwo->Scale(0.2f, 1.0f, 0.9f);
+        m_testBoxTwo->SetColor(glm::vec4(0.3f, 0.8f, 0.2f, 1.0f));
+        m_testBoxTwo->Create();
+    }
 }

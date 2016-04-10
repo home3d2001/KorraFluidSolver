@@ -59,27 +59,27 @@ Box::Intersect(
 
         switch(face) {
             case BoxFace_PosX:
-                localPos.x = 0.6f;
+                localPos.x = 0.55f;
                 newVelocity = glm::vec3(1.0f, 0.0f, 0.0f);
                 break;
             case BoxFace_NegX:
-                localPos.x = -0.6f;
+                localPos.x = -0.55f;
                 newVelocity = glm::vec3(-1.0f, 0.0f, 0.0f);
                 break;
             case BoxFace_PosY:
-                localPos.y = 0.6f;
+                localPos.y = 0.55f;
                 newVelocity = glm::vec3(0.0f, 1.0f, 0.0f);
                 break;
             case BoxFace_NegY:
-                localPos.y = -0.6f;
+                localPos.y = -0.55f;
                 newVelocity = glm::vec3(0.0f, -1.0f, 0.0f);
                 break;
             case BoxFace_PosZ:
-                localPos.z = 0.6f;
+                localPos.z = 0.55f;
                 newVelocity = glm::vec3(0.0f, 0.0f, 1.0f);
                 break;
             case BoxFace_NegZ:
-                localPos.z = -0.6f;
+                localPos.z = -0.55f;
                 newVelocity = glm::vec3(0.0f, 0.0f, -1.0f);
                 break;
         }

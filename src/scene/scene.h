@@ -26,9 +26,15 @@ public:
         );
     void EnableTestBoxOne(bool enable) {
         m_enableTestBox1 = enable;
+        if (enable) {
+            CreateTestBoxOne();
+        }
     }
     void EnableTestBoxTwo(bool enable) {
         m_enableTestBox2 = enable;
+        if (enable) {
+            CreateTestBoxTwo();
+        }
     }
 
     virtual void ReadInputs(KeyCode key, KeyAction action);
@@ -56,11 +62,15 @@ protected:
     Camera* m_camera;
     bool m_enableTestBox1 = false;
     bool m_enableTestBox2 = false;
-    Box* m_testBox;
-    Box* m_testBoxV;
+    Box* m_testBoxOne;
+    Box* m_testBoxTwo;
     Box* m_fluidContainer;
     FluidGeo* m_fluidGeo;
     SPHSolver* m_fluidSolver;
+
+    // -- Test box helpers
+    void CreateTestBoxOne();
+    void CreateTestBoxTwo();
 
     // -- Update helpers
     void UpdateCamera(KeyCode key);
