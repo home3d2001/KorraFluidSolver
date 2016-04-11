@@ -1,5 +1,9 @@
 # Korra Fluid Solver, CIS 563, University of Pennsylvania, Spring 2016
 
+[Youtube Link](https://youtu.be/QeSkB5jceCE)
+![](https://s3-us-west-2.amazonaws.com/trle/SPHSolverCPP/SPHSnapShotFullRender_SkyLight.jpg)
+![](https://s3-us-west-2.amazonaws.com/trle/SPHSolverCPP/render_full_angled.jpg)
+
 ## Update April 10 (Sprint 3)
 
 ### Completed features:
