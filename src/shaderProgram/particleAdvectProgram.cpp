@@ -261,7 +261,7 @@ ParticleAdvectProgram::Draw(
     int width = (int)camera->Width() * 2;
     int height = (int)camera->Height() * 2;
     static int frameNumber = 0;
-    SaveScreenShotBmp(width, height, "recording/frame_", frameNumber++);
+    // SaveScreenShotBmp(width, height, "recording_solid_tank/frame_", frameNumber++);
 
     fluidGeo->DisableVertexAttributes();
 

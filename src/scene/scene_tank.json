@@ -5,16 +5,16 @@
         "scaleZ" : 2.0
     },
     "particleDim" : {
-        "boundX" : 1.0,
-        "boundY" : 1.0,
-        "boundZ" : 1.0
+        "boundX" : 0.5,
+        "boundY" : 0.7,
+        "boundZ" : 0.5
     },
     "particleCenter": {
-        "centerX": 0.0,
-        "centerY": 0.0,
+        "centerX": 0.2,
+        "centerY": 0.2,
         "centerZ": 0.0
     },
-    "tankHeight": 0.0,
+    "tankHeight": 0.5,
     "stiffness": 10,
     "viscosity": 0.0,
     "mass": 0.125,

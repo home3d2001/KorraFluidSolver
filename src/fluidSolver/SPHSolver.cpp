@@ -82,6 +82,9 @@ SPHSolver::Update(
 {
     m_grid->ResetGrid(m_particles);
 
+    // -- Measure time to solve fluid
+    double startTime = glfwGetTime();
+
 #ifdef USE_TBB
     // -- Search all neighbors
     int len = m_particles.size();
@@ -126,7 +129,7 @@ SPHSolver::Update(
     // -- Calculate force field
     for (FluidParticle* p : m_particles) {
         this->CalculatePressureForceField(p);
-        this->CalculateViscosityForceField(p);
+        // this->CalculateViscosityForceField(p);
     }
 
     // -- Update particles
@@ -135,6 +138,10 @@ SPHSolver::Update(
     }
 
 #endif
+
+    double endTime = glfwGetTime();
+    double deltaTime = double(endTime - startTime);
+    cout << to_string(deltaTime) << endl;
 }
 
 void
