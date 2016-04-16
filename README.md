@@ -1,8 +1,17 @@
 # Korra Fluid Solver, CIS 563, University of Pennsylvania, Spring 2016
 
-[Youtube Link](https://youtu.be/QeSkB5jceCE)
-![](https://s3-us-west-2.amazonaws.com/trle/SPHSolverCPP/SPHSnapShotFullRender_SkyLight.jpg)
-![](https://s3-us-west-2.amazonaws.com/trle/SPHSolverCPP/render_full_angled.jpg)
+[![Youtube Link](https://s3-us-west-2.amazonaws.com/trle/SPHSolverCPP/SPHSolverYoutubePreview.png)](https://youtu.be/QeSkB5jceCE)
+![Rendered 1](https://s3-us-west-2.amazonaws.com/trle/SPHSolverCPP/SPHSnapShotFullRender_SkyLight.jpg)
+![Rendered 2](https://s3-us-west-2.amazonaws.com/trle/SPHSolverCPP/render_full_angled.jpg)
+![GUI](https://s3-us-west-2.amazonaws.com/trle/SPHSolverCPP/GUI_screenshot.png)
+
+## Update April 15 (Final project)
+
+For the proposal of the final project, I want to implement a real time interactive IISPH Solver based on the following papers:
+- [A Parallel Architecture for IISPH Fluids](https://graphics.ethz.ch/~sobarbar/papers/Sol14b/Sol14b.pdf) by Felix Thaler, Barbara Solenthaler, and Markus Gross. [Reference video](https://youtu.be/8ikKE4cM_Kk)
+- [Real-Time Incompressible Fluid Simulation on the GPU](http://www.hindawi.com/journals/ijcgt/2015/417417/) by Xiao Nie, Leiting Chen, and Tao Xiang
+
+Reach goal: Implementing the graphics pipeline using Vulkan.
 
 ## Update April 10 (Sprint 3)
 
@@ -11,6 +20,7 @@
 - OpenVDB export + meshing
 - Solid interaction
 - Fluid tank
+- Ability to save screenshot every frame into bmp
 
 ### Incomplete features:
 - IISPH

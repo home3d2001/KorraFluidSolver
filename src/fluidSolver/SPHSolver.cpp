@@ -129,7 +129,7 @@ SPHSolver::Update(
     // -- Calculate force field
     for (FluidParticle* p : m_particles) {
         this->CalculatePressureForceField(p);
-        // this->CalculateViscosityForceField(p);
+        this->CalculateViscosityForceField(p);
     }
 
     // -- Update particles
@@ -141,7 +141,6 @@ SPHSolver::Update(
 
     double endTime = glfwGetTime();
     double deltaTime = double(endTime - startTime);
-    cout << to_string(deltaTime) << endl;
 }
 
 void
@@ -257,7 +256,7 @@ SPHSolver::CalculateViscosityForceField(
         glm::vec3 tempVisForce = (neighbor->Velocity() - particle->Velocity()) * laplacianKernelViscous / neighbor->Density();
         viscosityForce += tempVisForce;
     }
-    viscosityForce = viscosityForce * FluidParticle::mass * m_viscosity;
+    viscosityForce = viscosityForce * FluidParticle::mass * FluidParticle::mass * m_viscosity * 0.01f;
     particle->SetViscosityForce(viscosityForce);
 }
 

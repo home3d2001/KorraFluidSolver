@@ -14,7 +14,7 @@
         "centerY": 0.2,
         "centerZ": 0.0
     },
-    "tankHeight": 0.5,
+    "tankHeight": 0.3,
     "stiffness": 10,
     "viscosity": 0.0,
     "mass": 0.125,
