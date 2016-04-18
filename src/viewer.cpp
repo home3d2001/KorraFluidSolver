@@ -259,7 +259,8 @@ Viewer::keyboardEvent(
     int key,
     int scancode,
     int action,
-    int modifiers)
+    int modifiers
+    )
 {
     if (Screen::keyboardEvent(key, scancode, action, modifiers))
         return true;

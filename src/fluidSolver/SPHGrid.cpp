@@ -1,11 +1,14 @@
 #include "SPHGrid.h"
 
+#define OPENVDB_SDF
+
 void
 SPHGrid::WriteVdb(
     const std::vector<FluidParticle*>& particles,
     size_t frameNumber
     )
 {
+#ifdef OPENVDB_SDF
     openvdb::initialize();
 
     openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create(10.0);
@@ -22,40 +25,41 @@ SPHGrid::WriteVdb(
     grids.push_back(grid);
     file.write(grids);
     file.close();
+#endif
 
-
-
+#ifdef OPENVDB_POINTS
     // Initialize the OpenVDB and OpenVDB Points library.  This must be called at least
     // once per program and may safely be called multiple times.
-    // openvdb::initialize();
-    // openvdb::points::initialize();
+    openvdb::initialize();
+    openvdb::points::initialize();
 
-    // // Create some point positions
-    // std::vector<openvdb::Vec3f> positions;
+    // Create some point positions
+    std::vector<openvdb::Vec3f> positions;
 
-    // for (FluidParticle* p : particles) {
-    //     glm::vec3
-    //     positions.push_back(openvdb::Vec3f(p->Position().x, p->Position().y, p->Position().z));
-    // }
+    for (FluidParticle* p : particles) {
+        glm::vec3
+        positions.push_back(openvdb::Vec3f(p->Position().x, p->Position().y, p->Position().z));
+    }
 
-    // // Create a linear transform with voxel size of 10.0
-    // const float voxelSize = 10.0f;
-    // openvdb::math::Transform::Ptr transform = openvdb::math::Transform::createLinearTransform(voxelSize);
+    // Create a linear transform with voxel size of 10.0
+    const float voxelSize = 10.0f;
+    openvdb::math::Transform::Ptr transform = openvdb::math::Transform::createLinearTransform(voxelSize);
 
-    // // Create the PointDataGrid, position attribute is mandatory
-    // PointDataGrid::Ptr pointDataGrid = createPointDataGrid<PointDataGrid>(
-    //                 positions, TypedAttributeArray<openvdb::Vec3f>::attributeType(), *transform);
+    // Create the PointDataGrid, position attribute is mandatory
+    PointDataGrid::Ptr pointDataGrid = createPointDataGrid<PointDataGrid>(
+                    positions, TypedAttributeArray<openvdb::Vec3f>::attributeType(), *transform);
 
-    // // Create a VDB file object.
-    // openvdb::io::File file("mygrids.vdb");
+    // Create a VDB file object.
+    openvdb::io::File file("mygrids.vdb");
 
-    // // Add the grid pointer to a container.
-    // openvdb::GridPtrVec grids;
-    // grids.push_back(pointDataGrid);
+    // Add the grid pointer to a container.
+    openvdb::GridPtrVec grids;
+    grids.push_back(pointDataGrid);
 
-    // // Write out the contents of the container.
-    // file.write(grids);
-    // file.close();
+    // Write out the contents of the container.
+    file.write(grids);
+    file.close();
+#endif
 }
 
 void
