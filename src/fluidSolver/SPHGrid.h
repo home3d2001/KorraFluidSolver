@@ -38,8 +38,7 @@ public:
         const std::vector<FluidParticle*>& particles,
         const glm::vec3& gridMin,
         const glm::vec3& gridMax,
-        const double cellSize,
-        const bool useGrid // Use grid to speed up neighbor search
+        const double cellSize
         );
     virtual void ResetGrid(const std::vector<FluidParticle*>& particles);
     virtual void AddParticle(FluidParticle* particle);
@@ -58,7 +57,12 @@ private:
     bool m_useGrid;
 
     // -- Grid
-    std::vector<std::vector<FluidParticle*>> m_cells;
+    // -- Particles are sorted using index of the first particle in that cell
+    // and the number of particles in the same cell
+    // The format of pair is <first particle index, number of particles in that cell stored consequetively>
+    std::vector<std::pair<int, int>> m_cells;
+
+    // -- Cach index computation for grid indices
     std::map<std::tuple<int, int, int>, int> m_idxCache;
 
     // -- Open vdb

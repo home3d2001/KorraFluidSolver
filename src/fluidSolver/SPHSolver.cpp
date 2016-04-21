@@ -25,8 +25,7 @@ SPHSolver::SPHSolver(
         m_particles,
         -m_containerDim,
         m_containerDim,
-        cellSize,
-        true
+        cellSize
     );
 
     srand(time(NULL));

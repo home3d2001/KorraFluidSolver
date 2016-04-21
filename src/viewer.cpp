@@ -96,8 +96,8 @@ Viewer::InitGUI()
     widget->setLayout(layout);
 
     // FPS
-    // new Label(widget, "FPS: ", "sans-bold");
-    // m_labelFps = new Label(widget, to_string(m_fps), "sans-bold");
+    new Label(widget, "FPS: ", "sans-bold");
+    m_labelFps = new Label(widget, to_string(m_fps), "sans-bold");
 
     new Label(widget, "Number of particles: ", "sans-bold");
     new Label(widget, to_string(m_scene->NumParticles()), "sans-bold");
@@ -239,11 +239,18 @@ void
 Viewer::drawContents()
 {
     // -- Update fps
+    static timeval time;
+    gettimeofday(&time, NULL);
+    static long lastTimeMs = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+    long currentTimeMs = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+    unsigned int deltaTimeMs = currentTimeMs - lastTimeMs;
+    lastTimeMs = currentTimeMs;
+
     static double lastTime = glfwGetTime();
     double currentTime = glfwGetTime();
     double deltaTime = double(currentTime - lastTime);
-    m_fps = 1000.0 / deltaTime;
-    // m_labelFps->setCaption(to_string(m_fps));
+    m_fps = deltaTimeMs;
+    m_labelFps->setCaption(to_string((m_fps)));
 
 #ifdef TEST_SCENE
     m_scene->Draw(*m_program);

@@ -26,6 +26,8 @@
 #endif
 // #include <nanogui/glutil.h>
 #include <iostream>
+// OS X system timer
+#include <sys/time.h>
 
 #include <shaderProgram/shaderProgram.h>
 #include <shaderProgram/particleAdvectProgram.h>
@@ -64,7 +66,7 @@ protected:
     float m_width;
     float m_height;
     float m_timeStep = 0.001f;
-    uint m_fps;
+    float m_fps;
 
     ShaderProgram* m_program;
     ParticleAdvectProgram* m_programAdvect;
